@@ -1,0 +1,9 @@
+# Packmol input: 8 waters in a cubic box, ~1.0 g/cm^3, edge 6.209 A
+tolerance 2.0
+filetype pdb
+output water_8_packed.pdb
+
+structure water_single.pdb
+  number 8
+  inside box 1.500 1.500 1.500 4.709 4.709 4.709
+end structure

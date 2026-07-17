@@ -1,0 +1,26 @@
+# xtb program binaries (platform-specific, ~123 MB; the bundled build is for
+# Windows). Install xtb 6.7.1 yourself: `conda install -c conda-forge xtb`
+# (osx-arm64/linux) or `module load xtb/6.7.1` on HPC, then point scripts at it
+# via the $XTB_BIN environment variable. See SETUP.md.
+tools/
+
+# python caches
+__pycache__/
+*.pyc
+*.pyo
+
+# verbose xtb stdout logs (regenerable, large: some are 5-11 MB)
+**/output.log
+
+# xtb binary restart / scratch artifacts (regenerable)
+**/xtbrestart
+**/mdrestart
+**/*.xtboptok
+**/xtbmdok
+**/.engrad
+
+# transition-state search intermediate scratch
+**/opt_tmp/
+
+# OS cruft
+.DS_Store

@@ -1,0 +1,7 @@
+tolerance 2.0
+filetype pdb
+output test_big.pdb
+structure water_single.pdb
+  number 8
+  inside box 0. 0. 0. 15. 15. 15.
+end structure

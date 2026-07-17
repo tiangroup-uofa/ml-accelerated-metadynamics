@@ -1,0 +1,1 @@
+C:/Users/pc/AppData/Local/Programs/Python/Python312/Lib/site-packages/packmol/binaries/packmol.exe: error while loading shared libraries: libgfortran-5.dll: cannot open shared object file: No such file or directory

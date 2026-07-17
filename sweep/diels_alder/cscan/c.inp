@@ -1,0 +1,7 @@
+$constrain
+ force constant=2.0
+ distance: 1, 6, 1.540
+ distance: 4, 5, 1.540
+$opt
+ maxcycle=150
+$end
