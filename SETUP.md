@@ -34,5 +34,11 @@ pip install sella
 pip install mace-torch     # pulls in PyTorch; MACE-OFF23 weights auto-download (cached in ~/.cache/mace)
 ```
 
+**Tip:** install `mace-torch` in a **fresh dedicated env** and pin `numpy<2.3`.
+Letting mace-torch resolve dependencies freely can pull a broken bleeding-edge
+`numpy`/`pandas` and corrupt a mixed conda+pip env. A clean recipe:
+`micromamba create -n mace -c conda-forge python=3.11 "numpy<2.3" ase && \
+ micromamba run -n mace pip install mace-torch xtb-python`.
+
 Note: MACE-OFF23 is distributed under the Academic Software License (ASL,
 non-commercial) — fine for group research use.
