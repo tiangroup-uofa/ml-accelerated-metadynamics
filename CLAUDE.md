@@ -31,6 +31,8 @@ enhanced sampling**. Read `README.md` first, then the `FINDINGS_*.md` files.
 - `sweep/large/` — vacuum GFN2 droplets n=20/30/50 (`FINDINGS_large.md`).
 - `sweep/diels_alder/` — butadiene+ethylene→cyclohexene reaction path + TS
   (`FINDINGS_diels_alder.md`).
+- `sweep/mace_validation/` — MACE-OFF23 vs GFN2-xTB on the droplets
+  (`FINDINGS_mace.md`).
 
 Each study directory has build/run/analyze/plot scripts and its own write-up.
 
@@ -59,11 +61,16 @@ Done: n=1–8 sweeps + PBC/T/CV; larger vacuum droplets (evaporation suppressed 
 size; kpush=0.05 doesn't break n=30 — a size-dilution artifact, not robustness);
 Diels-Alder verified TS (2.32 Å, −394 cm⁻¹, barrier 6.7 kcal/mol).
 
+First MACE-OFF23 validation is done (`sweep/mace_validation/`): forces correlate
+with xTB at r≈0.99, relative energies ~2–3 meV/atom, and MACE's cost vs xTB falls
+2.5×→1.6×→1.0× over n=20→30→50 (linear MLIP overtakes O(N³) xTB by ~150 atoms).
+
 Priorities:
-1. **MACE-OFF23 surrogate (main direction).** Validate the pretrained MLIP
-   against these xTB trajectories (forces/energies), then use it where xTB's
-   O(N³) scaling hurts — larger droplets. The **hard open question is which
-   collective variables to use** for the enhanced sampling.
+1. **MACE-OFF23 surrogate (main direction).** Validation done; next, **drive
+   MD/metadynamics with MACE via ASE/PLUMED** (not xTB's built-in RMSD bias) and
+   push the size ladder past n=50 to map the crossover. The **hard open question
+   is which collective variables to use** (coordination numbers, per-O O–H for
+   proton transfer, tetrahedral order, or a learned CV — TICA/VAMPnets).
 2. **kpush scaling rule** — test a per-molecule/atom-normalized kpush; the
    scaling behaviour across system size is the interesting part.
 

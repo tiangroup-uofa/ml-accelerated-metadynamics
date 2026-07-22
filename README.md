@@ -31,6 +31,7 @@ Diels-Alder TS search). The newer drivers read `$XTB_BIN`; the git-ignored
 | **PBC, temperature, CVs** | [`sweep/`](sweep/) | Fixing evaporation with PBC; T dependence; dissociation vs drift | [`sweep/FINDINGS_phase2.md`](sweep/FINDINGS_phase2.md), [`sweep/JULY3_PROGRESS_RECORD.md`](sweep/JULY3_PROGRESS_RECORD.md) |
 | **Large vacuum droplets** | [`sweep/large/`](sweep/large/) | Do bigger free clusters (n=20/30/50) form droplets or evaporate? Does raising `kpush` break them? | [`sweep/large/FINDINGS_large.md`](sweep/large/FINDINGS_large.md) |
 | **Diels-Alder reaction** | [`sweep/diels_alder/`](sweep/diels_alder/) | Can we drive & characterize a real bond-forming reaction in this setup? | [`sweep/diels_alder/FINDINGS_diels_alder.md`](sweep/diels_alder/FINDINGS_diels_alder.md) |
+| **MACE-OFF23 surrogate** | [`sweep/mace_validation/`](sweep/mace_validation/) | How does the MACE-OFF23 MLIP compare to GFN2-xTB (forces/energies/speed)? | [`sweep/mace_validation/FINDINGS_mace.md`](sweep/mace_validation/FINDINGS_mace.md) |
 
 ## Key results at a glance
 
@@ -50,6 +51,11 @@ Diels-Alder TS search). The newer drivers read `$XTB_BIN`; the git-ignored
   mode −394 cm⁻¹), barrier **6.7 kcal/mol** from a relaxed scan and Sella+Hessian.
   The `--path` "barrier" itself is a biased-path artifact — enhanced sampling
   *finds* reactivity, but a real barrier needs a proper TS treatment.
+- **MACE-OFF23 tracks xTB and scales better.** On the droplets, MACE-OFF23 vs
+  GFN2-xTB forces correlate at r≈0.99 and relative energies agree to ~2–3
+  meV/atom; MACE's cost relative to xTB falls 2.5×→1.6×→1.0× over n=20→30→50, so
+  the ~linear MLIP overtakes O(N³) xTB by ~150 atoms — the surrogate's payoff is
+  the large-droplet regime.
 
 ---
 

@@ -30,4 +30,9 @@ pip install ase numpy pandas matplotlib scipy
 # for the DA TS refinement (sweep/diels_alder/refine_ts_sella.py):
 conda install -c conda-forge xtb-python
 pip install sella
+# for the MACE-OFF23 comparison (sweep/mace_validation/compare_mace_xtb.py):
+pip install mace-torch     # pulls in PyTorch; MACE-OFF23 weights auto-download (cached in ~/.cache/mace)
 ```
+
+Note: MACE-OFF23 is distributed under the Academic Software License (ASL,
+non-commercial) — fine for group research use.
