@@ -59,7 +59,9 @@ def run_md(calc_name, atoms0, ps, equil_ps, temp, step_fs, sample_fs):
     atoms = atoms0.copy()
     if calc_name == "mace":
         from mace.calculators import mace_off
-        atoms.calc = mace_off(model="small", device="cpu", default_dtype="float64")
+        # float32 is ~1.8x faster than float64 and structurally indistinguishable
+        # here; on-par with xTB at n=20 and faster beyond (see benchmark.py).
+        atoms.calc = mace_off(model="small", device="cpu", default_dtype="float32")
     else:
         from xtb.ase.calculator import XTB
         atoms.calc = XTB(method="GFN2-xTB")
@@ -95,7 +97,11 @@ def main() -> int:
     ap.add_argument("--temp", type=float, default=300.0)
     ap.add_argument("--step-fs", type=float, default=0.5)
     ap.add_argument("--sample-fs", type=float, default=10.0)
+    ap.add_argument("--threads", type=int, default=4,
+                    help="torch/OMP threads (4 was fastest for small droplets)")
     args = ap.parse_args()
+    import os as _os; _os.environ["OMP_NUM_THREADS"] = str(args.threads)
+    import torch; torch.set_num_threads(args.threads)
     from ase.io import read
     start = read(str(RUNS / f"n{args.n}" / "opt" / "xtbopt.xyz"))
     print(f"droplet n={args.n} ({len(start)} atoms), unbiased NVT {args.ps} ps @ {args.temp} K")

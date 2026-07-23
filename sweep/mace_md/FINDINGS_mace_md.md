@@ -28,19 +28,29 @@ Note MACE-OFF23 is DFT-trained (ωB97M-D3BJ), *not* fit to xTB, so this is two
 independent methods agreeing, and where they differ MACE is presumably the more
 accurate description.
 
-## ⚠️ Throughput caveat (needs a config pass before scaling)
+## Throughput — resolved (`benchmark.py`)
 
-The MACE MD here ran **anomalously slow — ~2817 ms/step** (a ~4 h wall-clock run)
-versus **31 ms/step** for xTB and **~75 ms/step** for MACE in the *static*
-benchmark (Study 05). This ~40× slowdown is not a real MACE cost; likely CPU
-float64 + torch thread oversubscription over a long unattended run. **Before
-scaling MACE MD / metadynamics up, sort throughput:** float32 inference, pin
-`OMP_NUM_THREADS` / torch threads, or move to GPU. Structure is validated;
-production speed is a separate engineering task.
+The first MD run clocked ~2817 ms/step, which looked alarming. It was a **CPU
+contention artifact** — that run happened while large downloads and conda installs
+were saturating the machine — compounded by float64. A clean benchmark on a quiet
+machine (n=20, 60 atoms):
+
+| precision | threads | ms/step |
+|-----------|:-------:|:-------:|
+| float64 | 8 | 67 |
+| float32 | 8 | 39 |
+| **float32** | **4** | **37** |
+| float32 | 1 | 54 |
+
+So the real MACE-OFF23 cost is **~37 ms/step** (float32, 4 threads) — **on par with
+GFN2-xTB (31 ms/step)** at n=20, and, since MACE is ~linear vs xTB's O(N³),
+**faster than xTB beyond ~n=50**. `compare_md.py` now defaults to float32 + thread
+pinning. MACE MD / metadynamics is viable; no config blocker remains.
 
 ## Next
 
-- Fix MACE MD throughput (float32 / threads / GPU), then extend the size ladder.
+- Throughput resolved (above) — extend the size ladder (n=100, 200) to confirm
+  MACE overtakes xTB where it matters.
 - Move to **MACE-driven metadynamics** via ASE/PLUMED — which lets us bias along
   proper collective variables instead of xTB's global-RMSD. **Which CV** is the
   open question (coordination numbers, per-O O–H for proton transfer, tetrahedral
