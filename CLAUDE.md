@@ -75,18 +75,20 @@ Done: n=1–8 sweeps + PBC/T/CV; larger vacuum droplets (evaporation suppressed 
 size; kpush=0.05 doesn't break n=30 — a size-dilution artifact, not robustness);
 Diels-Alder verified TS (2.32 Å, −394 cm⁻¹, barrier 6.7 kcal/mol).
 
-First MACE-OFF23 validation is done (`sweep/mace_validation/`): forces correlate
-with xTB at r≈0.99, relative energies ~2–3 meV/atom, and MACE's cost vs xTB falls
-2.5×→1.6×→1.0× over n=20→30→50 (linear MLIP overtakes O(N³) xTB by ~150 atoms).
+MACE-OFF23 validated statically (`sweep/mace_validation/`: forces r≈0.99, ~2–3
+meV/atom, cost crossover by ~n=50) **and in MD** (`sweep/mace_md/`: reproduces
+droplet O–O structure; real throughput ~37 ms/step float32, on par with xTB).
+**kpush scaling done** (`sweep/kpush_scaling/`: force ∝ kpush/N → scale kpush ∝ N).
+**CV scoping done** (`sweep/cv_design/`: 7 CVs → ~3 axes; recommend
+network-integrity + size + max-O–H set).
 
-Priorities:
-1. **MACE-OFF23 surrogate (main direction).** Validation done; next, **drive
-   MD/metadynamics with MACE via ASE/PLUMED** (not xTB's built-in RMSD bias) and
-   push the size ladder past n=50 to map the crossover. The **hard open question
-   is which collective variables to use** (coordination numbers, per-O O–H for
-   proton transfer, tetrahedral order, or a learned CV — TICA/VAMPnets).
-2. **kpush scaling rule** — test a per-molecule/atom-normalized kpush; the
-   scaling behaviour across system size is the interesting part.
+Next:
+1. **Learned / slow CVs.** The cv_design scan separates *systems*; to pick what to
+   **bias**, run **TICA/VAMP or a learned CV** on a single droplet trajectory to
+   find the slow within-droplet reorganization. (Tian's "hard one", now scoped.)
+2. **MACE-driven metadynamics** via ASE/PLUMED, biasing the chosen CV(s); then
+   toward the north-star (retraining MACE to DFT accuracy).
+3. Extend the MACE-vs-xTB size ladder past n=50 (n=100/200) to confirm the crossover.
 
 ## Working conventions
 
