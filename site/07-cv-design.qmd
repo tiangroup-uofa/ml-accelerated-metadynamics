@@ -1,0 +1,59 @@
+---
+title: "Study 07 — Collective-variable scoping"
+subtitle: "Which CVs to bias in MACE-driven metadynamics — a first pass"
+---
+
+Metadynamics needs collective variables to bias along. We compute a battery of
+seven candidate CVs on trajectories spanning the distinct states (stable
+droplet, fragmenting droplet, big droplet, drifting cluster, monomer
+dissociation) and ask which are informative, non-redundant, and capture the
+processes we care about.
+
+## What separates the states
+
+Between/within-state variance ratio (higher = more discriminating):
+
+| CV | separation | defined on |
+|----|:----------:|:----------:|
+| **coord_OO** (O–O coordination) | **50.9** | all |
+| **n_hbond_pm** (angular H-bonds/mol) | **12.6** | all |
+| asphericity | 4.9 | droplets |
+| q_tet (tetrahedral order) | 1.4 | droplets |
+| max_OO | 1.0 | all |
+| Rg | 1.0 | all |
+| max_OH | 0.8 | all |
+
+O–O coordination and the angular H-bond count separate the states best. `max_OH`
+scores low only because a single state dissociates — but it's the *only* CV that
+fires there, so it's an essential orthogonal chemical coordinate.
+
+## The 7 CVs collapse to ~3 directions
+
+Redundant families (|r| > 0.9): `Rg ≈ max_OO` (size); `coord_OO ≈ n_hbond_pm ≈
+−asphericity` (network integrity). PCA: **PC1 (43%) = network integrity**, **PC2
+(30%) = size + dissociation** — 73% in two components, and the states separate
+cleanly in that plane.
+
+![States in CV space: droplets cluster at high network integrity (left); the
+drifting cluster traces a path across as its network breaks; the dissociating
+monomer splits off along the O–H axis.](assets/cv_pca.png){width=560}
+
+![CV correlation — the redundancy structure (size family, network
+family).](assets/cv_correlation.png){width=440}
+
+## Recommended CV set (minimal, non-redundant)
+
+1. **Network integrity** — mean O–O coordination *or* angular H-bond count (pick one).
+2. **Size / spread** — `Rg` (or `max_OO`).
+3. **Chemistry** — `max_OH` + a **per-oxygen O–H coordination** for proton transfer.
+
+::: {.callout-important}
+## Caveat & next step
+This separates *different systems*, so some discriminating power reflects size,
+not slow dynamics *within* one droplet. For choosing what to **bias**, the sharper
+question — which CV captures the slow reorganization within a single droplet —
+needs a **time-lagged analysis (TICA / VAMP)** or a **learned CV** on one system's
+trajectory. That's the next step, on top of this physically-motivated shortlist.
+:::
+
+[Full findings — FINDINGS_cv_design.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/cv_design/FINDINGS_cv_design.md)

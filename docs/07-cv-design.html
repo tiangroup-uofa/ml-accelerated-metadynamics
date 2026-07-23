@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Study 05 — MACE-OFF23 surrogate – xTB Metadynamics of Water</title>
+<title>Study 07 — Collective-variable scoping – xTB Metadynamics of Water</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -112,7 +112,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Diels–Alder</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./05-mace.html" aria-current="page"> 
+    <a class="nav-link" href="./05-mace.html"> 
 <span class="menu-text">MACE-OFF23</span></a>
   </li>  
   <li class="nav-item">
@@ -120,7 +120,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">kpush scaling</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./07-cv-design.html"> 
+    <a class="nav-link active" href="./07-cv-design.html" aria-current="page"> 
 <span class="menu-text">CV design</span></a>
   </li>  
 </ul>
@@ -151,9 +151,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul class="collapse">
-  <li><a href="#static-forces-energies-track-closely" id="toc-static-forces-energies-track-closely" class="nav-link active" data-scroll-target="#static-forces-energies-track-closely">Static: forces &amp; energies track closely</a></li>
-  <li><a href="#dynamics-same-droplet-structure-in-md" id="toc-dynamics-same-droplet-structure-in-md" class="nav-link" data-scroll-target="#dynamics-same-droplet-structure-in-md">Dynamics: same droplet structure in MD</a></li>
-  <li><a href="#next" id="toc-next" class="nav-link" data-scroll-target="#next">Next</a></li>
+  <li><a href="#what-separates-the-states" id="toc-what-separates-the-states" class="nav-link active" data-scroll-target="#what-separates-the-states">What separates the states</a></li>
+  <li><a href="#the-7-cvs-collapse-to-3-directions" id="toc-the-7-cvs-collapse-to-3-directions" class="nav-link" data-scroll-target="#the-7-cvs-collapse-to-3-directions">The 7 CVs collapse to ~3 directions</a></li>
+  <li><a href="#recommended-cv-set-minimal-non-redundant" id="toc-recommended-cv-set-minimal-non-redundant" class="nav-link" data-scroll-target="#recommended-cv-set-minimal-non-redundant">Recommended CV set (minimal, non-redundant)</a></li>
   </ul>
 </nav>
     </div>
@@ -162,8 +162,8 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Study 05 — MACE-OFF23 surrogate</h1>
-<p class="subtitle lead">MACE-OFF23 (small) vs GFN2-xTB · droplets · off-the-shelf, no fine-tuning</p>
+<h1 class="title">Study 07 — Collective-variable scoping</h1>
+<p class="subtitle lead">Which CVs to bias in MACE-driven metadynamics — a first pass</p>
 </div>
 
 
@@ -180,125 +180,95 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>The main direction: can a machine-learned potential carry the workflow to larger systems? We compare <strong>MACE-OFF23</strong> (DFT-trained, ωB97M-D3BJ) against GFN2-xTB — first on static forces/energies, then in actual MD.</p>
-<section id="static-forces-energies-track-closely" class="level2">
-<h2 class="anchored" data-anchor-id="static-forces-energies-track-closely">Static: forces &amp; energies track closely</h2>
-<p>On the droplet trajectories, force components correlate at <strong>r ≈ 0.99</strong> and relative energies agree to <strong>~2–3 meV/atom</strong>. And the scaling is the prize: MACE is ~linear while xTB is ~O(N³), so MACE’s relative cost falls across the size ladder — by 150 atoms they are equal, and beyond that the MLIP wins.</p>
+<p>Metadynamics needs collective variables to bias along. We compute a battery of seven candidate CVs on trajectories spanning the distinct states (stable droplet, fragmenting droplet, big droplet, drifting cluster, monomer dissociation) and ask which are informative, non-redundant, and capture the processes we care about.</p>
+<section id="what-separates-the-states" class="level2">
+<h2 class="anchored" data-anchor-id="what-separates-the-states">What separates the states</h2>
+<p>Between/within-state variance ratio (higher = more discriminating):</p>
 <table class="table">
 <thead>
 <tr class="header">
-<th>n</th>
-<th style="text-align: center;">atoms</th>
-<th style="text-align: center;">force r</th>
-<th style="text-align: center;">force RMSE</th>
-<th style="text-align: center;">rel-E</th>
-<th style="text-align: center;">MACE cost vs xTB</th>
+<th>CV</th>
+<th style="text-align: center;">separation</th>
+<th style="text-align: center;">defined on</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>20</td>
-<td style="text-align: center;">60</td>
-<td style="text-align: center;">0.992</td>
-<td style="text-align: center;">0.185 eV/Å</td>
-<td style="text-align: center;">3.3 meV/atom</td>
-<td style="text-align: center;">2.5×</td>
+<td><strong>coord_OO</strong> (O–O coordination)</td>
+<td style="text-align: center;"><strong>50.9</strong></td>
+<td style="text-align: center;">all</td>
 </tr>
 <tr class="even">
-<td>30</td>
-<td style="text-align: center;">90</td>
-<td style="text-align: center;">0.992</td>
-<td style="text-align: center;">0.190 eV/Å</td>
-<td style="text-align: center;">2.5 meV/atom</td>
-<td style="text-align: center;">1.6×</td>
+<td><strong>n_hbond_pm</strong> (angular H-bonds/mol)</td>
+<td style="text-align: center;"><strong>12.6</strong></td>
+<td style="text-align: center;">all</td>
 </tr>
 <tr class="odd">
-<td>50</td>
-<td style="text-align: center;">150</td>
-<td style="text-align: center;">0.991</td>
-<td style="text-align: center;">0.198 eV/Å</td>
-<td style="text-align: center;">2.3 meV/atom</td>
-<td style="text-align: center;"><strong>1.0×</strong></td>
+<td>asphericity</td>
+<td style="text-align: center;">4.9</td>
+<td style="text-align: center;">droplets</td>
+</tr>
+<tr class="even">
+<td>q_tet (tetrahedral order)</td>
+<td style="text-align: center;">1.4</td>
+<td style="text-align: center;">droplets</td>
+</tr>
+<tr class="odd">
+<td>max_OO</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">all</td>
+</tr>
+<tr class="even">
+<td>Rg</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">all</td>
+</tr>
+<tr class="odd">
+<td>max_OH</td>
+<td style="text-align: center;">0.8</td>
+<td style="text-align: center;">all</td>
 </tr>
 </tbody>
 </table>
+<p>O–O coordination and the angular H-bond count separate the states best. <code>max_OH</code> scores low only because a single state dissociates — but it’s the <em>only</em> CV that fires there, so it’s an essential orthogonal chemical coordinate.</p>
+</section>
+<section id="the-7-cvs-collapse-to-3-directions" class="level2">
+<h2 class="anchored" data-anchor-id="the-7-cvs-collapse-to-3-directions">The 7 CVs collapse to ~3 directions</h2>
+<p>Redundant families (|r| &gt; 0.9): <code>Rg ≈ max_OO</code> (size); <code>coord_OO ≈ n_hbond_pm ≈ −asphericity</code> (network integrity). PCA: <strong>PC1 (43%) = network integrity</strong>, <strong>PC2 (30%) = size + dissociation</strong> — 73% in two components, and the states separate cleanly in that plane.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="assets/force_parity.png" class="img-fluid figure-img" width="420"></p>
-<figcaption>Force parity (left) — tight along the diagonal, r ≈ 0.99. Relative energies (right) track frame-by-frame.</figcaption>
+<p><img src="assets/cv_pca.png" class="img-fluid figure-img" width="560"></p>
+<figcaption>States in CV space: droplets cluster at high network integrity (left); the drifting cluster traces a path across as its network breaks; the dissociating monomer splits off along the O–H axis.</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/cv_correlation.png" class="img-fluid figure-img" width="440"></p>
+<figcaption>CV correlation — the redundancy structure (size family, network family).</figcaption>
 </figure>
 </div>
 </section>
-<section id="dynamics-same-droplet-structure-in-md" class="level2">
-<h2 class="anchored" data-anchor-id="dynamics-same-droplet-structure-in-md">Dynamics: same droplet structure in MD</h2>
-<p>Running unbiased NVT MD with each potential, MACE-OFF23 reproduces the droplet <strong>structure</strong>, not just static forces — the go-ahead for MACE-driven sampling.</p>
-<table class="table">
-<thead>
-<tr class="header">
-<th></th>
-<th style="text-align: center;">O–O 1st peak</th>
-<th style="text-align: center;">R_g</th>
-<th style="text-align: center;">mean coordination</th>
-<th style="text-align: center;">condensed?</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>GFN2-xTB</td>
-<td style="text-align: center;">2.83 Å</td>
-<td style="text-align: center;">3.78 ± 0.07 Å</td>
-<td style="text-align: center;">4.01</td>
-<td style="text-align: center;">yes</td>
-</tr>
-<tr class="even">
-<td>MACE-OFF23</td>
-<td style="text-align: center;">2.83 Å</td>
-<td style="text-align: center;">3.85 ± 0.05 Å</td>
-<td style="text-align: center;">3.72</td>
-<td style="text-align: center;">yes</td>
-</tr>
-</tbody>
-</table>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="assets/md_structure_n20.png" class="img-fluid figure-img" width="680"></p>
-<figcaption>O–O pair distribution (left) is essentially identical — same H-bond peak at 2.83 Å; droplet-size distributions (right) overlap.</figcaption>
-</figure>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
+<section id="recommended-cv-set-minimal-non-redundant" class="level2">
+<h2 class="anchored" data-anchor-id="recommended-cv-set-minimal-non-redundant">Recommended CV set (minimal, non-redundant)</h2>
+<ol type="1">
+<li><strong>Network integrity</strong> — mean O–O coordination <em>or</em> angular H-bond count (pick one).</li>
+<li><strong>Size / spread</strong> — <code>Rg</code> (or <code>max_OO</code>).</li>
+<li><strong>Chemistry</strong> — <code>max_OH</code> + a <strong>per-oxygen O–H coordination</strong> for proton transfer.</li>
+</ol>
+<div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Off-the-shelf, no fine-tuning
+<span class="screen-reader-only">Important</span>Caveat &amp; next step
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>MACE-OFF23 is DFT-trained, <em>not</em> fit to xTB — so this is two independent methods agreeing, and where they differ MACE is presumably the more accurate one. Fine-tuning would be the lever only if we later want it matched to a specific reference.</p>
+<p>This separates <em>different systems</em>, so some discriminating power reflects size, not slow dynamics <em>within</em> one droplet. For choosing what to <strong>bias</strong>, the sharper question — which CV captures the slow reorganization within a single droplet — needs a <strong>time-lagged analysis (TICA / VAMP)</strong> or a <strong>learned CV</strong> on one system’s trajectory. That’s the next step, on top of this physically-motivated shortlist.</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Throughput — resolved
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>An early MD run looked slow (~2817 ms/step) but that was CPU contention (it ran during large downloads), not a real cost. Clean benchmark: <strong>~37 ms/step</strong> (float32, 4 threads) — <strong>on par with xTB</strong> at n=20, and <em>faster</em> than O(N³) xTB beyond ~n=50. MACE MD / metadynamics is viable; no config blocker remains.</p>
-</div>
-</div>
-</section>
-<section id="next" class="level2">
-<h2 class="anchored" data-anchor-id="next">Next</h2>
-<ul>
-<li>Extend the size ladder past n=50 (n=100, 200) to confirm MACE overtakes xTB.</li>
-<li><strong>MACE-driven metadynamics</strong> (ASE/PLUMED) — which unlocks biasing along proper collective variables. <strong>Which CV</strong> is the open question: coordination numbers, per-O O–H (proton transfer), tetrahedral order, or a learned CV.</li>
-</ul>
-<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/mace_validation/FINDINGS_mace.md">Static findings — FINDINGS_mace.md →</a> · <a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/mace_md/FINDINGS_mace_md.md">MD findings — FINDINGS_mace_md.md →</a></p>
+<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/cv_design/FINDINGS_cv_design.md">Full findings — FINDINGS_cv_design.md →</a></p>
 
 
 </section>

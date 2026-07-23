@@ -26,6 +26,8 @@ website:
         href: 05-mace.qmd
       - text: "kpush scaling"
         href: 06-kpush.qmd
+      - text: "CV design"
+        href: 07-cv-design.qmd
     right:
       - icon: github
         text: Repo

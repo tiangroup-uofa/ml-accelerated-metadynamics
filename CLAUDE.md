@@ -35,6 +35,8 @@ enhanced sampling**. Read `README.md` first, then the `FINDINGS_*.md` files.
   in MD (`FINDINGS_mace.md`, `FINDINGS_mace_md.md`).
 - `sweep/kpush_scaling/` — per-atom kpush normalization: bias force ∝ kpush/N, so
   scale kpush ∝ N (`FINDINGS_kpush_scaling.md`).
+- `sweep/cv_design/` — CV scoping for metadynamics: 7 CVs collapse to ~3 axes;
+  recommend network-integrity + size + O–H set (`FINDINGS_cv_design.md`).
 
 Each study directory has build/run/analyze/plot scripts and its own write-up.
 
