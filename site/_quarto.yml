@@ -24,6 +24,8 @@ website:
         href: 04-diels-alder.qmd
       - text: "MACE-OFF23"
         href: 05-mace.qmd
+      - text: "kpush scaling"
+        href: 06-kpush.qmd
     right:
       - icon: github
         text: Repo

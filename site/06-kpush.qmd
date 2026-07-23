@@ -1,0 +1,42 @@
+---
+title: "Study 06 — kpush should scale with size"
+subtitle: "Why the same bias is gentler on a bigger cluster — the per-atom normalization"
+---
+
+## The law
+
+xTB's bias is a Gaussian in **root-mean-square** deviation,
+$V = k_\text{push}\,e^{-\alpha\,\mathrm{RMSD}^2}$ with
+$\mathrm{RMSD}^2 = \frac1N\sum_i|x_i-x_i^\text{ref}|^2$. The bias force on an atom,
+
+$$F_i = k_\text{push}\,\alpha\,e^{-\alpha\,\mathrm{RMSD}^2}\,\frac{2}{N}\,(x_i-x_i^\text{ref}),$$
+
+carries an explicit **1/N** — the same `kpush` pushes each atom $1/N$ as hard in a
+bigger system. To keep the per-atom bias effect constant, **`kpush` must scale
+∝ N** (per-atom; per-molecule is the same with $N=3\times\#\text{waters}$).
+
+![Fixed `kpush` follows the 1/N line (diluted); N-scaled `kpush` holds the
+per-atom force constant across n=3→96 atoms.](assets/kpush_scaling_law.png){width=520}
+
+## Empirical confirmation
+
+The trimer first fragments at `kpush = 0.008`, so the N-scaling predicts the
+30-water droplet reaches the same per-atom bias at
+`kpush ≈ 0.008 × 90/9 = 0.08`. The droplet is intact up to 0.05 — and at ~0.08 it
+starts shedding a molecule, right on the prediction.
+
+![Intact through kpush 0.05; onset of fragmentation at the N-scaled
+~0.08.](assets/kpush_confirmation_n30.png){width=520}
+
+::: {.callout-note}
+## Caveat
+The onset is soft because size changes two things at once: it dilutes the
+per-atom force (1/N — corrected here) **and** raises cohesion (more H-bonds per
+interior molecule). The `kpush ∝ N` law fixes the first exactly; the second means
+a big droplet still resists a bit more than bare force-scaling predicts.
+:::
+
+**Practical rule:** set `kpush` per atom, `kpush_eff = kpush_ref · N / N_ref`, so
+bias strength is comparable across cluster sizes.
+
+[Full findings — FINDINGS_kpush_scaling.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/kpush_scaling/FINDINGS_kpush_scaling.md)

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Study 03 — Large vacuum droplets – xTB Metadynamics of Water</title>
+<title>Study 06 — kpush should scale with size – xTB Metadynamics of Water</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -71,6 +71,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -104,7 +133,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">PBC &amp; temperature</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./03-droplets.html" aria-current="page"> 
+    <a class="nav-link" href="./03-droplets.html"> 
 <span class="menu-text">Droplets</span></a>
   </li>  
   <li class="nav-item">
@@ -116,7 +145,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">MACE-OFF23</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./06-kpush.html"> 
+    <a class="nav-link active" href="./06-kpush.html" aria-current="page"> 
 <span class="menu-text">kpush scaling</span></a>
   </li>  
 </ul>
@@ -147,8 +176,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul class="collapse">
-  <li><a href="#size-suppresses-evaporation" id="toc-size-suppresses-evaporation" class="nav-link active" data-scroll-target="#size-suppresses-evaporation">Size suppresses evaporation</a></li>
-  <li><a href="#and-reveals-a-bias-scaling-artifact" id="toc-and-reveals-a-bias-scaling-artifact" class="nav-link" data-scroll-target="#and-reveals-a-bias-scaling-artifact">…and reveals a bias-scaling artifact</a></li>
+  <li><a href="#the-law" id="toc-the-law" class="nav-link active" data-scroll-target="#the-law">The law</a></li>
+  <li><a href="#empirical-confirmation" id="toc-empirical-confirmation" class="nav-link" data-scroll-target="#empirical-confirmation">Empirical confirmation</a></li>
   </ul>
 </nav>
     </div>
@@ -157,8 +186,8 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Study 03 — Large vacuum droplets</h1>
-<p class="subtitle lead">(H₂O)₂₀ / ₃₀ / ₅₀ · GFN2 vacuum · 3 ps</p>
+<h1 class="title">Study 06 — kpush should scale with size</h1>
+<p class="subtitle lead">Why the same bias is gentler on a bigger cluster — the per-atom normalization</p>
 </div>
 
 
@@ -175,67 +204,42 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="size-suppresses-evaporation" class="level2">
-<h2 class="anchored" data-anchor-id="size-suppresses-evaporation">Size suppresses evaporation</h2>
-<p>Scaling the free clusters up, every size holds together as a single droplet at low bias: stable radius of gyration, zero molecules evaporated, all O–H intact — the <strong>opposite</strong> of the tiny n=2–4 clusters, and with GFN2 retained (no periodic box needed).</p>
-<table class="table">
-<thead>
-<tr class="header">
-<th>n</th>
-<th>R_g start → end</th>
-<th style="text-align: center;">fraction in droplet</th>
-<th style="text-align: center;">evaporated</th>
-<th style="text-align: center;">O–H</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>20</td>
-<td>3.61 → 3.96 Å</td>
-<td style="text-align: center;">1.00</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">intact</td>
-</tr>
-<tr class="even">
-<td>30</td>
-<td>4.45 → 4.18 Å</td>
-<td style="text-align: center;">1.00</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">intact</td>
-</tr>
-<tr class="odd">
-<td>50</td>
-<td>4.99 → 4.95 Å</td>
-<td style="text-align: center;">1.00</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">intact</td>
-</tr>
-</tbody>
-</table>
+<section id="the-law" class="level2">
+<h2 class="anchored" data-anchor-id="the-law">The law</h2>
+<p>xTB’s bias is a Gaussian in <strong>root-mean-square</strong> deviation, <span class="math inline">\(V = k_\text{push}\,e^{-\alpha\,\mathrm{RMSD}^2}\)</span> with <span class="math inline">\(\mathrm{RMSD}^2 = \frac1N\sum_i|x_i-x_i^\text{ref}|^2\)</span>. The bias force on an atom,</p>
+<p><span class="math display">\[F_i = k_\text{push}\,\alpha\,e^{-\alpha\,\mathrm{RMSD}^2}\,\frac{2}{N}\,(x_i-x_i^\text{ref}),\]</span></p>
+<p>carries an explicit <strong>1/N</strong> — the same <code>kpush</code> pushes each atom <span class="math inline">\(1/N\)</span> as hard in a bigger system. To keep the per-atom bias effect constant, <strong><code>kpush</code> must scale ∝ N</strong> (per-atom; per-molecule is the same with <span class="math inline">\(N=3\times\#\text{waters}\)</span>).</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="assets/droplet_stability.png" class="img-fluid figure-img" width="680"></p>
-<figcaption>Radius of gyration stays flat and no molecule evaporates, all three sizes (low bias).</figcaption>
+<p><img src="assets/kpush_scaling_law.png" class="img-fluid figure-img" width="520"></p>
+<figcaption>Fixed <code>kpush</code> follows the 1/N line (diluted); N-scaled <code>kpush</code> holds the per-atom force constant across n=3→96 atoms.</figcaption>
 </figure>
 </div>
 </section>
-<section id="and-reveals-a-bias-scaling-artifact" class="level2">
-<h2 class="anchored" data-anchor-id="and-reveals-a-bias-scaling-artifact">…and reveals a bias-scaling artifact</h2>
-<p>Raising <code>kpush</code> from 0.008 → 0.05 at n = 30 barely perturbs the droplet. That is <strong>not</strong> intrinsic robustness: the bias is a function of <strong>global</strong> RMSD spread over all degrees of freedom, so the same nominal <code>kpush</code> is far gentler on a 90-atom droplet than on a dimer.</p>
-<div class="callout callout-style-default callout-important callout-titled">
+<section id="empirical-confirmation" class="level2">
+<h2 class="anchored" data-anchor-id="empirical-confirmation">Empirical confirmation</h2>
+<p>The trimer first fragments at <code>kpush = 0.008</code>, so the N-scaling predicts the 30-water droplet reaches the same per-atom bias at <code>kpush ≈ 0.008 × 90/9 = 0.08</code>. The droplet is intact up to 0.05 — and at ~0.08 it starts shedding a molecule, right on the prediction.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/kpush_confirmation_n30.png" class="img-fluid figure-img" width="520"></p>
+<figcaption>Intact through kpush 0.05; onset of fragmentation at the N-scaled ~0.08.</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Implication
+<span class="screen-reader-only">Note</span>Caveat
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>A single <code>kpush</code> number does not transfer across system sizes. This is the empirical case for a <strong>size-normalized</strong> (per-molecule / per-atom) bias.</p>
+<p>The onset is soft because size changes two things at once: it dilutes the per-atom force (1/N — corrected here) <strong>and</strong> raises cohesion (more H-bonds per interior molecule). The <code>kpush ∝ N</code> law fixes the first exactly; the second means a big droplet still resists a bit more than bare force-scaling predicts.</p>
 </div>
 </div>
-<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/large/FINDINGS_large.md">Full findings — FINDINGS_large.md →</a></p>
+<p><strong>Practical rule:</strong> set <code>kpush</code> per atom, <code>kpush_eff = kpush_ref · N / N_ref</code>, so bias strength is comparable across cluster sizes.</p>
+<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/kpush_scaling/FINDINGS_kpush_scaling.md">Full findings — FINDINGS_kpush_scaling.md →</a></p>
 
 
 </section>

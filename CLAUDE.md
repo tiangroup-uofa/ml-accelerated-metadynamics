@@ -31,8 +31,10 @@ enhanced sampling**. Read `README.md` first, then the `FINDINGS_*.md` files.
 - `sweep/large/` — vacuum GFN2 droplets n=20/30/50 (`FINDINGS_large.md`).
 - `sweep/diels_alder/` — butadiene+ethylene→cyclohexene reaction path + TS
   (`FINDINGS_diels_alder.md`).
-- `sweep/mace_validation/` — MACE-OFF23 vs GFN2-xTB on the droplets
-  (`FINDINGS_mace.md`).
+- `sweep/mace_validation/` + `sweep/mace_md/` — MACE-OFF23 vs GFN2-xTB, static and
+  in MD (`FINDINGS_mace.md`, `FINDINGS_mace_md.md`).
+- `sweep/kpush_scaling/` — per-atom kpush normalization: bias force ∝ kpush/N, so
+  scale kpush ∝ N (`FINDINGS_kpush_scaling.md`).
 
 Each study directory has build/run/analyze/plot scripts and its own write-up.
 
@@ -54,6 +56,16 @@ Each study directory has build/run/analyze/plot scripts and its own write-up.
 - **Don't regex frequencies from `xtb --hess` stdout** — it matches the
   `imag. cutoff -20.0 cm` thermostat *parameter*. Read the `vibspectrum` file.
 - Prefer `xtb.trj` (dense) over `scoord.*` (sparse ~1 ps) for fast events.
+
+## North-star goal (Tian)
+
+The endgame: **any DFT / tight-binding metadynamics → MACE surrogate *with
+retraining* → a final trajectory at the initial DFT-level accuracy.** Off-the-shelf
+MACE-OFF23 agreeing with xTB is only step one; the real target is *retraining*
+MACE toward reference (DFT/CCSD) accuracy — including systems where MACE-OFF23's
+DFT training data doesn't exist. Many intermediate steps; tackle step-by-step.
+(Tian also suggested an ELN structure of dated per-experiment pages — good
+practice, but not a priority right now.)
 
 ## Status & next directions (agreed with the group)
 
