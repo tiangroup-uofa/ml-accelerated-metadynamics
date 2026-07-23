@@ -1,0 +1,25 @@
+---
+title: "Study 01 — Bias × size"
+subtitle: "Gas-phase (H₂O)₁–₄ · GFN2 · 20 ps · kpush = 0.008 / 0.02 / 0.05"
+---
+
+## The bias breaks the weakest bond
+
+Sweeping bias strength `kpush` against cluster size shows the RMSD bias
+preferentially rips whatever bond is weakest. A lone water resists and only
+**dissociates** at high bias — it has to break a covalent O–H (~5 eV).
+Hydrogen-bonded clusters come apart even at the **lowest** bias, because the
+intermolecular H-bond (~0.2 eV) snaps first. The tetramer is the most robust,
+held by more H-bonds.
+
+![Fraction of the 20 ps run each cluster stayed intact (one fragment, all O–H
+present). Reading across a row, more bias breaks clusters sooner.](assets/intact_heatmap.png){width=560}
+
+::: {.callout-tip}
+## Takeaway
+What breaks depends on what holds the system together: a global-RMSD bias just
+maximizes structural novelty, and the cheapest way to do that is to snap the
+weakest bond — which for clusters means evaporation, not rearrangement.
+:::
+
+[Full findings — FINDINGS.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/FINDINGS.md)

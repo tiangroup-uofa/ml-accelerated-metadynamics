@@ -1,0 +1,42 @@
+project:
+  type: website
+  output-dir: ../docs
+  render:
+    - "*.qmd"
+
+website:
+  title: "xTB Metadynamics of Water"
+  description: "Enhanced-sampling MD of water clusters with GFN2-xTB and MACE-OFF23."
+  reader-mode: true
+  navbar:
+    background: light
+    search: true
+    left:
+      - text: "Overview"
+        href: index.qmd
+      - text: "Bias × size"
+        href: 01-sweep.qmd
+      - text: "PBC & temperature"
+        href: 02-pbc.qmd
+      - text: "Droplets"
+        href: 03-droplets.qmd
+      - text: "Diels–Alder"
+        href: 04-diels-alder.qmd
+      - text: "MACE-OFF23"
+        href: 05-mace.qmd
+    right:
+      - icon: github
+        text: Repo
+        href: https://github.com/tiangroup-uofa/xtb_metadynamics
+  page-footer:
+    center: "xTB metadynamics of water · Tian group · [github](https://github.com/tiangroup-uofa/xtb_metadynamics)"
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 2
+    fig-align: center
+    tbl-cap-location: bottom
+    grid:
+      body-width: 860px

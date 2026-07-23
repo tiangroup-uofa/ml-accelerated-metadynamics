@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Metadynamics of water: from clusters to a surrogate – xTB Metadynamics of Water</title>
+<title>Study 01 — Bias × size – xTB Metadynamics of Water</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -92,11 +92,11 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Overview</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./01-sweep.html"> 
+    <a class="nav-link active" href="./01-sweep.html" aria-current="page"> 
 <span class="menu-text">Bias × size</span></a>
   </li>  
   <li class="nav-item">
@@ -143,8 +143,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul class="collapse">
-  <li><a href="#results-at-a-glance" id="toc-results-at-a-glance" class="nav-link active" data-scroll-target="#results-at-a-glance">Results at a glance</a></li>
-  <li><a href="#methods-in-one-paragraph" id="toc-methods-in-one-paragraph" class="nav-link" data-scroll-target="#methods-in-one-paragraph">Methods in one paragraph</a></li>
+  <li><a href="#the-bias-breaks-the-weakest-bond" id="toc-the-bias-breaks-the-weakest-bond" class="nav-link active" data-scroll-target="#the-bias-breaks-the-weakest-bond">The bias breaks the weakest bond</a></li>
   </ul>
 </nav>
     </div>
@@ -153,8 +152,8 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Metadynamics of water: from clusters to a surrogate</h1>
-<p class="subtitle lead">Enhanced-sampling MD of water clusters with GFN2-xTB, and a MACE-OFF23 machine-learned potential as the route to accelerated sampling.</p>
+<h1 class="title">Study 01 — Bias × size</h1>
+<p class="subtitle lead">Gas-phase (H₂O)₁–₄ · GFN2 · 20 ps · kpush = 0.008 / 0.02 / 0.05</p>
 </div>
 
 
@@ -171,62 +170,29 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This is a running results notebook for the project. We validate <strong>GFN2-xTB</strong> RMSD-metadynamics workflows for water — bias and size sweeps, periodic and free droplets, and a Diels–Alder reaction — then benchmark a <strong>MACE-OFF23</strong> foundation potential against xTB, with the longer-term aim of accelerating enhanced sampling.</p>
-<div class="callout callout-style-default callout-note callout-titled">
+<section id="the-bias-breaks-the-weakest-bond" class="level2">
+<h2 class="anchored" data-anchor-id="the-bias-breaks-the-weakest-bond">The bias breaks the weakest bond</h2>
+<p>Sweeping bias strength <code>kpush</code> against cluster size shows the RMSD bias preferentially rips whatever bond is weakest. A lone water resists and only <strong>dissociates</strong> at high bias — it has to break a covalent O–H (~5 eV). Hydrogen-bonded clusters come apart even at the <strong>lowest</strong> bias, because the intermolecular H-bond (~0.2 eV) snaps first. The tetramer is the most robust, held by more H-bonds.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/intact_heatmap.png" class="img-fluid figure-img" width="560"></p>
+<figcaption>Fraction of the 20 ps run each cluster stayed intact (one fragment, all O–H present). Reading across a row, more bias breaks clusters sooner.</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>What the RMSD bias is
+<span class="screen-reader-only">Tip</span>Takeaway
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>xTB biases along <strong>Cartesian RMSD</strong> to previously visited structures — not along any bond or angle. Every CV computed in analysis is a <em>post-hoc descriptor</em>, and <code>Epot</code> vs a CV is a <strong>sampled potential-energy landscape from a biased run</strong>, not a free-energy surface.</p>
+<p>What breaks depends on what holds the system together: a global-RMSD bias just maximizes structural novelty, and the cheapest way to do that is to snap the weakest bond — which for clusters means evaporation, not rearrangement.</p>
 </div>
 </div>
-<section id="results-at-a-glance" class="level2">
-<h2 class="anchored" data-anchor-id="results-at-a-glance">Results at a glance</h2>
-<table class="table">
-<thead>
-<tr class="header">
-<th>#</th>
-<th>Study</th>
-<th>Headline result</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>01</td>
-<td><a href="./01-sweep.html">Bias × size</a></td>
-<td>The bias breaks the <strong>weakest</strong> bond — H-bond for clusters, covalent O–H only for a lone molecule; small clusters evaporate.</td>
-</tr>
-<tr class="even">
-<td>02</td>
-<td><a href="./02-pbc.html">PBC &amp; temperature</a></td>
-<td>Periodicity <strong>confines</strong> the system (removes evaporation); a large O–O gap is <em>drift</em>, not dissociation.</td>
-</tr>
-<tr class="odd">
-<td>03</td>
-<td><a href="./03-droplets.html">Droplets</a></td>
-<td><strong>Size suppresses evaporation</strong> — free n=20–50 droplets stay intact; raising <code>kpush</code> barely perturbs them (a bias-scaling artifact).</td>
-</tr>
-<tr class="even">
-<td>04</td>
-<td><a href="./04-diels-alder.html">Diels–Alder</a></td>
-<td>A real reaction driven and verified: concerted TS, <strong>6.7 kcal/mol</strong> barrier, −394 cm⁻¹ imaginary mode.</td>
-</tr>
-<tr class="odd">
-<td>05</td>
-<td><a href="./05-mace.html">MACE-OFF23</a></td>
-<td>MACE-OFF23 tracks xTB forces at <strong>r ≈ 0.99</strong>, reproduces droplet MD structure, and scales better (crossover by n≈50).</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="methods-in-one-paragraph" class="level2">
-<h2 class="anchored" data-anchor-id="methods-in-one-paragraph">Methods in one paragraph</h2>
-<p>Gas-phase and periodic <strong>GFN2/GFN1-xTB</strong> metadynamics (built-in RMSD bias), NVT, 0.5 fs timestep; analysis with ASE / NumPy / pandas. Reactions via <code>xtb --path</code> + relaxed scan + Sella saddle optimization. Surrogate benchmarking with <strong>MACE-OFF23 (small)</strong> as an ASE calculator. All code, data and figures are in the <a href="https://github.com/tiangroup-uofa/xtb_metadynamics">repository</a>; each study page links to its detailed <code>FINDINGS</code> document.</p>
+<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/FINDINGS.md">Full findings — FINDINGS.md →</a></p>
 
 
 </section>

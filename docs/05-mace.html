@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Metadynamics of water: from clusters to a surrogate – xTB Metadynamics of Water</title>
+<title>Study 05 — MACE-OFF23 surrogate – xTB Metadynamics of Water</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -92,7 +92,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Overview</span></a>
   </li>  
   <li class="nav-item">
@@ -112,7 +112,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Diels–Alder</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./05-mace.html"> 
+    <a class="nav-link active" href="./05-mace.html" aria-current="page"> 
 <span class="menu-text">MACE-OFF23</span></a>
   </li>  
 </ul>
@@ -143,8 +143,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul class="collapse">
-  <li><a href="#results-at-a-glance" id="toc-results-at-a-glance" class="nav-link active" data-scroll-target="#results-at-a-glance">Results at a glance</a></li>
-  <li><a href="#methods-in-one-paragraph" id="toc-methods-in-one-paragraph" class="nav-link" data-scroll-target="#methods-in-one-paragraph">Methods in one paragraph</a></li>
+  <li><a href="#static-forces-energies-track-closely" id="toc-static-forces-energies-track-closely" class="nav-link active" data-scroll-target="#static-forces-energies-track-closely">Static: forces &amp; energies track closely</a></li>
+  <li><a href="#dynamics-same-droplet-structure-in-md" id="toc-dynamics-same-droplet-structure-in-md" class="nav-link" data-scroll-target="#dynamics-same-droplet-structure-in-md">Dynamics: same droplet structure in MD</a></li>
+  <li><a href="#next" id="toc-next" class="nav-link" data-scroll-target="#next">Next</a></li>
   </ul>
 </nav>
     </div>
@@ -153,8 +154,8 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Metadynamics of water: from clusters to a surrogate</h1>
-<p class="subtitle lead">Enhanced-sampling MD of water clusters with GFN2-xTB, and a MACE-OFF23 machine-learned potential as the route to accelerated sampling.</p>
+<h1 class="title">Study 05 — MACE-OFF23 surrogate</h1>
+<p class="subtitle lead">MACE-OFF23 (small) vs GFN2-xTB · droplets · off-the-shelf, no fine-tuning</p>
 </div>
 
 
@@ -171,62 +172,125 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This is a running results notebook for the project. We validate <strong>GFN2-xTB</strong> RMSD-metadynamics workflows for water — bias and size sweeps, periodic and free droplets, and a Diels–Alder reaction — then benchmark a <strong>MACE-OFF23</strong> foundation potential against xTB, with the longer-term aim of accelerating enhanced sampling.</p>
+<p>The main direction: can a machine-learned potential carry the workflow to larger systems? We compare <strong>MACE-OFF23</strong> (DFT-trained, ωB97M-D3BJ) against GFN2-xTB — first on static forces/energies, then in actual MD.</p>
+<section id="static-forces-energies-track-closely" class="level2">
+<h2 class="anchored" data-anchor-id="static-forces-energies-track-closely">Static: forces &amp; energies track closely</h2>
+<p>On the droplet trajectories, force components correlate at <strong>r ≈ 0.99</strong> and relative energies agree to <strong>~2–3 meV/atom</strong>. And the scaling is the prize: MACE is ~linear while xTB is ~O(N³), so MACE’s relative cost falls across the size ladder — by 150 atoms they are equal, and beyond that the MLIP wins.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>n</th>
+<th style="text-align: center;">atoms</th>
+<th style="text-align: center;">force r</th>
+<th style="text-align: center;">force RMSE</th>
+<th style="text-align: center;">rel-E</th>
+<th style="text-align: center;">MACE cost vs xTB</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>20</td>
+<td style="text-align: center;">60</td>
+<td style="text-align: center;">0.992</td>
+<td style="text-align: center;">0.185 eV/Å</td>
+<td style="text-align: center;">3.3 meV/atom</td>
+<td style="text-align: center;">2.5×</td>
+</tr>
+<tr class="even">
+<td>30</td>
+<td style="text-align: center;">90</td>
+<td style="text-align: center;">0.992</td>
+<td style="text-align: center;">0.190 eV/Å</td>
+<td style="text-align: center;">2.5 meV/atom</td>
+<td style="text-align: center;">1.6×</td>
+</tr>
+<tr class="odd">
+<td>50</td>
+<td style="text-align: center;">150</td>
+<td style="text-align: center;">0.991</td>
+<td style="text-align: center;">0.198 eV/Å</td>
+<td style="text-align: center;">2.3 meV/atom</td>
+<td style="text-align: center;"><strong>1.0×</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/force_parity.png" class="img-fluid figure-img" width="420"></p>
+<figcaption>Force parity (left) — tight along the diagonal, r ≈ 0.99. Relative energies (right) track frame-by-frame.</figcaption>
+</figure>
+</div>
+</section>
+<section id="dynamics-same-droplet-structure-in-md" class="level2">
+<h2 class="anchored" data-anchor-id="dynamics-same-droplet-structure-in-md">Dynamics: same droplet structure in MD</h2>
+<p>Running unbiased NVT MD with each potential, MACE-OFF23 reproduces the droplet <strong>structure</strong>, not just static forces — the go-ahead for MACE-driven sampling.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: center;">O–O 1st peak</th>
+<th style="text-align: center;">R_g</th>
+<th style="text-align: center;">mean coordination</th>
+<th style="text-align: center;">condensed?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>GFN2-xTB</td>
+<td style="text-align: center;">2.83 Å</td>
+<td style="text-align: center;">3.78 ± 0.07 Å</td>
+<td style="text-align: center;">4.01</td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr class="even">
+<td>MACE-OFF23</td>
+<td style="text-align: center;">2.83 Å</td>
+<td style="text-align: center;">3.85 ± 0.05 Å</td>
+<td style="text-align: center;">3.72</td>
+<td style="text-align: center;">yes</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/md_structure_n20.png" class="img-fluid figure-img" width="680"></p>
+<figcaption>O–O pair distribution (left) is essentially identical — same H-bond peak at 2.83 Å; droplet-size distributions (right) overlap.</figcaption>
+</figure>
+</div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>What the RMSD bias is
+<span class="screen-reader-only">Note</span>Off-the-shelf, no fine-tuning
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>xTB biases along <strong>Cartesian RMSD</strong> to previously visited structures — not along any bond or angle. Every CV computed in analysis is a <em>post-hoc descriptor</em>, and <code>Epot</code> vs a CV is a <strong>sampled potential-energy landscape from a biased run</strong>, not a free-energy surface.</p>
+<p>MACE-OFF23 is DFT-trained, <em>not</em> fit to xTB — so this is two independent methods agreeing, and where they differ MACE is presumably the more accurate one. Fine-tuning would be the lever only if we later want it matched to a specific reference.</p>
 </div>
 </div>
-<section id="results-at-a-glance" class="level2">
-<h2 class="anchored" data-anchor-id="results-at-a-glance">Results at a glance</h2>
-<table class="table">
-<thead>
-<tr class="header">
-<th>#</th>
-<th>Study</th>
-<th>Headline result</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>01</td>
-<td><a href="./01-sweep.html">Bias × size</a></td>
-<td>The bias breaks the <strong>weakest</strong> bond — H-bond for clusters, covalent O–H only for a lone molecule; small clusters evaporate.</td>
-</tr>
-<tr class="even">
-<td>02</td>
-<td><a href="./02-pbc.html">PBC &amp; temperature</a></td>
-<td>Periodicity <strong>confines</strong> the system (removes evaporation); a large O–O gap is <em>drift</em>, not dissociation.</td>
-</tr>
-<tr class="odd">
-<td>03</td>
-<td><a href="./03-droplets.html">Droplets</a></td>
-<td><strong>Size suppresses evaporation</strong> — free n=20–50 droplets stay intact; raising <code>kpush</code> barely perturbs them (a bias-scaling artifact).</td>
-</tr>
-<tr class="even">
-<td>04</td>
-<td><a href="./04-diels-alder.html">Diels–Alder</a></td>
-<td>A real reaction driven and verified: concerted TS, <strong>6.7 kcal/mol</strong> barrier, −394 cm⁻¹ imaginary mode.</td>
-</tr>
-<tr class="odd">
-<td>05</td>
-<td><a href="./05-mace.html">MACE-OFF23</a></td>
-<td>MACE-OFF23 tracks xTB forces at <strong>r ≈ 0.99</strong>, reproduces droplet MD structure, and scales better (crossover by n≈50).</td>
-</tr>
-</tbody>
-</table>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Throughput needs a config pass
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The MACE MD ran anomalously slow here (~2817 ms/step over a ~4 h run) versus ~75 ms/step in the static benchmark — likely CPU float64 + torch threading. Before scaling MACE MD / metadynamics up: float32 inference, thread pinning, or GPU. Structure is validated; production speed is a separate task.</p>
+</div>
+</div>
 </section>
-<section id="methods-in-one-paragraph" class="level2">
-<h2 class="anchored" data-anchor-id="methods-in-one-paragraph">Methods in one paragraph</h2>
-<p>Gas-phase and periodic <strong>GFN2/GFN1-xTB</strong> metadynamics (built-in RMSD bias), NVT, 0.5 fs timestep; analysis with ASE / NumPy / pandas. Reactions via <code>xtb --path</code> + relaxed scan + Sella saddle optimization. Surrogate benchmarking with <strong>MACE-OFF23 (small)</strong> as an ASE calculator. All code, data and figures are in the <a href="https://github.com/tiangroup-uofa/xtb_metadynamics">repository</a>; each study page links to its detailed <code>FINDINGS</code> document.</p>
+<section id="next" class="level2">
+<h2 class="anchored" data-anchor-id="next">Next</h2>
+<ul>
+<li>Fix MACE MD throughput, extend the size ladder past n=50.</li>
+<li><strong>MACE-driven metadynamics</strong> (ASE/PLUMED) — which unlocks biasing along proper collective variables. <strong>Which CV</strong> is the open question: coordination numbers, per-O O–H (proton transfer), tetrahedral order, or a learned CV.</li>
+</ul>
+<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/mace_validation/FINDINGS_mace.md">Static findings — FINDINGS_mace.md →</a> · <a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/mace_md/FINDINGS_mace_md.md">MD findings — FINDINGS_mace_md.md →</a></p>
 
 
 </section>

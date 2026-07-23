@@ -1,0 +1,35 @@
+---
+title: "Study 03 — Large vacuum droplets"
+subtitle: "(H₂O)₂₀ / ₃₀ / ₅₀ · GFN2 vacuum · 3 ps"
+---
+
+## Size suppresses evaporation
+
+Scaling the free clusters up, every size holds together as a single droplet at
+low bias: stable radius of gyration, zero molecules evaporated, all O–H intact —
+the **opposite** of the tiny n=2–4 clusters, and with GFN2 retained (no periodic
+box needed).
+
+| n | R_g start → end | fraction in droplet | evaporated | O–H |
+|---|-----------------|:-------------------:|:----------:|:---:|
+| 20 | 3.61 → 3.96 Å | 1.00 | 0 | intact |
+| 30 | 4.45 → 4.18 Å | 1.00 | 0 | intact |
+| 50 | 4.99 → 4.95 Å | 1.00 | 0 | intact |
+
+![Radius of gyration stays flat and no molecule evaporates, all three sizes
+(low bias).](assets/droplet_stability.png){width=680}
+
+## …and reveals a bias-scaling artifact
+
+Raising `kpush` from 0.008 → 0.05 at n = 30 barely perturbs the droplet. That is
+**not** intrinsic robustness: the bias is a function of **global** RMSD spread
+over all degrees of freedom, so the same nominal `kpush` is far gentler on a
+90-atom droplet than on a dimer.
+
+::: {.callout-important}
+## Implication
+A single `kpush` number does not transfer across system sizes. This is the
+empirical case for a **size-normalized** (per-molecule / per-atom) bias.
+:::
+
+[Full findings — FINDINGS_large.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/large/FINDINGS_large.md)

@@ -1,0 +1,36 @@
+---
+title: "Metadynamics of water: from clusters to a surrogate"
+subtitle: "Enhanced-sampling MD of water clusters with GFN2-xTB, and a MACE-OFF23 machine-learned potential as the route to accelerated sampling."
+---
+
+This is a running results notebook for the project. We validate **GFN2-xTB**
+RMSD-metadynamics workflows for water — bias and size sweeps, periodic and free
+droplets, and a Diels–Alder reaction — then benchmark a **MACE-OFF23** foundation
+potential against xTB, with the longer-term aim of accelerating enhanced sampling.
+
+::: {.callout-note}
+## What the RMSD bias is
+xTB biases along **Cartesian RMSD** to previously visited structures — not along
+any bond or angle. Every CV computed in analysis is a *post-hoc descriptor*, and
+`Epot` vs a CV is a **sampled potential-energy landscape from a biased run**, not a
+free-energy surface.
+:::
+
+## Results at a glance
+
+| # | Study | Headline result |
+|---|-------|-----------------|
+| 01 | [Bias × size](01-sweep.qmd) | The bias breaks the **weakest** bond — H-bond for clusters, covalent O–H only for a lone molecule; small clusters evaporate. |
+| 02 | [PBC & temperature](02-pbc.qmd) | Periodicity **confines** the system (removes evaporation); a large O–O gap is *drift*, not dissociation. |
+| 03 | [Droplets](03-droplets.qmd) | **Size suppresses evaporation** — free n=20–50 droplets stay intact; raising `kpush` barely perturbs them (a bias-scaling artifact). |
+| 04 | [Diels–Alder](04-diels-alder.qmd) | A real reaction driven and verified: concerted TS, **6.7 kcal/mol** barrier, −394 cm⁻¹ imaginary mode. |
+| 05 | [MACE-OFF23](05-mace.qmd) | MACE-OFF23 tracks xTB forces at **r ≈ 0.99**, reproduces droplet MD structure, and scales better (crossover by n≈50). |
+
+## Methods in one paragraph
+
+Gas-phase and periodic **GFN2/GFN1-xTB** metadynamics (built-in RMSD bias),
+NVT, 0.5 fs timestep; analysis with ASE / NumPy / pandas. Reactions via
+`xtb --path` + relaxed scan + Sella saddle optimization. Surrogate benchmarking
+with **MACE-OFF23 (small)** as an ASE calculator. All code, data and figures are
+in the [repository](https://github.com/tiangroup-uofa/xtb_metadynamics); each
+study page links to its detailed `FINDINGS` document.

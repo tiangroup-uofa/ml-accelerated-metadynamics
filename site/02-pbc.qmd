@@ -1,0 +1,27 @@
+---
+title: "Study 02 — Periodicity & temperature"
+subtitle: "(H₂O)₈ periodic (GFN1) · trimer temperature sweep"
+---
+
+## Confinement fixes evaporation
+
+An 8-water periodic box stays condensed for the whole run (max O–O oscillates
+6–7 Å, never leaves the cell) while the gas-phase cluster separates past 100 Å.
+**Periodicity removes the evaporation channel** — though it forces GFN1, since
+GFN2 has no PBC multipoles in this build, so gas (GFN2) and periodic (GFN1)
+results are not at the same level of theory.
+
+![Periodic box stays bounded (≤ 7.7 Å); the gas-phase cluster
+evaporates past 100 Å.](assets/pbc_vs_gas.png){width=560}
+
+## A big O–O gap is drift, not dissociation
+
+A complementary CV pair resolves the ambiguity: checking the intramolecular O–H
+shows the clusters are **intact molecules drifting apart**, not dissociating —
+only the lone water truly breaks a bond. Higher temperature just makes intact
+molecules escape faster (max O–O 81 → 143 Å over 200 → 350 K).
+
+![Gas trimer: three intact waters drift to the corners, each keeping its two
+O–H bonds — drift, not dissociation.](assets/movie_n3_low.gif){width=360}
+
+[Full findings — FINDINGS_phase2.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/FINDINGS_phase2.md)

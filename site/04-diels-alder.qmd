@@ -1,0 +1,33 @@
+---
+title: "Study 04 — A real reaction"
+subtitle: "Butadiene + ethylene → cyclohexene · GFN2"
+---
+
+## Driving — and properly characterizing — a Diels–Alder
+
+Using the same RMSD machinery pulled *toward* a product (`xtb --path`), the
+reaction runs: both new C–C σ-bonds form. But the path's reported "barrier"
+(101 kcal/mol) is a **biased-path artifact** — the driver had to escalate the
+bias to connect. A relaxed concerted scan plus a Sella saddle optimization gives
+the real answer.
+
+| Quantity | Value |
+|----------|-------|
+| Forming C–C at TS | 2.32 Å (symmetric) |
+| Imaginary frequency | −394 cm⁻¹ (exactly one) |
+| **Concerted barrier** | **6.7 kcal/mol** (scan and Sella agree) |
+| Reaction energy | −57.6 kcal/mol |
+| ~~`--path` "barrier"~~ | ~~101 kcal/mol~~ — not physical |
+
+![Concerted reaction profile: barrier 6.7 kcal/mol at forming-bond distance
+2.32 Å, then downhill to the product.](assets/reaction_profile.png){width=560}
+
+::: {.callout-tip}
+## Ties back to the metadynamics theme
+Enhanced sampling *finds* that a transition is reachable, but a quantitative
+barrier needs a proper TS treatment — the RMSD bias alone is chemically blind.
+(Also: xtb has no TS optimizer — `--optts` is not a flag; use Sella. And read the
+`vibspectrum` file for frequencies, not the `--hess` stdout.)
+:::
+
+[Full findings — FINDINGS_diels_alder.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_diels_alder.md)

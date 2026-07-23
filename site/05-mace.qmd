@@ -1,0 +1,63 @@
+---
+title: "Study 05 — MACE-OFF23 surrogate"
+subtitle: "MACE-OFF23 (small) vs GFN2-xTB · droplets · off-the-shelf, no fine-tuning"
+---
+
+The main direction: can a machine-learned potential carry the workflow to larger
+systems? We compare **MACE-OFF23** (DFT-trained, ωB97M-D3BJ) against GFN2-xTB —
+first on static forces/energies, then in actual MD.
+
+## Static: forces & energies track closely
+
+On the droplet trajectories, force components correlate at **r ≈ 0.99** and
+relative energies agree to **~2–3 meV/atom**. And the scaling is the prize: MACE
+is ~linear while xTB is ~O(N³), so MACE's relative cost falls across the size
+ladder — by 150 atoms they are equal, and beyond that the MLIP wins.
+
+| n | atoms | force r | force RMSE | rel-E | MACE cost vs xTB |
+|---|:-----:|:-------:|:----------:|:-----:|:----------------:|
+| 20 | 60 | 0.992 | 0.185 eV/Å | 3.3 meV/atom | 2.5× |
+| 30 | 90 | 0.992 | 0.190 eV/Å | 2.5 meV/atom | 1.6× |
+| 50 | 150 | 0.991 | 0.198 eV/Å | 2.3 meV/atom | **1.0×** |
+
+![Force parity (left) — tight along the diagonal, r ≈ 0.99. Relative energies
+(right) track frame-by-frame.](assets/force_parity.png){width=420}
+
+## Dynamics: same droplet structure in MD
+
+Running unbiased NVT MD with each potential, MACE-OFF23 reproduces the droplet
+**structure**, not just static forces — the go-ahead for MACE-driven sampling.
+
+| | O–O 1st peak | R_g | mean coordination | condensed? |
+|---|:-----------:|:---:|:-----------------:|:----------:|
+| GFN2-xTB | 2.83 Å | 3.78 ± 0.07 Å | 4.01 | yes |
+| MACE-OFF23 | 2.83 Å | 3.85 ± 0.05 Å | 3.72 | yes |
+
+![O–O pair distribution (left) is essentially identical — same H-bond peak at
+2.83 Å; droplet-size distributions (right) overlap.](assets/md_structure_n20.png){width=680}
+
+::: {.callout-note}
+## Off-the-shelf, no fine-tuning
+MACE-OFF23 is DFT-trained, *not* fit to xTB — so this is two independent methods
+agreeing, and where they differ MACE is presumably the more accurate one.
+Fine-tuning would be the lever only if we later want it matched to a specific
+reference.
+:::
+
+::: {.callout-warning}
+## Throughput needs a config pass
+The MACE MD ran anomalously slow here (~2817 ms/step over a ~4 h run) versus
+~75 ms/step in the static benchmark — likely CPU float64 + torch threading.
+Before scaling MACE MD / metadynamics up: float32 inference, thread pinning, or
+GPU. Structure is validated; production speed is a separate task.
+:::
+
+## Next
+
+- Fix MACE MD throughput, extend the size ladder past n=50.
+- **MACE-driven metadynamics** (ASE/PLUMED) — which unlocks biasing along proper
+  collective variables. **Which CV** is the open question: coordination numbers,
+  per-O O–H (proton transfer), tetrahedral order, or a learned CV.
+
+[Static findings — FINDINGS_mace.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/mace_validation/FINDINGS_mace.md) ·
+[MD findings — FINDINGS_mace_md.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/mace_md/FINDINGS_mace_md.md)
