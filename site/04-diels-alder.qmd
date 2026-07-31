@@ -72,9 +72,21 @@ are **directionally almost identical (cosine 0.98)**, but the **magnitude gap
 ![Force RMSE and cosine similarity along the path — agreement is near-perfect in
 the reactant/product basins and degrades only in the TS region.](assets/neb_force_agreement.png){width=680}
 
-The barrier is numerically converged (35.9 ± 1.0 kcal/mol for ≥11 NEB images),
-and both potentials agree the reaction is a **concerted, synchronous** cycloaddition
-— they differ in energetics, not mechanism.
+Both potentials agree the reaction is a **concerted, synchronous** cycloaddition —
+the two forming bonds contract together (b1 ≈ b2 along the whole path), with only
+MACE's TS marginally asynchronous (2.03 / 1.98 Å). They differ in energetics, not
+mechanism.
+
+![Forming-bond evolution: b1 and b2 contract synchronously for both methods; MACE's
+TS carries a small 0.05 Å asynchrony.](assets/neb_bond_evolution.png){width=680}
+
+The MACE barrier is **numerically converged — 35.9 ± 1.0 kcal/mol for ≥11 NEB
+images** (9 images is too few to resolve the TS: the barrier collapses to ~18 and the
+TS drifts to 2.5 Å), and it is cross-validated by the independent relaxed scan (36.0)
+and the Sella-refined saddle (36.2).
+
+![Activation barrier vs NEB image count: converged for ≥11 images; 9 is
+under-resolved.](assets/neb_barrier_convergence.png){width=560}
 
 **Literature context:** experiment gives a barrier ≈ 27.5 and ΔH ≈ −40 kcal/mol.
 xTB (6.7 / −57.6) is qualitatively wrong on both; MACE-OFF23 (36 / −36…−41) nails
