@@ -30,7 +30,8 @@ enhanced sampling**. Read `README.md` first, then the `FINDINGS_*.md` files.
   (`FINDINGS_phase2.md`, `JULY3_PROGRESS_RECORD.md`).
 - `sweep/large/` — vacuum GFN2 droplets n=20/30/50 (`FINDINGS_large.md`).
 - `sweep/diels_alder/` — butadiene+ethylene→cyclohexene reaction path + TS
-  (`FINDINGS_diels_alder.md`).
+  (`FINDINGS_diels_alder.md`); `neb/` = MACE-OFF23 vs xTB reaction energetics via
+  ASE NEB + modular `CorrectedCalculator` force-correction hook (`FINDINGS_neb.md`).
 - `sweep/mace_validation/` + `sweep/mace_md/` — MACE-OFF23 vs GFN2-xTB, static and
   in MD (`FINDINGS_mace.md`, `FINDINGS_mace_md.md`).
 - `sweep/kpush_scaling/` — per-atom kpush normalization: bias force ∝ kpush/N, so
@@ -81,6 +82,10 @@ droplet O–O structure; real throughput ~37 ms/step float32, on par with xTB).
 **kpush scaling done** (`sweep/kpush_scaling/`: force ∝ kpush/N → scale kpush ∝ N).
 **CV scoping done** (`sweep/cv_design/`: 7 CVs → ~3 axes; recommend
 network-integrity + size + max-O–H set).
+**Diels–Alder NEB done** (`sweep/diels_alder/neb/`): MACE-OFF23 barrier 36 vs xTB
+6.7 kcal/mol, ΔE −36 vs −57.6, same TS ~2.0–2.3 Å (outcome 2 — same TS, different,
+more physical energetics). Modular `CorrectedCalculator` (global/affine/element/
+delta) ready to insert into the force pipeline — the next step is fitting one.
 
 Next:
 1. **Learned / slow CVs.** The cv_design scan separates *systems*; to pick what to

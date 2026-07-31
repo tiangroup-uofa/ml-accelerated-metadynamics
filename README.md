@@ -30,7 +30,7 @@ Diels-Alder TS search). The newer drivers read `$XTB_BIN`; the git-ignored
 | **Bias × size sweep** | [`sweep/`](sweep/) | How do `kpush` and cluster size (n=1–4) affect stability? | [`sweep/FINDINGS.md`](sweep/FINDINGS.md) |
 | **PBC, temperature, CVs** | [`sweep/`](sweep/) | Fixing evaporation with PBC; T dependence; dissociation vs drift | [`sweep/FINDINGS_phase2.md`](sweep/FINDINGS_phase2.md), [`sweep/JULY3_PROGRESS_RECORD.md`](sweep/JULY3_PROGRESS_RECORD.md) |
 | **Large vacuum droplets** | [`sweep/large/`](sweep/large/) | Do bigger free clusters (n=20/30/50) form droplets or evaporate? Does raising `kpush` break them? | [`sweep/large/FINDINGS_large.md`](sweep/large/FINDINGS_large.md) |
-| **Diels-Alder reaction** | [`sweep/diels_alder/`](sweep/diels_alder/) | Can we drive & characterize a real bond-forming reaction in this setup? | [`sweep/diels_alder/FINDINGS_diels_alder.md`](sweep/diels_alder/FINDINGS_diels_alder.md) |
+| **Diels-Alder reaction** | [`sweep/diels_alder/`](sweep/diels_alder/) | Can we drive a real reaction, and can MACE-OFF23 reproduce its energetics (NEB)? | [`FINDINGS_diels_alder.md`](sweep/diels_alder/FINDINGS_diels_alder.md), [`FINDINGS_neb.md`](sweep/diels_alder/FINDINGS_neb.md) |
 | **MACE-OFF23 surrogate** | [`sweep/mace_validation/`](sweep/mace_validation/) + [`sweep/mace_md/`](sweep/mace_md/) | How does the MACE-OFF23 MLIP compare to GFN2-xTB (forces, energies, MD structure, speed)? | [`FINDINGS_mace.md`](sweep/mace_validation/FINDINGS_mace.md), [`FINDINGS_mace_md.md`](sweep/mace_md/FINDINGS_mace_md.md) |
 | **kpush size-scaling** | [`sweep/kpush_scaling/`](sweep/kpush_scaling/) | Why is the same bias gentler on a bigger cluster, and how to normalize it? | [`sweep/kpush_scaling/FINDINGS_kpush_scaling.md`](sweep/kpush_scaling/FINDINGS_kpush_scaling.md) |
 | **CV design** | [`sweep/cv_design/`](sweep/cv_design/) | Which collective variables to bias in MACE metadynamics? | [`sweep/cv_design/FINDINGS_cv_design.md`](sweep/cv_design/FINDINGS_cv_design.md) |
@@ -58,6 +58,11 @@ Diels-Alder TS search). The newer drivers read `$XTB_BIN`; the git-ignored
   meV/atom; MACE's cost relative to xTB falls 2.5×→1.6×→1.0× over n=20→30→50, so
   the ~linear MLIP overtakes O(N³) xTB by ~150 atoms — the surrogate's payoff is
   the large-droplet regime.
+- **On the Diels-Alder, MACE gets the TS geometry but different (more physical)
+  energetics.** Both put the TS at ~2.0–2.3 Å, but MACE's barrier (36 kcal/mol)
+  and reaction energy (−36) are far from xTB's (6.7, −57.6) and closer to
+  DFT/experiment — off the shelf. The systematic offset motivates a lightweight
+  force correction (modular `CorrectedCalculator` in [`sweep/diels_alder/neb/`](sweep/diels_alder/neb/)).
 
 ---
 

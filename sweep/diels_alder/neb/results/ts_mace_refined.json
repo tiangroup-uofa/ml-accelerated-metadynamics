@@ -1,0 +1,7 @@
+{
+  "barrier_kcal": 36.2,
+  "ts_forming_A": [2.03, 1.98],
+  "imaginary_cm": [-740.1],
+  "is_first_order": true,
+  "note": "MACE-OFF23 DA TS is slightly asynchronous (synchronous geometry is a 2nd-order saddle); one imaginary mode = bond-forming coordinate. Barrier vs the pinned MACE reactant complex."
+}

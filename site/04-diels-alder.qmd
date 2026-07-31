@@ -31,3 +31,37 @@ barrier needs a proper TS treatment — the RMSD bias alone is chemically blind.
 :::
 
 [Full findings — FINDINGS_diels_alder.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_diels_alder.md)
+
+## Can MACE-OFF23 reproduce the reaction energetics? (NEB)
+
+Next question: does the MACE-OFF23 surrogate get reaction *energetics* right with
+**no fine-tuning**? xTB has a built-in path search; MACE doesn't, so we build the
+profile with a climbing-image **NEB** (ASE) and compare.
+
+| quantity | GFN2-xTB (built-in path) | MACE-OFF23 (NEB) |
+|----------|:------------------------:|:----------------:|
+| activation barrier | 6.7 kcal/mol | **36.2 kcal/mol** |
+| reaction energy | −57.6 kcal/mol | **−36.1 kcal/mol** |
+| TS forming C–C | 2.32 Å | 2.03 / 1.98 Å (slightly asynchronous) |
+
+![Minimum energy path and energetics: MACE-OFF23 (CI-NEB) vs GFN2-xTB (built-in
+path).](assets/neb_da_mace_vs_xtb.png){width=760}
+
+**Outcome (2): same TS location (~2.0–2.3 Å), very different energetics.** And it's
+the *physical* difference — experiment/DFT give a barrier ≈ 22–27 kcal/mol and
+ΔH ≈ −40. GFN2-xTB badly underestimates the barrier (6.7) and overbinds the
+product (−57.6); MACE-OFF23 (DFT-trained) is much closer on both, off the shelf.
+The refined MACE TS is a genuine first-order saddle (one imaginary mode,
+−740 cm⁻¹) and slightly **asynchronous** — MACE makes the perfectly synchronous
+geometry a second-order saddle.
+
+::: {.callout-note}
+## Toward a lightweight correction
+The two potentials are highly force-correlated (r≈0.99) yet systematically offset
+in energetics — the regime where a **post-training correction** (global / affine /
+element-specific / delta) could bridge them instead of full fine-tuning. The NEB
+code wraps every potential in a `CorrectedCalculator`, so such a correction drops
+into the force pipeline without touching the workflow.
+:::
+
+[NEB findings — FINDINGS_neb.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_neb.md)
