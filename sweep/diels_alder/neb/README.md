@@ -19,6 +19,11 @@ element-specific / delta) can be inserted later *without touching the NEB code*.
 | `plot_neb.py` | publication-quality comparison figure → `../figures/neb_da_mace_vs_xtb.png`. |
 | `verify_ts.py` | frequency check of the CI-NEB TS (ASE Vibrations). |
 | `refine_ts_mace.py` | refine the CI-NEB TS to a genuine first-order saddle (Sella) + barrier. |
+| `mace_scan.py` | MACE relaxed concerted scan (both-relaxed ΔE profile; cross-checks barrier). |
+| `gen_rattled.py` | rattled reaction-path geometries for a fair force comparison. |
+| `eval_path.py` | single-point E+F for one potential on a geometry set (one calc/process). |
+| `analyze_neb.py` | benchmark deep-dive: ΔE profile, force RMSE/cosine, bond evolution. |
+| `converge_neb.py` | barrier vs NEB image count (numerical convergence). |
 
 ## Run
 

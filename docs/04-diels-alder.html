@@ -269,22 +269,41 @@ ul.task-list li input[type="checkbox"] {
 </figure>
 </div>
 <p><strong>Outcome (2): same TS location (~2.0–2.3 Å), very different energetics.</strong> And it’s the <em>physical</em> difference — experiment/DFT give a barrier ≈ 22–27 kcal/mol and ΔH ≈ −40. GFN2-xTB badly underestimates the barrier (6.7) and overbinds the product (−57.6); MACE-OFF23 (DFT-trained) is much closer on both, off the shelf. The refined MACE TS is a genuine first-order saddle (one imaginary mode, −740 cm⁻¹) and slightly <strong>asynchronous</strong> — MACE makes the perfectly synchronous geometry a second-order saddle.</p>
+<section id="where-do-the-two-potentials-actually-differ" class="level3">
+<h3 class="anchored" data-anchor-id="where-do-the-two-potentials-actually-differ">Where do the two potentials actually differ?</h3>
+<p>Digging into the benchmark: the disagreement is a <strong>reactive-region</strong> effect. The energy difference ΔE = E_MACE − E_xTB is ~0 for the separated reactants, grows as the bonds form, peaks in the TS region, and leaves a persistent ~+23 kcal/mol product offset — <strong>not a constant shift.</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/neb_energy_diff.png" class="img-fluid figure-img" width="680"></p>
+<figcaption>Energy-difference profile (both potentials relaxed at each point along the reaction coordinate).</figcaption>
+</figure>
+</div>
+<p>And the forces: on rattled reaction-path geometries the MACE and xTB force vectors are <strong>directionally almost identical (cosine 0.98)</strong>, but the <strong>magnitude gap (RMSE) spikes in the TS region</strong> — exactly where the energy difference peaks.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/neb_force_agreement.png" class="img-fluid figure-img" width="680"></p>
+<figcaption>Force RMSE and cosine similarity along the path — agreement is near-perfect in the reactant/product basins and degrades only in the TS region.</figcaption>
+</figure>
+</div>
+<p>The barrier is numerically converged (35.9 ± 1.0 kcal/mol for ≥11 NEB images), and both potentials agree the reaction is a <strong>concerted, synchronous</strong> cycloaddition — they differ in energetics, not mechanism.</p>
+<p><strong>Literature context:</strong> experiment gives a barrier ≈ 27.5 and ΔH ≈ −40 kcal/mol. xTB (6.7 / −57.6) is qualitatively wrong on both; MACE-OFF23 (36 / −36…−41) nails the reaction energy and is in the right kinetic regime, though it overestimates the barrier by ~9 kcal/mol.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Toward a lightweight correction
+<span class="screen-reader-only">Note</span>What this tells the correction framework
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The two potentials are highly force-correlated (r≈0.99) yet systematically offset in energetics — the regime where a <strong>post-training correction</strong> (global / affine / element-specific / delta) could bridge them instead of full fine-tuning. The NEB code wraps every potential in a <code>CorrectedCalculator</code>, so such a correction drops into the force pipeline without touching the workflow.</p>
+<p>MACE and xTB agree on geometry, mechanism, and force <em>direction</em> (cosine 0.98) and disagree on energy/force <em>magnitude</em>, <strong>localized in the bond-forming region.</strong> So a global energy shift is ruled out (ΔE is zero at the reactant); the direction-agrees / magnitude-differs signature points to a <strong>force-scaling</strong> correction, and the localization points to an <strong>environment/coordination-dependent</strong> (or delta) form. The NEB pipeline already wraps every potential in a <code>CorrectedCalculator</code> with these plug-in models — fitting one is the immediate next step.</p>
 </div>
 </div>
 <p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_neb.md">NEB findings — FINDINGS_neb.md →</a></p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

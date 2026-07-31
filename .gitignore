@@ -24,3 +24,8 @@ __pycache__/
 
 # OS cruft
 .DS_Store
+
+# NEB analysis intermediates (regenerable)
+sweep/diels_alder/neb/results/force_geoms/
+sweep/diels_alder/neb/results/*.npz
+sweep/diels_alder/neb/results/vib_*/

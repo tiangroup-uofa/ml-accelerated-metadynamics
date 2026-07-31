@@ -55,13 +55,41 @@ The refined MACE TS is a genuine first-order saddle (one imaginary mode,
 −740 cm⁻¹) and slightly **asynchronous** — MACE makes the perfectly synchronous
 geometry a second-order saddle.
 
+### Where do the two potentials actually differ?
+
+Digging into the benchmark: the disagreement is a **reactive-region** effect. The
+energy difference ΔE = E_MACE − E_xTB is ~0 for the separated reactants, grows as
+the bonds form, peaks in the TS region, and leaves a persistent ~+23 kcal/mol
+product offset — **not a constant shift.**
+
+![Energy-difference profile (both potentials relaxed at each point along the
+reaction coordinate).](assets/neb_energy_diff.png){width=680}
+
+And the forces: on rattled reaction-path geometries the MACE and xTB force vectors
+are **directionally almost identical (cosine 0.98)**, but the **magnitude gap
+(RMSE) spikes in the TS region** — exactly where the energy difference peaks.
+
+![Force RMSE and cosine similarity along the path — agreement is near-perfect in
+the reactant/product basins and degrades only in the TS region.](assets/neb_force_agreement.png){width=680}
+
+The barrier is numerically converged (35.9 ± 1.0 kcal/mol for ≥11 NEB images),
+and both potentials agree the reaction is a **concerted, synchronous** cycloaddition
+— they differ in energetics, not mechanism.
+
+**Literature context:** experiment gives a barrier ≈ 27.5 and ΔH ≈ −40 kcal/mol.
+xTB (6.7 / −57.6) is qualitatively wrong on both; MACE-OFF23 (36 / −36…−41) nails
+the reaction energy and is in the right kinetic regime, though it overestimates the
+barrier by ~9 kcal/mol.
+
 ::: {.callout-note}
-## Toward a lightweight correction
-The two potentials are highly force-correlated (r≈0.99) yet systematically offset
-in energetics — the regime where a **post-training correction** (global / affine /
-element-specific / delta) could bridge them instead of full fine-tuning. The NEB
-code wraps every potential in a `CorrectedCalculator`, so such a correction drops
-into the force pipeline without touching the workflow.
+## What this tells the correction framework
+MACE and xTB agree on geometry, mechanism, and force *direction* (cosine 0.98) and
+disagree on energy/force *magnitude*, **localized in the bond-forming region.** So a
+global energy shift is ruled out (ΔE is zero at the reactant); the direction-agrees /
+magnitude-differs signature points to a **force-scaling** correction, and the
+localization points to an **environment/coordination-dependent** (or delta) form. The
+NEB pipeline already wraps every potential in a `CorrectedCalculator` with these
+plug-in models — fitting one is the immediate next step.
 :::
 
 [NEB findings — FINDINGS_neb.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_neb.md)

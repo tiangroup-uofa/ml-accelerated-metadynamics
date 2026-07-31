@@ -1,0 +1,26 @@
+{
+  "energy_diff": {
+    "D_reactant": 0.0,
+    "D_TS": 50.185,
+    "D_product": 23.192,
+    "D_peak": 50.185,
+    "coord_at_peak": 1.93,
+    "r2_linear_in_progress": 0.6587166413780486
+  },
+  "forces": {
+    "rmse_mean": 0.5230974786232375,
+    "rmse_max": 1.4226905162533758,
+    "cos_mean": 0.9823365490915358,
+    "cos_min": 0.9024116663052386,
+    "n_geoms": 57
+  },
+  "bonds": {
+    "mace_ts_bonds": [
+      2.03,
+      1.98
+    ],
+    "mace_ts_asynchrony": 0.04999999999999982,
+    "mace_path_max_asynchrony": 0.000259429533277844,
+    "xtb_synchronous": true
+  }
+}

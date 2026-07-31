@@ -47,6 +47,78 @@ correction can be inserted into the force pipeline **without touching the NEB
 workflow** (`neb/corrections.py`; verified end-to-end). Fitting and evaluating
 those corrections is the natural next step.
 
+## Extended analysis — where and why the two potentials differ
+
+Four analyses on the finished benchmark (scripts in `neb/`; figures in `figures/`).
+
+### 1. Energy-difference profile — the discrepancy is a *reactive-region* effect
+ΔE(s) = E_MACE(s) − E_xTB(s) along the reaction coordinate, using **both-relaxed**
+concerted scans (xTB built-in scan + `mace_scan.py`, barrier 36.0 kcal/mol —
+consistent with the NEB). It is **~0 for the separated reactants**, rises as the
+bonds form, **peaks in the transition-state region (~1.9–2.0 Å)**, and settles to a
+**persistent ~+23 kcal/mol offset in the product** (`figures/neb_energy_diff.png`).
+The point-wise peak (~+50) is amplified by the two barriers sitting at slightly
+different C–C distances; the clean anchors are the **barrier-height difference
+(+29)** and the **reaction-energy difference (+23)**. Key point: the discrepancy is
+**not a constant offset** — it is zero at the reactant and grows with bond
+formation.
+
+### 2. Forces — directionally near-identical, but a magnitude gap localized at the TS
+On rattled reaction-path geometries (both potentials off-equilibrium, `gen_rattled.py`),
+the MACE and xTB force vectors have **cosine similarity 0.982** (mean; min 0.90) —
+they point almost the same way, confirming the supervisor's observation. But the
+**force RMSE is 0.52 eV/Å**, and — like the energy difference — **both metrics are
+localized in the TS region**: RMSE spikes to ~1.4 eV/Å and cosine dips to ~0.90
+around 2.0 Å, versus ~0.3 eV/Å and ~0.99 in the reactant/product basins
+(`figures/neb_force_agreement.png`). So the disagreement is a **magnitude effect
+concentrated where bonds are forming**.
+
+### 3. Bond evolution — concerted and synchronous for both methods
+Both forming bonds contract together (b1 ≈ b2) along the whole path; MACE's refined
+TS is only marginally asynchronous (2.03 / 1.98 Å, Δ = 0.05 Å) and xTB's is
+symmetric (`figures/neb_bond_evolution.png`). **Both potentials agree the reaction
+is a concerted, synchronous cycloaddition** — they differ in energetics, not
+mechanism.
+
+### 4. Barrier convergence — the MACE barrier is numerically converged
+NEB image counts {9, 11, 13, 17, 21}: the barrier is **35.9 ± 1.0 kcal/mol for
+≥11 images** (spread 2.1); 9 images is too few to resolve the TS (barrier collapses
+to 18 kcal/mol, TS at 2.5 Å). Cross-validated by the relaxed scan (36.0) and the
+Sella-refined TS (36.2) (`figures/neb_barrier_convergence.png`). The reported
+barrier is stable.
+
+### Literature context
+
+| | activation barrier | reaction energy |
+|---|:---:|:---:|
+| Experiment (butadiene + ethylene) | ≈ 27.5 kcal/mol (Ea) | ≈ −40 kcal/mol (ΔH) |
+| GFN2-xTB | 6.7 (≈ 21 too low) | −57.6 (≈ 18 too exothermic) |
+| MACE-OFF23 (no fine-tuning) | 36.0 (≈ 9 too high) | −36 to −41 (≈ right) |
+
+MACE is **far closer to experiment than xTB overall** — it essentially nails the
+reaction energy and is in the right kinetic regime — but it **overestimates the
+barrier by ~9 kcal/mol** (vs. its ωB97M-D3(BJ) reference level), i.e. off-the-shelf
+MACE-OFF23-small is good on thermodynamics and only fair on this barrier. xTB is
+qualitatively wrong on both.
+
+### Why it matters → the post-training-correction framework
+
+The analyses converge on one picture: **MACE and xTB agree on geometry, mechanism,
+and force direction, and disagree on energy/force *magnitude*, specifically in the
+bond-forming / transition-state region.** This is exactly the regime a *lightweight*
+correction can target — and it tells us *which* correction:
+
+- a **global energy shift is ruled out** (ΔE is zero at the reactant, not constant);
+- the near-perfect force **direction** agreement with a **magnitude** gap points to a
+  **force-scaling** correction (global / element-specific);
+- because the gap is **localized in the reactive region**, an **environment- or
+  coordination-dependent** correction (or a residual/delta model) is the natural
+  form — a single scalar will not capture it.
+
+The NEB pipeline already wraps every potential in a `CorrectedCalculator` with
+exactly these plug-in models (global / affine / element / delta), so fitting and
+inserting one is the immediate next step — with this benchmark as the target.
+
 ## Method notes / caveats
 
 - NEB is finicky for this steep, very exothermic concerted reaction: the band is
