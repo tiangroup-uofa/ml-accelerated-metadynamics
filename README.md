@@ -34,6 +34,7 @@ Diels-Alder TS search). The newer drivers read `$XTB_BIN`; the git-ignored
 | **MACE-OFF23 surrogate** | [`sweep/mace_validation/`](sweep/mace_validation/) + [`sweep/mace_md/`](sweep/mace_md/) | How does the MACE-OFF23 MLIP compare to GFN2-xTB (forces, energies, MD structure, speed)? | [`FINDINGS_mace.md`](sweep/mace_validation/FINDINGS_mace.md), [`FINDINGS_mace_md.md`](sweep/mace_md/FINDINGS_mace_md.md) |
 | **kpush size-scaling** | [`sweep/kpush_scaling/`](sweep/kpush_scaling/) | Why is the same bias gentler on a bigger cluster, and how to normalize it? | [`sweep/kpush_scaling/FINDINGS_kpush_scaling.md`](sweep/kpush_scaling/FINDINGS_kpush_scaling.md) |
 | **CV design** | [`sweep/cv_design/`](sweep/cv_design/) | Which collective variables to bias in MACE metadynamics? | [`sweep/cv_design/FINDINGS_cv_design.md`](sweep/cv_design/FINDINGS_cv_design.md) |
+| **Post-training corrections** | [`sweep/corrections/`](sweep/corrections/) | Can a lightweight correction remove MACE↔xTB error without retraining? | [`sweep/corrections/FINDINGS_corrections.md`](sweep/corrections/FINDINGS_corrections.md) |
 
 ## Key results at a glance
 

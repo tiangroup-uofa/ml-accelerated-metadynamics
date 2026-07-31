@@ -1,0 +1,37 @@
+{
+  "xtb": {
+    "barrier": 6.7,
+    "reaction_energy": -57.63880133715788,
+    "ts_forming": 2.32
+  },
+  "baseline": {
+    "barrier": 36.04842810043378,
+    "reaction_energy": -40.64459262392602,
+    "ts_forming": 2.0227897367955885,
+    "conservative": true
+  },
+  "global": {
+    "barrier": 32.34294599204507,
+    "reaction_energy": -36.48226942520939,
+    "ts_forming": 2.022789736795574,
+    "conservative": true
+  },
+  "affine": {
+    "barrier": 32.3429459920241,
+    "reaction_energy": -36.48226942523036,
+    "ts_forming": 2.022789736795574,
+    "conservative": true
+  },
+  "element": {
+    "barrier": 36.02319296142952,
+    "reaction_energy": -40.63364602681701,
+    "ts_forming": 2.022789736795574,
+    "conservative": false
+  },
+  "delta": {
+    "barrier": 11.656556430252415,
+    "reaction_energy": -57.07410407815215,
+    "ts_forming": 2.6167043140523805,
+    "conservative": true
+  }
+}

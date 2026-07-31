@@ -1,0 +1,61 @@
+---
+title: "Study 08 — Post-training corrections"
+subtitle: "How much MACE↔xTB error can a lightweight correction remove, without retraining?"
+---
+
+The Diels–Alder benchmark (Study 04) showed MACE and xTB agree on force *direction*
+but differ in *magnitude*, localized in the reactive region. Here we test whether a
+**lightweight post-training correction** — fit on paired MACE/xTB forces, no
+foundation-model retraining — can remove that systematic error. Base = MACE-OFF23,
+target = GFN2-xTB (a cheap stand-in for the eventual DFT reference); all via the
+existing `CorrectedCalculator`.
+
+Four models: **global** (F′=αF), **affine** (+energy shift), **element** (per-element
+force scaling, *non-conservative*), and a conservative **delta** (energy = fitted
+radial pair potentials, forces = −∇, linear least-squares fit).
+
+## Results
+
+| model | val force RMSE ↓ | DA barrier | DA ΔE | droplet Rg (Å) | conservative |
+|---|:---:|:---:|:---:|:---:|:---:|
+| baseline (MACE) | ref | 36.0 | −40.6 | 3.94 | yes |
+| global / affine | 8% | 32.3 | −36.5 | 3.9–4.0 | yes |
+| element | 9% | 36.0 (inert) | −40.6 | 4.02 | **no** |
+| **delta** | **16%** | **11.7** | **−57.1** | 3.71 | yes |
+| **xTB (target)** | — | **6.7** | **−57.6** | **3.89** | — |
+
+### Forces: corrections fix magnitude, not direction
+Force direction is already aligned (cosine 0.985); the delta removes the most
+magnitude error (16%), scalar corrections ~8–9%.
+
+![Held-out force RMSE per correction, by domain.](assets/corr_force_metrics.png){width=620}
+
+### Diels–Alder: the delta is transformative, the others are not
+A modest force improvement yields a large **energetics** correction — the delta
+captures the bonding-region residual that integrates into the reaction energetics:
+reaction energy −40.6 → **−57.1** (target −57.6, essentially exact) and barrier
+36 → **11.7** (target 6.7). Scalar corrections only apply α; element-scaling is
+energetically inert.
+
+![Corrected MACE reaction profiles and energetics vs the xTB target.](assets/corr_da_energetics.png){width=760}
+
+### Water: MACE was already right; corrections don't help (and can hurt)
+Baseline MACE already matches the xTB droplet; no correction improves agreement,
+and the delta slightly **over-compacts** it (Rg 3.71 vs 3.89) — the reactive-data-
+dominated correction mildly degrades the already-good equilibrium.
+
+![Droplet O–O distribution and size vs the xTB reference.](assets/corr_water_structure.png){width=760}
+
+::: {.callout-important}
+## Recommendation
+Use the **conservative pairwise delta** for future active-learning / metadynamics:
+it is the only correction that removes the systematic *energetics* error (what
+matters for reactions and free energies), it is **conservative** (MD-safe), and it
+is a lightweight linear fit — no foundation-model retraining. Avoid element-force
+scaling (non-conservative, energetically inert); global/affine are safe but too
+weak. Caveat: fit the delta on data representative of the deployment domain (it
+over-compacts water when dominated by reactive data), and a ~5 kcal/mol barrier
+residual remains for a richer model / eventual fine-tuning to close.
+:::
+
+[Full findings — FINDINGS_corrections.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/corrections/FINDINGS_corrections.md)

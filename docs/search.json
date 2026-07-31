@@ -11,7 +11,7 @@
     "href": "index.html#results-at-a-glance",
     "title": "Metadynamics of water: from clusters to a surrogate",
     "section": "Results at a glance",
-    "text": "Results at a glance\n\n\n\n#\nStudy\nHeadline result\n\n\n\n\n01\nBias × size\nThe bias breaks the weakest bond — H-bond for clusters, covalent O–H only for a lone molecule; small clusters evaporate.\n\n\n02\nPBC & temperature\nPeriodicity confines the system (removes evaporation); a large O–O gap is drift, not dissociation.\n\n\n03\nDroplets\nSize suppresses evaporation — free n=20–50 droplets stay intact; raising kpush barely perturbs them (a bias-scaling artifact).\n\n\n04\nDiels–Alder\nA real reaction driven and verified: concerted TS, 6.7 kcal/mol barrier, −394 cm⁻¹ imaginary mode.\n\n\n05\nMACE-OFF23\nMACE-OFF23 tracks xTB forces at r ≈ 0.99, reproduces droplet MD structure, and scales better (crossover by n≈50).\n\n\n06\nkpush scaling\nThe RMSD-bias per-atom force ∝ kpush/N — so kpush must scale ∝ N; confirmed on the n=30 droplet.\n\n\n07\nCV design\n7 candidate CVs collapse to ~3 axes (network integrity, size, chemistry); a minimal biasing set recommended."
+    "text": "Results at a glance\n\n\n\n#\nStudy\nHeadline result\n\n\n\n\n01\nBias × size\nThe bias breaks the weakest bond — H-bond for clusters, covalent O–H only for a lone molecule; small clusters evaporate.\n\n\n02\nPBC & temperature\nPeriodicity confines the system (removes evaporation); a large O–O gap is drift, not dissociation.\n\n\n03\nDroplets\nSize suppresses evaporation — free n=20–50 droplets stay intact; raising kpush barely perturbs them (a bias-scaling artifact).\n\n\n04\nDiels–Alder\nA real reaction driven and verified: concerted TS, 6.7 kcal/mol barrier, −394 cm⁻¹ imaginary mode.\n\n\n05\nMACE-OFF23\nMACE-OFF23 tracks xTB forces at r ≈ 0.99, reproduces droplet MD structure, and scales better (crossover by n≈50).\n\n\n06\nkpush scaling\nThe RMSD-bias per-atom force ∝ kpush/N — so kpush must scale ∝ N; confirmed on the n=30 droplet.\n\n\n07\nCV design\n7 candidate CVs collapse to ~3 axes (network integrity, size, chemistry); a minimal biasing set recommended.\n\n\n08\nCorrections\nA conservative delta correction removes ~all reaction-energy and ~2/3 barrier error MACE→xTB; scalar/element corrections don’t."
   },
   {
     "objectID": "index.html#methods-in-one-paragraph",
@@ -19,125 +19,6 @@
     "title": "Metadynamics of water: from clusters to a surrogate",
     "section": "Methods in one paragraph",
     "text": "Methods in one paragraph\nGas-phase and periodic GFN2/GFN1-xTB metadynamics (built-in RMSD bias), NVT, 0.5 fs timestep; analysis with ASE / NumPy / pandas. Reactions via xtb --path + relaxed scan + Sella saddle optimization. Surrogate benchmarking with MACE-OFF23 (small) as an ASE calculator. All code, data and figures are in the repository; each study page links to its detailed FINDINGS document."
-  },
-  {
-    "objectID": "06-kpush.html",
-    "href": "06-kpush.html",
-    "title": "Study 06 — kpush should scale with size",
-    "section": "",
-    "text": "xTB’s bias is a Gaussian in root-mean-square deviation, \\(V = k_\\text{push}\\,e^{-\\alpha\\,\\mathrm{RMSD}^2}\\) with \\(\\mathrm{RMSD}^2 = \\frac1N\\sum_i|x_i-x_i^\\text{ref}|^2\\). The bias force on an atom,\n\\[F_i = k_\\text{push}\\,\\alpha\\,e^{-\\alpha\\,\\mathrm{RMSD}^2}\\,\\frac{2}{N}\\,(x_i-x_i^\\text{ref}),\\]\ncarries an explicit 1/N — the same kpush pushes each atom \\(1/N\\) as hard in a bigger system. To keep the per-atom bias effect constant, kpush must scale ∝ N (per-atom; per-molecule is the same with \\(N=3\\times\\#\\text{waters}\\)).\n\n\n\nFixed kpush follows the 1/N line (diluted); N-scaled kpush holds the per-atom force constant across n=3→96 atoms."
-  },
-  {
-    "objectID": "06-kpush.html#the-law",
-    "href": "06-kpush.html#the-law",
-    "title": "Study 06 — kpush should scale with size",
-    "section": "",
-    "text": "xTB’s bias is a Gaussian in root-mean-square deviation, \\(V = k_\\text{push}\\,e^{-\\alpha\\,\\mathrm{RMSD}^2}\\) with \\(\\mathrm{RMSD}^2 = \\frac1N\\sum_i|x_i-x_i^\\text{ref}|^2\\). The bias force on an atom,\n\\[F_i = k_\\text{push}\\,\\alpha\\,e^{-\\alpha\\,\\mathrm{RMSD}^2}\\,\\frac{2}{N}\\,(x_i-x_i^\\text{ref}),\\]\ncarries an explicit 1/N — the same kpush pushes each atom \\(1/N\\) as hard in a bigger system. To keep the per-atom bias effect constant, kpush must scale ∝ N (per-atom; per-molecule is the same with \\(N=3\\times\\#\\text{waters}\\)).\n\n\n\nFixed kpush follows the 1/N line (diluted); N-scaled kpush holds the per-atom force constant across n=3→96 atoms."
-  },
-  {
-    "objectID": "06-kpush.html#empirical-confirmation",
-    "href": "06-kpush.html#empirical-confirmation",
-    "title": "Study 06 — kpush should scale with size",
-    "section": "Empirical confirmation",
-    "text": "Empirical confirmation\nThe trimer first fragments at kpush = 0.008, so the N-scaling predicts the 30-water droplet reaches the same per-atom bias at kpush ≈ 0.008 × 90/9 = 0.08. The droplet is intact up to 0.05 — and at ~0.08 it starts shedding a molecule, right on the prediction.\n\n\n\nIntact through kpush 0.05; onset of fragmentation at the N-scaled ~0.08.\n\n\n\n\n\n\n\n\nNoteCaveat\n\n\n\nThe onset is soft because size changes two things at once: it dilutes the per-atom force (1/N — corrected here) and raises cohesion (more H-bonds per interior molecule). The kpush ∝ N law fixes the first exactly; the second means a big droplet still resists a bit more than bare force-scaling predicts.\n\n\nPractical rule: set kpush per atom, kpush_eff = kpush_ref · N / N_ref, so bias strength is comparable across cluster sizes.\nFull findings — FINDINGS_kpush_scaling.md →"
-  },
-  {
-    "objectID": "04-diels-alder.html",
-    "href": "04-diels-alder.html",
-    "title": "Study 04 — A real reaction",
-    "section": "",
-    "text": "Using the same RMSD machinery pulled toward a product (xtb --path), the reaction runs: both new C–C σ-bonds form. But the path’s reported “barrier” (101 kcal/mol) is a biased-path artifact — the driver had to escalate the bias to connect. A relaxed concerted scan plus a Sella saddle optimization gives the real answer.\n\n\n\nQuantity\nValue\n\n\n\n\nForming C–C at TS\n2.32 Å (symmetric)\n\n\nImaginary frequency\n−394 cm⁻¹ (exactly one)\n\n\nConcerted barrier\n6.7 kcal/mol (scan and Sella agree)\n\n\nReaction energy\n−57.6 kcal/mol\n\n\n--path “barrier”\n101 kcal/mol — not physical\n\n\n\n\n\n\nConcerted reaction profile: barrier 6.7 kcal/mol at forming-bond distance 2.32 Å, then downhill to the product.\n\n\n\n\n\n\n\n\nTipTies back to the metadynamics theme\n\n\n\nEnhanced sampling finds that a transition is reachable, but a quantitative barrier needs a proper TS treatment — the RMSD bias alone is chemically blind. (Also: xtb has no TS optimizer — --optts is not a flag; use Sella. And read the vibspectrum file for frequencies, not the --hess stdout.)\n\n\nFull findings — FINDINGS_diels_alder.md →"
-  },
-  {
-    "objectID": "04-diels-alder.html#driving-and-properly-characterizing-a-dielsalder",
-    "href": "04-diels-alder.html#driving-and-properly-characterizing-a-dielsalder",
-    "title": "Study 04 — A real reaction",
-    "section": "",
-    "text": "Using the same RMSD machinery pulled toward a product (xtb --path), the reaction runs: both new C–C σ-bonds form. But the path’s reported “barrier” (101 kcal/mol) is a biased-path artifact — the driver had to escalate the bias to connect. A relaxed concerted scan plus a Sella saddle optimization gives the real answer.\n\n\n\nQuantity\nValue\n\n\n\n\nForming C–C at TS\n2.32 Å (symmetric)\n\n\nImaginary frequency\n−394 cm⁻¹ (exactly one)\n\n\nConcerted barrier\n6.7 kcal/mol (scan and Sella agree)\n\n\nReaction energy\n−57.6 kcal/mol\n\n\n--path “barrier”\n101 kcal/mol — not physical\n\n\n\n\n\n\nConcerted reaction profile: barrier 6.7 kcal/mol at forming-bond distance 2.32 Å, then downhill to the product.\n\n\n\n\n\n\n\n\nTipTies back to the metadynamics theme\n\n\n\nEnhanced sampling finds that a transition is reachable, but a quantitative barrier needs a proper TS treatment — the RMSD bias alone is chemically blind. (Also: xtb has no TS optimizer — --optts is not a flag; use Sella. And read the vibspectrum file for frequencies, not the --hess stdout.)\n\n\nFull findings — FINDINGS_diels_alder.md →"
-  },
-  {
-    "objectID": "02-pbc.html",
-    "href": "02-pbc.html",
-    "title": "Study 02 — Periodicity & temperature",
-    "section": "",
-    "text": "An 8-water periodic box stays condensed for the whole run (max O–O oscillates 6–7 Å, never leaves the cell) while the gas-phase cluster separates past 100 Å. Periodicity removes the evaporation channel — though it forces GFN1, since GFN2 has no PBC multipoles in this build, so gas (GFN2) and periodic (GFN1) results are not at the same level of theory.\n\n\n\nPeriodic box stays bounded (≤ 7.7 Å); the gas-phase cluster evaporates past 100 Å."
-  },
-  {
-    "objectID": "02-pbc.html#confinement-fixes-evaporation",
-    "href": "02-pbc.html#confinement-fixes-evaporation",
-    "title": "Study 02 — Periodicity & temperature",
-    "section": "",
-    "text": "An 8-water periodic box stays condensed for the whole run (max O–O oscillates 6–7 Å, never leaves the cell) while the gas-phase cluster separates past 100 Å. Periodicity removes the evaporation channel — though it forces GFN1, since GFN2 has no PBC multipoles in this build, so gas (GFN2) and periodic (GFN1) results are not at the same level of theory.\n\n\n\nPeriodic box stays bounded (≤ 7.7 Å); the gas-phase cluster evaporates past 100 Å."
-  },
-  {
-    "objectID": "02-pbc.html#a-big-oo-gap-is-drift-not-dissociation",
-    "href": "02-pbc.html#a-big-oo-gap-is-drift-not-dissociation",
-    "title": "Study 02 — Periodicity & temperature",
-    "section": "A big O–O gap is drift, not dissociation",
-    "text": "A big O–O gap is drift, not dissociation\nA complementary CV pair resolves the ambiguity: checking the intramolecular O–H shows the clusters are intact molecules drifting apart, not dissociating — only the lone water truly breaks a bond. Higher temperature just makes intact molecules escape faster (max O–O 81 → 143 Å over 200 → 350 K).\n\n\n\nGas trimer: three intact waters drift to the corners, each keeping its two O–H bonds — drift, not dissociation.\n\n\nFull findings — FINDINGS_phase2.md →"
-  },
-  {
-    "objectID": "01-sweep.html",
-    "href": "01-sweep.html",
-    "title": "Study 01 — Bias × size",
-    "section": "",
-    "text": "Sweeping bias strength kpush against cluster size shows the RMSD bias preferentially rips whatever bond is weakest. A lone water resists and only dissociates at high bias — it has to break a covalent O–H (~5 eV). Hydrogen-bonded clusters come apart even at the lowest bias, because the intermolecular H-bond (~0.2 eV) snaps first. The tetramer is the most robust, held by more H-bonds.\n\n\n\nFraction of the 20 ps run each cluster stayed intact (one fragment, all O–H present). Reading across a row, more bias breaks clusters sooner.\n\n\n\n\n\n\n\n\nTipTakeaway\n\n\n\nWhat breaks depends on what holds the system together: a global-RMSD bias just maximizes structural novelty, and the cheapest way to do that is to snap the weakest bond — which for clusters means evaporation, not rearrangement.\n\n\nFull findings — FINDINGS.md →"
-  },
-  {
-    "objectID": "01-sweep.html#the-bias-breaks-the-weakest-bond",
-    "href": "01-sweep.html#the-bias-breaks-the-weakest-bond",
-    "title": "Study 01 — Bias × size",
-    "section": "",
-    "text": "Sweeping bias strength kpush against cluster size shows the RMSD bias preferentially rips whatever bond is weakest. A lone water resists and only dissociates at high bias — it has to break a covalent O–H (~5 eV). Hydrogen-bonded clusters come apart even at the lowest bias, because the intermolecular H-bond (~0.2 eV) snaps first. The tetramer is the most robust, held by more H-bonds.\n\n\n\nFraction of the 20 ps run each cluster stayed intact (one fragment, all O–H present). Reading across a row, more bias breaks clusters sooner.\n\n\n\n\n\n\n\n\nTipTakeaway\n\n\n\nWhat breaks depends on what holds the system together: a global-RMSD bias just maximizes structural novelty, and the cheapest way to do that is to snap the weakest bond — which for clusters means evaporation, not rearrangement.\n\n\nFull findings — FINDINGS.md →"
-  },
-  {
-    "objectID": "03-droplets.html",
-    "href": "03-droplets.html",
-    "title": "Study 03 — Large vacuum droplets",
-    "section": "",
-    "text": "Scaling the free clusters up, every size holds together as a single droplet at low bias: stable radius of gyration, zero molecules evaporated, all O–H intact — the opposite of the tiny n=2–4 clusters, and with GFN2 retained (no periodic box needed).\n\n\n\nn\nR_g start → end\nfraction in droplet\nevaporated\nO–H\n\n\n\n\n20\n3.61 → 3.96 Å\n1.00\n0\nintact\n\n\n30\n4.45 → 4.18 Å\n1.00\n0\nintact\n\n\n50\n4.99 → 4.95 Å\n1.00\n0\nintact\n\n\n\n\n\n\nRadius of gyration stays flat and no molecule evaporates, all three sizes (low bias)."
-  },
-  {
-    "objectID": "03-droplets.html#size-suppresses-evaporation",
-    "href": "03-droplets.html#size-suppresses-evaporation",
-    "title": "Study 03 — Large vacuum droplets",
-    "section": "",
-    "text": "Scaling the free clusters up, every size holds together as a single droplet at low bias: stable radius of gyration, zero molecules evaporated, all O–H intact — the opposite of the tiny n=2–4 clusters, and with GFN2 retained (no periodic box needed).\n\n\n\nn\nR_g start → end\nfraction in droplet\nevaporated\nO–H\n\n\n\n\n20\n3.61 → 3.96 Å\n1.00\n0\nintact\n\n\n30\n4.45 → 4.18 Å\n1.00\n0\nintact\n\n\n50\n4.99 → 4.95 Å\n1.00\n0\nintact\n\n\n\n\n\n\nRadius of gyration stays flat and no molecule evaporates, all three sizes (low bias)."
-  },
-  {
-    "objectID": "03-droplets.html#and-reveals-a-bias-scaling-artifact",
-    "href": "03-droplets.html#and-reveals-a-bias-scaling-artifact",
-    "title": "Study 03 — Large vacuum droplets",
-    "section": "…and reveals a bias-scaling artifact",
-    "text": "…and reveals a bias-scaling artifact\nRaising kpush from 0.008 → 0.05 at n = 30 barely perturbs the droplet. That is not intrinsic robustness: the bias is a function of global RMSD spread over all degrees of freedom, so the same nominal kpush is far gentler on a 90-atom droplet than on a dimer.\n\n\n\n\n\n\nImportantImplication\n\n\n\nA single kpush number does not transfer across system sizes. This is the empirical case for a size-normalized (per-molecule / per-atom) bias.\n\n\nFull findings — FINDINGS_large.md →"
-  },
-  {
-    "objectID": "05-mace.html",
-    "href": "05-mace.html",
-    "title": "Study 05 — MACE-OFF23 surrogate",
-    "section": "",
-    "text": "The main direction: can a machine-learned potential carry the workflow to larger systems? We compare MACE-OFF23 (DFT-trained, ωB97M-D3BJ) against GFN2-xTB — first on static forces/energies, then in actual MD."
-  },
-  {
-    "objectID": "05-mace.html#static-forces-energies-track-closely",
-    "href": "05-mace.html#static-forces-energies-track-closely",
-    "title": "Study 05 — MACE-OFF23 surrogate",
-    "section": "Static: forces & energies track closely",
-    "text": "Static: forces & energies track closely\nOn the droplet trajectories, force components correlate at r ≈ 0.99 and relative energies agree to ~2–3 meV/atom. And the scaling is the prize: MACE is ~linear while xTB is ~O(N³), so MACE’s relative cost falls across the size ladder — by 150 atoms they are equal, and beyond that the MLIP wins.\n\n\n\nn\natoms\nforce r\nforce RMSE\nrel-E\nMACE cost vs xTB\n\n\n\n\n20\n60\n0.992\n0.185 eV/Å\n3.3 meV/atom\n2.5×\n\n\n30\n90\n0.992\n0.190 eV/Å\n2.5 meV/atom\n1.6×\n\n\n50\n150\n0.991\n0.198 eV/Å\n2.3 meV/atom\n1.0×\n\n\n\n\n\n\nForce parity (left) — tight along the diagonal, r ≈ 0.99. Relative energies (right) track frame-by-frame."
-  },
-  {
-    "objectID": "05-mace.html#dynamics-same-droplet-structure-in-md",
-    "href": "05-mace.html#dynamics-same-droplet-structure-in-md",
-    "title": "Study 05 — MACE-OFF23 surrogate",
-    "section": "Dynamics: same droplet structure in MD",
-    "text": "Dynamics: same droplet structure in MD\nRunning unbiased NVT MD with each potential, MACE-OFF23 reproduces the droplet structure, not just static forces — the go-ahead for MACE-driven sampling.\n\n\n\n\nO–O 1st peak\nR_g\nmean coordination\ncondensed?\n\n\n\n\nGFN2-xTB\n2.83 Å\n3.78 ± 0.07 Å\n4.01\nyes\n\n\nMACE-OFF23\n2.83 Å\n3.85 ± 0.05 Å\n3.72\nyes\n\n\n\n\n\n\nO–O pair distribution (left) is essentially identical — same H-bond peak at 2.83 Å; droplet-size distributions (right) overlap.\n\n\n\n\n\n\n\n\nNoteOff-the-shelf, no fine-tuning\n\n\n\nMACE-OFF23 is DFT-trained, not fit to xTB — so this is two independent methods agreeing, and where they differ MACE is presumably the more accurate one. Fine-tuning would be the lever only if we later want it matched to a specific reference.\n\n\n\n\n\n\n\n\nNoteThroughput — resolved\n\n\n\nAn early MD run looked slow (~2817 ms/step) but that was CPU contention (it ran during large downloads), not a real cost. Clean benchmark: ~37 ms/step (float32, 4 threads) — on par with xTB at n=20, and faster than O(N³) xTB beyond ~n=50. MACE MD / metadynamics is viable; no config blocker remains."
-  },
-  {
-    "objectID": "05-mace.html#next",
-    "href": "05-mace.html#next",
-    "title": "Study 05 — MACE-OFF23 surrogate",
-    "section": "Next",
-    "text": "Next\n\nExtend the size ladder past n=50 (n=100, 200) to confirm MACE overtakes xTB.\nMACE-driven metadynamics (ASE/PLUMED) — which unlocks biasing along proper collective variables. Which CV is the open question: coordination numbers, per-O O–H (proton transfer), tetrahedral order, or a learned CV.\n\nStatic findings — FINDINGS_mace.md → · MD findings — FINDINGS_mace_md.md →"
   },
   {
     "objectID": "07-cv-design.html",
@@ -168,10 +49,143 @@
     "text": "Recommended CV set (minimal, non-redundant)\n\nNetwork integrity — mean O–O coordination or angular H-bond count (pick one).\nSize / spread — Rg (or max_OO).\nChemistry — max_OH + a per-oxygen O–H coordination for proton transfer.\n\n\n\n\n\n\n\nImportantCaveat & next step\n\n\n\nThis separates different systems, so some discriminating power reflects size, not slow dynamics within one droplet. For choosing what to bias, the sharper question — which CV captures the slow reorganization within a single droplet — needs a time-lagged analysis (TICA / VAMP) or a learned CV on one system’s trajectory. That’s the next step, on top of this physically-motivated shortlist.\n\n\nFull findings — FINDINGS_cv_design.md →"
   },
   {
+    "objectID": "05-mace.html",
+    "href": "05-mace.html",
+    "title": "Study 05 — MACE-OFF23 surrogate",
+    "section": "",
+    "text": "The main direction: can a machine-learned potential carry the workflow to larger systems? We compare MACE-OFF23 (DFT-trained, ωB97M-D3BJ) against GFN2-xTB — first on static forces/energies, then in actual MD."
+  },
+  {
+    "objectID": "05-mace.html#static-forces-energies-track-closely",
+    "href": "05-mace.html#static-forces-energies-track-closely",
+    "title": "Study 05 — MACE-OFF23 surrogate",
+    "section": "Static: forces & energies track closely",
+    "text": "Static: forces & energies track closely\nOn the droplet trajectories, force components correlate at r ≈ 0.99 and relative energies agree to ~2–3 meV/atom. And the scaling is the prize: MACE is ~linear while xTB is ~O(N³), so MACE’s relative cost falls across the size ladder — by 150 atoms they are equal, and beyond that the MLIP wins.\n\n\n\nn\natoms\nforce r\nforce RMSE\nrel-E\nMACE cost vs xTB\n\n\n\n\n20\n60\n0.992\n0.185 eV/Å\n3.3 meV/atom\n2.5×\n\n\n30\n90\n0.992\n0.190 eV/Å\n2.5 meV/atom\n1.6×\n\n\n50\n150\n0.991\n0.198 eV/Å\n2.3 meV/atom\n1.0×\n\n\n\n\n\n\nForce parity (left) — tight along the diagonal, r ≈ 0.99. Relative energies (right) track frame-by-frame."
+  },
+  {
+    "objectID": "05-mace.html#dynamics-same-droplet-structure-in-md",
+    "href": "05-mace.html#dynamics-same-droplet-structure-in-md",
+    "title": "Study 05 — MACE-OFF23 surrogate",
+    "section": "Dynamics: same droplet structure in MD",
+    "text": "Dynamics: same droplet structure in MD\nRunning unbiased NVT MD with each potential, MACE-OFF23 reproduces the droplet structure, not just static forces — the go-ahead for MACE-driven sampling.\n\n\n\n\nO–O 1st peak\nR_g\nmean coordination\ncondensed?\n\n\n\n\nGFN2-xTB\n2.83 Å\n3.78 ± 0.07 Å\n4.01\nyes\n\n\nMACE-OFF23\n2.83 Å\n3.85 ± 0.05 Å\n3.72\nyes\n\n\n\n\n\n\nO–O pair distribution (left) is essentially identical — same H-bond peak at 2.83 Å; droplet-size distributions (right) overlap.\n\n\n\n\n\n\n\n\nNoteOff-the-shelf, no fine-tuning\n\n\n\nMACE-OFF23 is DFT-trained, not fit to xTB — so this is two independent methods agreeing, and where they differ MACE is presumably the more accurate one. Fine-tuning would be the lever only if we later want it matched to a specific reference.\n\n\n\n\n\n\n\n\nNoteThroughput — resolved\n\n\n\nAn early MD run looked slow (~2817 ms/step) but that was CPU contention (it ran during large downloads), not a real cost. Clean benchmark: ~37 ms/step (float32, 4 threads) — on par with xTB at n=20, and faster than O(N³) xTB beyond ~n=50. MACE MD / metadynamics is viable; no config blocker remains."
+  },
+  {
+    "objectID": "05-mace.html#next",
+    "href": "05-mace.html#next",
+    "title": "Study 05 — MACE-OFF23 surrogate",
+    "section": "Next",
+    "text": "Next\n\nExtend the size ladder past n=50 (n=100, 200) to confirm MACE overtakes xTB.\nMACE-driven metadynamics (ASE/PLUMED) — which unlocks biasing along proper collective variables. Which CV is the open question: coordination numbers, per-O O–H (proton transfer), tetrahedral order, or a learned CV.\n\nStatic findings — FINDINGS_mace.md → · MD findings — FINDINGS_mace_md.md →"
+  },
+  {
+    "objectID": "03-droplets.html",
+    "href": "03-droplets.html",
+    "title": "Study 03 — Large vacuum droplets",
+    "section": "",
+    "text": "Scaling the free clusters up, every size holds together as a single droplet at low bias: stable radius of gyration, zero molecules evaporated, all O–H intact — the opposite of the tiny n=2–4 clusters, and with GFN2 retained (no periodic box needed).\n\n\n\nn\nR_g start → end\nfraction in droplet\nevaporated\nO–H\n\n\n\n\n20\n3.61 → 3.96 Å\n1.00\n0\nintact\n\n\n30\n4.45 → 4.18 Å\n1.00\n0\nintact\n\n\n50\n4.99 → 4.95 Å\n1.00\n0\nintact\n\n\n\n\n\n\nRadius of gyration stays flat and no molecule evaporates, all three sizes (low bias)."
+  },
+  {
+    "objectID": "03-droplets.html#size-suppresses-evaporation",
+    "href": "03-droplets.html#size-suppresses-evaporation",
+    "title": "Study 03 — Large vacuum droplets",
+    "section": "",
+    "text": "Scaling the free clusters up, every size holds together as a single droplet at low bias: stable radius of gyration, zero molecules evaporated, all O–H intact — the opposite of the tiny n=2–4 clusters, and with GFN2 retained (no periodic box needed).\n\n\n\nn\nR_g start → end\nfraction in droplet\nevaporated\nO–H\n\n\n\n\n20\n3.61 → 3.96 Å\n1.00\n0\nintact\n\n\n30\n4.45 → 4.18 Å\n1.00\n0\nintact\n\n\n50\n4.99 → 4.95 Å\n1.00\n0\nintact\n\n\n\n\n\n\nRadius of gyration stays flat and no molecule evaporates, all three sizes (low bias)."
+  },
+  {
+    "objectID": "03-droplets.html#and-reveals-a-bias-scaling-artifact",
+    "href": "03-droplets.html#and-reveals-a-bias-scaling-artifact",
+    "title": "Study 03 — Large vacuum droplets",
+    "section": "…and reveals a bias-scaling artifact",
+    "text": "…and reveals a bias-scaling artifact\nRaising kpush from 0.008 → 0.05 at n = 30 barely perturbs the droplet. That is not intrinsic robustness: the bias is a function of global RMSD spread over all degrees of freedom, so the same nominal kpush is far gentler on a 90-atom droplet than on a dimer.\n\n\n\n\n\n\nImportantImplication\n\n\n\nA single kpush number does not transfer across system sizes. This is the empirical case for a size-normalized (per-molecule / per-atom) bias.\n\n\nFull findings — FINDINGS_large.md →"
+  },
+  {
+    "objectID": "01-sweep.html",
+    "href": "01-sweep.html",
+    "title": "Study 01 — Bias × size",
+    "section": "",
+    "text": "Sweeping bias strength kpush against cluster size shows the RMSD bias preferentially rips whatever bond is weakest. A lone water resists and only dissociates at high bias — it has to break a covalent O–H (~5 eV). Hydrogen-bonded clusters come apart even at the lowest bias, because the intermolecular H-bond (~0.2 eV) snaps first. The tetramer is the most robust, held by more H-bonds.\n\n\n\nFraction of the 20 ps run each cluster stayed intact (one fragment, all O–H present). Reading across a row, more bias breaks clusters sooner.\n\n\n\n\n\n\n\n\nTipTakeaway\n\n\n\nWhat breaks depends on what holds the system together: a global-RMSD bias just maximizes structural novelty, and the cheapest way to do that is to snap the weakest bond — which for clusters means evaporation, not rearrangement.\n\n\nFull findings — FINDINGS.md →"
+  },
+  {
+    "objectID": "01-sweep.html#the-bias-breaks-the-weakest-bond",
+    "href": "01-sweep.html#the-bias-breaks-the-weakest-bond",
+    "title": "Study 01 — Bias × size",
+    "section": "",
+    "text": "Sweeping bias strength kpush against cluster size shows the RMSD bias preferentially rips whatever bond is weakest. A lone water resists and only dissociates at high bias — it has to break a covalent O–H (~5 eV). Hydrogen-bonded clusters come apart even at the lowest bias, because the intermolecular H-bond (~0.2 eV) snaps first. The tetramer is the most robust, held by more H-bonds.\n\n\n\nFraction of the 20 ps run each cluster stayed intact (one fragment, all O–H present). Reading across a row, more bias breaks clusters sooner.\n\n\n\n\n\n\n\n\nTipTakeaway\n\n\n\nWhat breaks depends on what holds the system together: a global-RMSD bias just maximizes structural novelty, and the cheapest way to do that is to snap the weakest bond — which for clusters means evaporation, not rearrangement.\n\n\nFull findings — FINDINGS.md →"
+  },
+  {
+    "objectID": "02-pbc.html",
+    "href": "02-pbc.html",
+    "title": "Study 02 — Periodicity & temperature",
+    "section": "",
+    "text": "An 8-water periodic box stays condensed for the whole run (max O–O oscillates 6–7 Å, never leaves the cell) while the gas-phase cluster separates past 100 Å. Periodicity removes the evaporation channel — though it forces GFN1, since GFN2 has no PBC multipoles in this build, so gas (GFN2) and periodic (GFN1) results are not at the same level of theory.\n\n\n\nPeriodic box stays bounded (≤ 7.7 Å); the gas-phase cluster evaporates past 100 Å."
+  },
+  {
+    "objectID": "02-pbc.html#confinement-fixes-evaporation",
+    "href": "02-pbc.html#confinement-fixes-evaporation",
+    "title": "Study 02 — Periodicity & temperature",
+    "section": "",
+    "text": "An 8-water periodic box stays condensed for the whole run (max O–O oscillates 6–7 Å, never leaves the cell) while the gas-phase cluster separates past 100 Å. Periodicity removes the evaporation channel — though it forces GFN1, since GFN2 has no PBC multipoles in this build, so gas (GFN2) and periodic (GFN1) results are not at the same level of theory.\n\n\n\nPeriodic box stays bounded (≤ 7.7 Å); the gas-phase cluster evaporates past 100 Å."
+  },
+  {
+    "objectID": "02-pbc.html#a-big-oo-gap-is-drift-not-dissociation",
+    "href": "02-pbc.html#a-big-oo-gap-is-drift-not-dissociation",
+    "title": "Study 02 — Periodicity & temperature",
+    "section": "A big O–O gap is drift, not dissociation",
+    "text": "A big O–O gap is drift, not dissociation\nA complementary CV pair resolves the ambiguity: checking the intramolecular O–H shows the clusters are intact molecules drifting apart, not dissociating — only the lone water truly breaks a bond. Higher temperature just makes intact molecules escape faster (max O–O 81 → 143 Å over 200 → 350 K).\n\n\n\nGas trimer: three intact waters drift to the corners, each keeping its two O–H bonds — drift, not dissociation.\n\n\nFull findings — FINDINGS_phase2.md →"
+  },
+  {
+    "objectID": "04-diels-alder.html",
+    "href": "04-diels-alder.html",
+    "title": "Study 04 — A real reaction",
+    "section": "",
+    "text": "Using the same RMSD machinery pulled toward a product (xtb --path), the reaction runs: both new C–C σ-bonds form. But the path’s reported “barrier” (101 kcal/mol) is a biased-path artifact — the driver had to escalate the bias to connect. A relaxed concerted scan plus a Sella saddle optimization gives the real answer.\n\n\n\nQuantity\nValue\n\n\n\n\nForming C–C at TS\n2.32 Å (symmetric)\n\n\nImaginary frequency\n−394 cm⁻¹ (exactly one)\n\n\nConcerted barrier\n6.7 kcal/mol (scan and Sella agree)\n\n\nReaction energy\n−57.6 kcal/mol\n\n\n--path “barrier”\n101 kcal/mol — not physical\n\n\n\n\n\n\nConcerted reaction profile: barrier 6.7 kcal/mol at forming-bond distance 2.32 Å, then downhill to the product.\n\n\n\n\n\n\n\n\nTipTies back to the metadynamics theme\n\n\n\nEnhanced sampling finds that a transition is reachable, but a quantitative barrier needs a proper TS treatment — the RMSD bias alone is chemically blind. (Also: xtb has no TS optimizer — --optts is not a flag; use Sella. And read the vibspectrum file for frequencies, not the --hess stdout.)\n\n\nFull findings — FINDINGS_diels_alder.md →"
+  },
+  {
+    "objectID": "04-diels-alder.html#driving-and-properly-characterizing-a-dielsalder",
+    "href": "04-diels-alder.html#driving-and-properly-characterizing-a-dielsalder",
+    "title": "Study 04 — A real reaction",
+    "section": "",
+    "text": "Using the same RMSD machinery pulled toward a product (xtb --path), the reaction runs: both new C–C σ-bonds form. But the path’s reported “barrier” (101 kcal/mol) is a biased-path artifact — the driver had to escalate the bias to connect. A relaxed concerted scan plus a Sella saddle optimization gives the real answer.\n\n\n\nQuantity\nValue\n\n\n\n\nForming C–C at TS\n2.32 Å (symmetric)\n\n\nImaginary frequency\n−394 cm⁻¹ (exactly one)\n\n\nConcerted barrier\n6.7 kcal/mol (scan and Sella agree)\n\n\nReaction energy\n−57.6 kcal/mol\n\n\n--path “barrier”\n101 kcal/mol — not physical\n\n\n\n\n\n\nConcerted reaction profile: barrier 6.7 kcal/mol at forming-bond distance 2.32 Å, then downhill to the product.\n\n\n\n\n\n\n\n\nTipTies back to the metadynamics theme\n\n\n\nEnhanced sampling finds that a transition is reachable, but a quantitative barrier needs a proper TS treatment — the RMSD bias alone is chemically blind. (Also: xtb has no TS optimizer — --optts is not a flag; use Sella. And read the vibspectrum file for frequencies, not the --hess stdout.)\n\n\nFull findings — FINDINGS_diels_alder.md →"
+  },
+  {
     "objectID": "04-diels-alder.html#can-mace-off23-reproduce-the-reaction-energetics-neb",
     "href": "04-diels-alder.html#can-mace-off23-reproduce-the-reaction-energetics-neb",
     "title": "Study 04 — A real reaction",
     "section": "Can MACE-OFF23 reproduce the reaction energetics? (NEB)",
     "text": "Can MACE-OFF23 reproduce the reaction energetics? (NEB)\nNext question: does the MACE-OFF23 surrogate get reaction energetics right with no fine-tuning? xTB has a built-in path search; MACE doesn’t, so we build the profile with a climbing-image NEB (ASE) and compare.\n\n\n\nquantity\nGFN2-xTB (built-in path)\nMACE-OFF23 (NEB)\n\n\n\n\nactivation barrier\n6.7 kcal/mol\n36.2 kcal/mol\n\n\nreaction energy\n−57.6 kcal/mol\n−36.1 kcal/mol\n\n\nTS forming C–C\n2.32 Å\n2.03 / 1.98 Å (slightly asynchronous)\n\n\n\n\n\n\nMinimum energy path and energetics: MACE-OFF23 (CI-NEB) vs GFN2-xTB (built-in path).\n\n\nOutcome (2): same TS location (~2.0–2.3 Å), very different energetics. And it’s the physical difference — experiment/DFT give a barrier ≈ 22–27 kcal/mol and ΔH ≈ −40. GFN2-xTB badly underestimates the barrier (6.7) and overbinds the product (−57.6); MACE-OFF23 (DFT-trained) is much closer on both, off the shelf. The refined MACE TS is a genuine first-order saddle (one imaginary mode, −740 cm⁻¹) and slightly asynchronous — MACE makes the perfectly synchronous geometry a second-order saddle.\n\nWhere do the two potentials actually differ?\nDigging into the benchmark: the disagreement is a reactive-region effect. The energy difference ΔE = E_MACE − E_xTB is ~0 for the separated reactants, grows as the bonds form, peaks in the TS region, and leaves a persistent ~+23 kcal/mol product offset — not a constant shift.\n\n\n\nEnergy-difference profile (both potentials relaxed at each point along the reaction coordinate).\n\n\nAnd the forces: on rattled reaction-path geometries the MACE and xTB force vectors are directionally almost identical (cosine 0.98), but the magnitude gap (RMSE) spikes in the TS region — exactly where the energy difference peaks.\n\n\n\nForce RMSE and cosine similarity along the path — agreement is near-perfect in the reactant/product basins and degrades only in the TS region.\n\n\nThe barrier is numerically converged (35.9 ± 1.0 kcal/mol for ≥11 NEB images), and both potentials agree the reaction is a concerted, synchronous cycloaddition — they differ in energetics, not mechanism.\nLiterature context: experiment gives a barrier ≈ 27.5 and ΔH ≈ −40 kcal/mol. xTB (6.7 / −57.6) is qualitatively wrong on both; MACE-OFF23 (36 / −36…−41) nails the reaction energy and is in the right kinetic regime, though it overestimates the barrier by ~9 kcal/mol.\n\n\n\n\n\n\nNoteWhat this tells the correction framework\n\n\n\nMACE and xTB agree on geometry, mechanism, and force direction (cosine 0.98) and disagree on energy/force magnitude, localized in the bond-forming region. So a global energy shift is ruled out (ΔE is zero at the reactant); the direction-agrees / magnitude-differs signature points to a force-scaling correction, and the localization points to an environment/coordination-dependent (or delta) form. The NEB pipeline already wraps every potential in a CorrectedCalculator with these plug-in models — fitting one is the immediate next step.\n\n\nNEB findings — FINDINGS_neb.md →"
+  },
+  {
+    "objectID": "06-kpush.html",
+    "href": "06-kpush.html",
+    "title": "Study 06 — kpush should scale with size",
+    "section": "",
+    "text": "xTB’s bias is a Gaussian in root-mean-square deviation, \\(V = k_\\text{push}\\,e^{-\\alpha\\,\\mathrm{RMSD}^2}\\) with \\(\\mathrm{RMSD}^2 = \\frac1N\\sum_i|x_i-x_i^\\text{ref}|^2\\). The bias force on an atom,\n\\[F_i = k_\\text{push}\\,\\alpha\\,e^{-\\alpha\\,\\mathrm{RMSD}^2}\\,\\frac{2}{N}\\,(x_i-x_i^\\text{ref}),\\]\ncarries an explicit 1/N — the same kpush pushes each atom \\(1/N\\) as hard in a bigger system. To keep the per-atom bias effect constant, kpush must scale ∝ N (per-atom; per-molecule is the same with \\(N=3\\times\\#\\text{waters}\\)).\n\n\n\nFixed kpush follows the 1/N line (diluted); N-scaled kpush holds the per-atom force constant across n=3→96 atoms."
+  },
+  {
+    "objectID": "06-kpush.html#the-law",
+    "href": "06-kpush.html#the-law",
+    "title": "Study 06 — kpush should scale with size",
+    "section": "",
+    "text": "xTB’s bias is a Gaussian in root-mean-square deviation, \\(V = k_\\text{push}\\,e^{-\\alpha\\,\\mathrm{RMSD}^2}\\) with \\(\\mathrm{RMSD}^2 = \\frac1N\\sum_i|x_i-x_i^\\text{ref}|^2\\). The bias force on an atom,\n\\[F_i = k_\\text{push}\\,\\alpha\\,e^{-\\alpha\\,\\mathrm{RMSD}^2}\\,\\frac{2}{N}\\,(x_i-x_i^\\text{ref}),\\]\ncarries an explicit 1/N — the same kpush pushes each atom \\(1/N\\) as hard in a bigger system. To keep the per-atom bias effect constant, kpush must scale ∝ N (per-atom; per-molecule is the same with \\(N=3\\times\\#\\text{waters}\\)).\n\n\n\nFixed kpush follows the 1/N line (diluted); N-scaled kpush holds the per-atom force constant across n=3→96 atoms."
+  },
+  {
+    "objectID": "06-kpush.html#empirical-confirmation",
+    "href": "06-kpush.html#empirical-confirmation",
+    "title": "Study 06 — kpush should scale with size",
+    "section": "Empirical confirmation",
+    "text": "Empirical confirmation\nThe trimer first fragments at kpush = 0.008, so the N-scaling predicts the 30-water droplet reaches the same per-atom bias at kpush ≈ 0.008 × 90/9 = 0.08. The droplet is intact up to 0.05 — and at ~0.08 it starts shedding a molecule, right on the prediction.\n\n\n\nIntact through kpush 0.05; onset of fragmentation at the N-scaled ~0.08.\n\n\n\n\n\n\n\n\nNoteCaveat\n\n\n\nThe onset is soft because size changes two things at once: it dilutes the per-atom force (1/N — corrected here) and raises cohesion (more H-bonds per interior molecule). The kpush ∝ N law fixes the first exactly; the second means a big droplet still resists a bit more than bare force-scaling predicts.\n\n\nPractical rule: set kpush per atom, kpush_eff = kpush_ref · N / N_ref, so bias strength is comparable across cluster sizes.\nFull findings — FINDINGS_kpush_scaling.md →"
+  },
+  {
+    "objectID": "08-corrections.html",
+    "href": "08-corrections.html",
+    "title": "Study 08 — Post-training corrections",
+    "section": "",
+    "text": "The Diels–Alder benchmark (Study 04) showed MACE and xTB agree on force direction but differ in magnitude, localized in the reactive region. Here we test whether a lightweight post-training correction — fit on paired MACE/xTB forces, no foundation-model retraining — can remove that systematic error. Base = MACE-OFF23, target = GFN2-xTB (a cheap stand-in for the eventual DFT reference); all via the existing CorrectedCalculator.\nFour models: global (F′=αF), affine (+energy shift), element (per-element force scaling, non-conservative), and a conservative delta (energy = fitted radial pair potentials, forces = −∇, linear least-squares fit)."
+  },
+  {
+    "objectID": "08-corrections.html#results",
+    "href": "08-corrections.html#results",
+    "title": "Study 08 — Post-training corrections",
+    "section": "Results",
+    "text": "Results\n\n\n\n\n\n\n\n\n\n\n\nmodel\nval force RMSE ↓\nDA barrier\nDA ΔE\ndroplet Rg (Å)\nconservative\n\n\n\n\nbaseline (MACE)\nref\n36.0\n−40.6\n3.94\nyes\n\n\nglobal / affine\n8%\n32.3\n−36.5\n3.9–4.0\nyes\n\n\nelement\n9%\n36.0 (inert)\n−40.6\n4.02\nno\n\n\ndelta\n16%\n11.7\n−57.1\n3.71\nyes\n\n\nxTB (target)\n—\n6.7\n−57.6\n3.89\n—\n\n\n\n\nForces: corrections fix magnitude, not direction\nForce direction is already aligned (cosine 0.985); the delta removes the most magnitude error (16%), scalar corrections ~8–9%.\n\n\n\nHeld-out force RMSE per correction, by domain.\n\n\n\n\nDiels–Alder: the delta is transformative, the others are not\nA modest force improvement yields a large energetics correction — the delta captures the bonding-region residual that integrates into the reaction energetics: reaction energy −40.6 → −57.1 (target −57.6, essentially exact) and barrier 36 → 11.7 (target 6.7). Scalar corrections only apply α; element-scaling is energetically inert.\n\n\n\nCorrected MACE reaction profiles and energetics vs the xTB target.\n\n\n\n\nWater: MACE was already right; corrections don’t help (and can hurt)\nBaseline MACE already matches the xTB droplet; no correction improves agreement, and the delta slightly over-compacts it (Rg 3.71 vs 3.89) — the reactive-data- dominated correction mildly degrades the already-good equilibrium.\n\n\n\nDroplet O–O distribution and size vs the xTB reference.\n\n\n\n\n\n\n\n\nImportantRecommendation\n\n\n\nUse the conservative pairwise delta for future active-learning / metadynamics: it is the only correction that removes the systematic energetics error (what matters for reactions and free energies), it is conservative (MD-safe), and it is a lightweight linear fit — no foundation-model retraining. Avoid element-force scaling (non-conservative, energetically inert); global/affine are safe but too weak. Caveat: fit the delta on data representative of the deployment domain (it over-compacts water when dominated by reactive data), and a ~5 kcal/mol barrier residual remains for a richer model / eventual fine-tuning to close.\n\n\nFull findings — FINDINGS_corrections.md →"
   }
 ]

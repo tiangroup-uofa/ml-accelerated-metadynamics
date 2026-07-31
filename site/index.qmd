@@ -27,6 +27,7 @@ free-energy surface.
 | 05 | [MACE-OFF23](05-mace.qmd) | MACE-OFF23 tracks xTB forces at **r ≈ 0.99**, reproduces droplet MD structure, and scales better (crossover by n≈50). |
 | 06 | [kpush scaling](06-kpush.qmd) | The RMSD-bias per-atom force ∝ **kpush/N** — so `kpush` must scale **∝ N**; confirmed on the n=30 droplet. |
 | 07 | [CV design](07-cv-design.qmd) | 7 candidate CVs collapse to ~3 axes (network integrity, size, chemistry); a minimal biasing set recommended. |
+| 08 | [Corrections](08-corrections.qmd) | A conservative **delta** correction removes ~all reaction-energy and ~2/3 barrier error MACE→xTB; scalar/element corrections don't. |
 
 ## Methods in one paragraph
 

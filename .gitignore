@@ -29,3 +29,7 @@ __pycache__/
 sweep/diels_alder/neb/results/force_geoms/
 sweep/diels_alder/neb/results/*.npz
 sweep/diels_alder/neb/results/vib_*/
+
+# correction dataset intermediates (regenerable)
+sweep/corrections/data/geoms/
+sweep/corrections/data/*.npz

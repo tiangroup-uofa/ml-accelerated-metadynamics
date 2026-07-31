@@ -51,7 +51,9 @@ class GlobalScale(ForceCorrection):
     alpha: float = 1.0
 
     def apply(self, atoms, energy, forces):
-        return energy, self.alpha * forces
+        # scale energy too (conservative: F=-∇E, so F'=αF ⇒ E'=αE); relative
+        # energies scale by α, the constant atomic reference cancels.
+        return self.alpha * energy, self.alpha * forces
 
     @classmethod
     def fit(cls, base_forces, ref_forces):

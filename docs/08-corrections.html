@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Study 06 — kpush should scale with size – xTB Metadynamics of Water</title>
+<title>Study 08 — Post-training corrections – xTB Metadynamics of Water</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -71,35 +71,6 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -145,7 +116,7 @@ window.Quarto = {
 <span class="menu-text">MACE-OFF23</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./06-kpush.html" aria-current="page"> 
+    <a class="nav-link" href="./06-kpush.html"> 
 <span class="menu-text">kpush scaling</span></a>
   </li>  
   <li class="nav-item">
@@ -153,7 +124,7 @@ window.Quarto = {
 <span class="menu-text">CV design</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./08-corrections.html"> 
+    <a class="nav-link active" href="./08-corrections.html" aria-current="page"> 
 <span class="menu-text">Corrections</span></a>
   </li>  
 </ul>
@@ -184,8 +155,7 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul class="collapse">
-  <li><a href="#the-law" id="toc-the-law" class="nav-link active" data-scroll-target="#the-law">The law</a></li>
-  <li><a href="#empirical-confirmation" id="toc-empirical-confirmation" class="nav-link" data-scroll-target="#empirical-confirmation">Empirical confirmation</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link active" data-scroll-target="#results">Results</a></li>
   </ul>
 </nav>
     </div>
@@ -194,8 +164,8 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Study 06 — kpush should scale with size</h1>
-<p class="subtitle lead">Why the same bias is gentler on a bigger cluster — the per-atom normalization</p>
+<h1 class="title">Study 08 — Post-training corrections</h1>
+<p class="subtitle lead">How much MACE↔︎xTB error can a lightweight correction remove, without retraining?</p>
 </div>
 
 
@@ -212,44 +182,118 @@ window.Quarto = {
 </header>
 
 
-<section id="the-law" class="level2">
-<h2 class="anchored" data-anchor-id="the-law">The law</h2>
-<p>xTB’s bias is a Gaussian in <strong>root-mean-square</strong> deviation, <span class="math inline">\(V = k_\text{push}\,e^{-\alpha\,\mathrm{RMSD}^2}\)</span> with <span class="math inline">\(\mathrm{RMSD}^2 = \frac1N\sum_i|x_i-x_i^\text{ref}|^2\)</span>. The bias force on an atom,</p>
-<p><span class="math display">\[F_i = k_\text{push}\,\alpha\,e^{-\alpha\,\mathrm{RMSD}^2}\,\frac{2}{N}\,(x_i-x_i^\text{ref}),\]</span></p>
-<p>carries an explicit <strong>1/N</strong> — the same <code>kpush</code> pushes each atom <span class="math inline">\(1/N\)</span> as hard in a bigger system. To keep the per-atom bias effect constant, <strong><code>kpush</code> must scale ∝ N</strong> (per-atom; per-molecule is the same with <span class="math inline">\(N=3\times\#\text{waters}\)</span>).</p>
+<p>The Diels–Alder benchmark (Study 04) showed MACE and xTB agree on force <em>direction</em> but differ in <em>magnitude</em>, localized in the reactive region. Here we test whether a <strong>lightweight post-training correction</strong> — fit on paired MACE/xTB forces, no foundation-model retraining — can remove that systematic error. Base = MACE-OFF23, target = GFN2-xTB (a cheap stand-in for the eventual DFT reference); all via the existing <code>CorrectedCalculator</code>.</p>
+<p>Four models: <strong>global</strong> (F′=αF), <strong>affine</strong> (+energy shift), <strong>element</strong> (per-element force scaling, <em>non-conservative</em>), and a conservative <strong>delta</strong> (energy = fitted radial pair potentials, forces = −∇, linear least-squares fit).</p>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<table class="table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>model</th>
+<th style="text-align: center;">val force RMSE ↓</th>
+<th style="text-align: center;">DA barrier</th>
+<th style="text-align: center;">DA ΔE</th>
+<th style="text-align: center;">droplet Rg (Å)</th>
+<th style="text-align: center;">conservative</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>baseline (MACE)</td>
+<td style="text-align: center;">ref</td>
+<td style="text-align: center;">36.0</td>
+<td style="text-align: center;">−40.6</td>
+<td style="text-align: center;">3.94</td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr class="even">
+<td>global / affine</td>
+<td style="text-align: center;">8%</td>
+<td style="text-align: center;">32.3</td>
+<td style="text-align: center;">−36.5</td>
+<td style="text-align: center;">3.9–4.0</td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr class="odd">
+<td>element</td>
+<td style="text-align: center;">9%</td>
+<td style="text-align: center;">36.0 (inert)</td>
+<td style="text-align: center;">−40.6</td>
+<td style="text-align: center;">4.02</td>
+<td style="text-align: center;"><strong>no</strong></td>
+</tr>
+<tr class="even">
+<td><strong>delta</strong></td>
+<td style="text-align: center;"><strong>16%</strong></td>
+<td style="text-align: center;"><strong>11.7</strong></td>
+<td style="text-align: center;"><strong>−57.1</strong></td>
+<td style="text-align: center;">3.71</td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr class="odd">
+<td><strong>xTB (target)</strong></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><strong>6.7</strong></td>
+<td style="text-align: center;"><strong>−57.6</strong></td>
+<td style="text-align: center;"><strong>3.89</strong></td>
+<td style="text-align: center;">—</td>
+</tr>
+</tbody>
+</table>
+<section id="forces-corrections-fix-magnitude-not-direction" class="level3">
+<h3 class="anchored" data-anchor-id="forces-corrections-fix-magnitude-not-direction">Forces: corrections fix magnitude, not direction</h3>
+<p>Force direction is already aligned (cosine 0.985); the delta removes the most magnitude error (16%), scalar corrections ~8–9%.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="assets/kpush_scaling_law.png" class="img-fluid figure-img" width="520"></p>
-<figcaption>Fixed <code>kpush</code> follows the 1/N line (diluted); N-scaled <code>kpush</code> holds the per-atom force constant across n=3→96 atoms.</figcaption>
+<p><img src="assets/corr_force_metrics.png" class="img-fluid figure-img" width="620"></p>
+<figcaption>Held-out force RMSE per correction, by domain.</figcaption>
 </figure>
 </div>
 </section>
-<section id="empirical-confirmation" class="level2">
-<h2 class="anchored" data-anchor-id="empirical-confirmation">Empirical confirmation</h2>
-<p>The trimer first fragments at <code>kpush = 0.008</code>, so the N-scaling predicts the 30-water droplet reaches the same per-atom bias at <code>kpush ≈ 0.008 × 90/9 = 0.08</code>. The droplet is intact up to 0.05 — and at ~0.08 it starts shedding a molecule, right on the prediction.</p>
+<section id="dielsalder-the-delta-is-transformative-the-others-are-not" class="level3">
+<h3 class="anchored" data-anchor-id="dielsalder-the-delta-is-transformative-the-others-are-not">Diels–Alder: the delta is transformative, the others are not</h3>
+<p>A modest force improvement yields a large <strong>energetics</strong> correction — the delta captures the bonding-region residual that integrates into the reaction energetics: reaction energy −40.6 → <strong>−57.1</strong> (target −57.6, essentially exact) and barrier 36 → <strong>11.7</strong> (target 6.7). Scalar corrections only apply α; element-scaling is energetically inert.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="assets/kpush_confirmation_n30.png" class="img-fluid figure-img" width="520"></p>
-<figcaption>Intact through kpush 0.05; onset of fragmentation at the N-scaled ~0.08.</figcaption>
+<p><img src="assets/corr_da_energetics.png" class="img-fluid figure-img" width="760"></p>
+<figcaption>Corrected MACE reaction profiles and energetics vs the xTB target.</figcaption>
 </figure>
 </div>
-<div class="callout callout-style-default callout-note callout-titled">
+</section>
+<section id="water-mace-was-already-right-corrections-dont-help-and-can-hurt" class="level3">
+<h3 class="anchored" data-anchor-id="water-mace-was-already-right-corrections-dont-help-and-can-hurt">Water: MACE was already right; corrections don’t help (and can hurt)</h3>
+<p>Baseline MACE already matches the xTB droplet; no correction improves agreement, and the delta slightly <strong>over-compacts</strong> it (Rg 3.71 vs 3.89) — the reactive-data- dominated correction mildly degrades the already-good equilibrium.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/corr_water_structure.png" class="img-fluid figure-img" width="760"></p>
+<figcaption>Droplet O–O distribution and size vs the xTB reference.</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Caveat
+<span class="screen-reader-only">Important</span>Recommendation
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The onset is soft because size changes two things at once: it dilutes the per-atom force (1/N — corrected here) <strong>and</strong> raises cohesion (more H-bonds per interior molecule). The <code>kpush ∝ N</code> law fixes the first exactly; the second means a big droplet still resists a bit more than bare force-scaling predicts.</p>
+<p>Use the <strong>conservative pairwise delta</strong> for future active-learning / metadynamics: it is the only correction that removes the systematic <em>energetics</em> error (what matters for reactions and free energies), it is <strong>conservative</strong> (MD-safe), and it is a lightweight linear fit — no foundation-model retraining. Avoid element-force scaling (non-conservative, energetically inert); global/affine are safe but too weak. Caveat: fit the delta on data representative of the deployment domain (it over-compacts water when dominated by reactive data), and a ~5 kcal/mol barrier residual remains for a richer model / eventual fine-tuning to close.</p>
 </div>
 </div>
-<p><strong>Practical rule:</strong> set <code>kpush</code> per atom, <code>kpush_eff = kpush_ref · N / N_ref</code>, so bias strength is comparable across cluster sizes.</p>
-<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/kpush_scaling/FINDINGS_kpush_scaling.md">Full findings — FINDINGS_kpush_scaling.md →</a></p>
+<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/corrections/FINDINGS_corrections.md">Full findings — FINDINGS_corrections.md →</a></p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
