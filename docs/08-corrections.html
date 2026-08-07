@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -39,10 +42,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-317ac4b4b91482d7e4b8790d3f54c4a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-8f53ae70cd472c10746adc2081c82a4c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -156,6 +159,7 @@ ul.task-list li input[type="checkbox"] {
    
   <ul class="collapse">
   <li><a href="#results" id="toc-results" class="nav-link active" data-scroll-target="#results">Results</a></li>
+  <li><a href="#jul-31-follow-up-aug-7-targeted-barrier-region-calibration" id="toc-jul-31-follow-up-aug-7-targeted-barrier-region-calibration" class="nav-link" data-scroll-target="#jul-31-follow-up-aug-7-targeted-barrier-region-calibration">Jul 31 follow-up (Aug 7) — targeted barrier-region calibration</a></li>
   </ul>
 </nav>
     </div>
@@ -291,6 +295,98 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/corrections/FINDINGS_corrections.md">Full findings — FINDINGS_corrections.md →</a></p>
+</section>
+</section>
+<section id="jul-31-follow-up-aug-7-targeted-barrier-region-calibration" class="level2">
+<h2 class="anchored" data-anchor-id="jul-31-follow-up-aug-7-targeted-barrier-region-calibration">Jul 31 follow-up (Aug 7) — targeted barrier-region calibration</h2>
+<p>The barrier-region error analysis (<a href="./04-diels-alder.html">Study 04</a>) showed the MACE↔︎xTB disagreement concentrates in the TS / post-TS region. So: does <strong>concentrating the correction data there</strong> help more than adding the <em>same amount</em> of generic data? We fit the <strong>same</strong> conservative pairwise-delta (identical architecture and hyperparameters — only the training data changes), with a strict no-leakage split <strong>by parent path geometry</strong> (test geometries never enter any fit):</p>
+<ul>
+<li><strong>baseline delta</strong> — reactive + water configs;</li>
+<li><strong>barrier-enriched delta</strong> — baseline + 32 configs at forming C–C ≈ 1.7–2.4 Å;</li>
+<li><strong>generic control</strong> — baseline + 32 configs sampled generically (same count).</li>
+</ul>
+<table class="table">
+<thead>
+<tr class="header">
+<th>model</th>
+<th style="text-align: center;">DA barrier (kcal/mol)</th>
+<th style="text-align: center;">reaction E</th>
+<th style="text-align: center;">TS forming C–C</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>raw MACE</td>
+<td style="text-align: center;">36.0</td>
+<td style="text-align: center;">−40.6</td>
+<td style="text-align: center;">2.02 Å</td>
+</tr>
+<tr class="even">
+<td>baseline delta</td>
+<td style="text-align: center;">14.1</td>
+<td style="text-align: center;">−47.3</td>
+<td style="text-align: center;">2.02 Å</td>
+</tr>
+<tr class="odd">
+<td><strong>barrier-enriched delta</strong></td>
+<td style="text-align: center;"><strong>9.9</strong></td>
+<td style="text-align: center;">−50.7</td>
+<td style="text-align: center;">2.62 Å</td>
+</tr>
+<tr class="even">
+<td>generic control (equal count)</td>
+<td style="text-align: center;">15.0</td>
+<td style="text-align: center;">−51.1</td>
+<td style="text-align: center;">2.02 Å</td>
+</tr>
+<tr class="odd">
+<td><strong>xTB (target)</strong></td>
+<td style="text-align: center;"><strong>6.7</strong></td>
+<td style="text-align: center;"><strong>−57.6</strong></td>
+<td style="text-align: center;">2.32 Å</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Targeted beats generic at equal data budget.</strong> Adding barrier-region data moved the barrier 14.1 → <strong>9.9</strong>; the <em>same number</em> of generic configs did essentially nothing (14.1 → 15.0). The barrier-enriched delta <strong>removes ~89% of the raw MACE→xTB barrier gap</strong>.</li>
+<li><strong>Held-out barrier-region forces improve.</strong> On the parent-split held-out reactive test, TS+post-TS force RMSE drops from 0.906 (raw) to <strong>0.688</strong> (barrier-enriched, −24%), lower than both baseline (0.714) and the generic control (0.734). The cost is a small increase in <em>overall</em> RMSE (0.432 → 0.456) — the fixed-capacity delta reallocates toward the barrier.</li>
+<li><strong>Energetic agreement improves more than geometric agreement.</strong> The corrected TS shifts <em>outward</em> to ~2.62 Å (vs xTB’s 2.32 Å), so the barrier height matches far better than the TS position does — worth flagging honestly.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/phaseC_force_regions.png" class="img-fluid figure-img" width="680"></p>
+<figcaption>Region-wise held-out force error: the barrier-enriched delta has the lowest TS / post-TS RMSE.</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/phaseC_reaction.png" class="img-fluid figure-img" width="760"></p>
+<figcaption>Corrected reaction profiles: the barrier-enriched delta gives the barrier closest to xTB.</figcaption>
+</figure>
+</div>
+<section id="water-is-not-degraded" class="level3">
+<h3 class="anchored" data-anchor-id="water-is-not-degraded">Water is not degraded</h3>
+<p>Repeating the droplet benchmark, the barrier-enriched delta gives <strong>exactly the same water structure as the baseline delta</strong> (Rg 3.82 Å, O–O peak 2.74 Å for both; raw MACE 3.90, xTB 3.77) — barrier enrichment does not harm the equilibrium subsystem. The reason is structural: the pairwise delta has <strong>separate channels per element pair</strong>, so the added C–C/C–H barrier data touches only the carbon channels and leaves the O–O/O–H channels that govern water untouched — clean selectivity.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/phaseC_water.png" class="img-fluid figure-img" width="760"></p>
+<figcaption>Droplet O–O distribution and size: barrier enrichment leaves water unchanged relative to the baseline delta.</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Jul 31–Aug 7 takeaway
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Errors are concentrated in distorted reactive configurations, and targeted calibration of those regions is more effective than adding the same amount of generic data.</strong> What this does <strong>not</strong> claim: no active-learning loop was run (this is a static, hand-placed enrichment — it <em>motivates</em> active sampling, it does not implement it); no improvement in <em>physical</em> (DFT) accuracy is claimed — xTB is the chosen reference here, not the true target, and for this reaction it under-barriers relative to DFT/experiment; and we do not assert the foundation model’s training set definitely lacks these geometries. Those remain future work and open hypotheses.</p>
+</div>
+</div>
+<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_jul31.md">Jul 31 follow-up findings — FINDINGS_jul31.md →</a></p>
 
 
 </section>

@@ -105,3 +105,73 @@ plug-in models — fitting one is the immediate next step.
 :::
 
 [NEB findings — FINDINGS_neb.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_neb.md)
+
+## Jul 31 follow-up (Aug 7) — is the barrier gap a method artifact?
+
+The obvious objection to the ~30 kcal/mol MACE–xTB barrier gap: MACE used NEB,
+xTB used its built-in path search. Maybe the gap is just a **path-method
+mismatch**. To rule that out we ran *both* potentials through the **identical**
+standardized NEB (13 images, k=0.5, FIRE / `NEBOptimizer`, fmax 0.05, climbing
+image, same concerted-scan seed).
+
+- **`xtb-python` stability gate passed** — single-points, forces, and geometry
+  optimization are reproducible (repeat-evaluation energy std ≈ 5e-14 eV), so the
+  backend is trustworthy for the full band.
+- **MACE's barrier is method-invariant: ~36 kcal/mol across the relaxed scan
+  (36.0), the Sella saddle (36.2), and the standardized NEB (36–37).** It is also
+  numerically converged (35.9 ± 1.0 for ≥11 images).
+- **xTB ASE-NEB fails *physically* under the same settings** — the band does not
+  form a sensible path; atoms in the "TS" images fly apart (reported forming C–C
+  of ~7–18 Å) and the apparent barrier balloons to 240–250 kcal/mol under both
+  optimizers.
+
+::: {.callout-important}
+## This is a PES/algorithm compatibility issue, not a backend failure
+The same `xtb-python` that passed the stability gate produces a clean
+single-point everywhere; only the *band optimization* on xTB's flatter,
+low-barrier surface diverges under these settings (a file-based binary xTB would
+hit the identical problem). So the valid xTB reference stays the constrained
+relaxed scan + verified TS (6.7 kcal/mol). **Because MACE's barrier is the same
+~36 kcal/mol no matter how it is computed, the ~30 kcal/mol MACE–xTB gap is a
+genuine difference between the two potential-energy surfaces — it is not
+explained by the original path-method mismatch.**
+:::
+
+![Standardized NEB: MACE gives a consistent ~36 kcal/mol barrier; the xTB band
+does not converge to a physical path under the identical settings (shown as its
+valid relaxed-scan reference instead).](assets/a2_standardized_neb.png){width=720}
+
+### Barrier-region error analysis
+
+Where along the reaction coordinate does the MACE↔xTB disagreement live? We
+partitioned 152 rattled path geometries into five regions by forming C–C distance
+and measured raw MACE-vs-xTB force RMSE, cosine, and energy discrepancy per region.
+
+| region (forming C–C) | force RMSE (eV/Å) | cosine | ΔE vs reactant (kcal/mol) |
+|---|:---:|:---:|:---:|
+| reactant basin (>2.9 Å) | 0.39 | 0.996 | 0 (ref) |
+| pre-TS rising (2.4–2.9) | 0.43 | 0.991 | 8.7 |
+| **TS region (1.96–2.4)** | **0.83** | **0.950** | **36.5** |
+| **post-TS (1.7–1.96)** | **0.96** | 0.964 | 31.3 |
+| product basin (<1.7 Å) | 0.33 | 0.997 | 23.1 |
+
+- In the **reactant/product basins** agreement is excellent — cosine ≈ 0.996–0.997
+  and low RMSE.
+- In the **TS/post-TS region the force RMSE rises ~2.5–2.9×** (to 0.83–0.96 eV/Å),
+  the **TS cosine drops to ~0.950**, and the **energy discrepancy peaks in the same
+  reactive window** — the disagreement is concentrated exactly where the forming
+  bonds are half-made and the geometry is most distorted.
+
+![Region-wise MACE↔xTB force RMSE and cosine: near-perfect in the basins,
+degrading sharply through the TS / post-TS region.](assets/neb_regionwise_error.png){width=680}
+
+::: {.callout-note}
+## Careful with the "why"
+That the errors *concentrate* in the distorted barrier region is directly
+measured here. The natural explanation — that such highly distorted geometries
+are under-represented in the foundation model's training distribution — is a
+**supported hypothesis, not a demonstrated fact**; this dataset shows *where* the
+error is, not *why*. It motivates, but does not prove, targeted data enrichment.
+:::
+
+[Jul 31 follow-up findings — FINDINGS_jul31.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_jul31.md)

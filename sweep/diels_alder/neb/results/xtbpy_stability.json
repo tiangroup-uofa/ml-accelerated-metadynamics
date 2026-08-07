@@ -1,0 +1,223 @@
+{
+  "config": {
+    "plain": {
+      "single_point": {
+        "reactant": {
+          "ok": true,
+          "error": null,
+          "energy_eV": -484.9873315204766,
+          "fmax": 0.01623835372088486
+        },
+        "product": {
+          "ok": true,
+          "error": null,
+          "energy_eV": -487.48678837803,
+          "fmax": 0.014474265232132995
+        },
+        "TS_guess": {
+          "ok": true,
+          "error": null,
+          "energy_eV": -484.69628475075893,
+          "fmax": 0.028368532466387562
+        },
+        "scan_f05": {
+          "ok": true,
+          "error": null,
+          "energy_eV": -484.9263668942345,
+          "fmax": 0.1545331209780456
+        },
+        "scan_f08": {
+          "ok": true,
+          "error": null,
+          "energy_eV": -484.78230335239596,
+          "fmax": 0.2851300636855209
+        },
+        "scan_f10": {
+          "ok": true,
+          "error": null,
+          "energy_eV": -484.69628475075893,
+          "fmax": 0.02836853246638792
+        },
+        "scan_f12": {
+          "ok": true,
+          "error": null,
+          "energy_eV": -484.92036997759374,
+          "fmax": 1.3190981562759192
+        },
+        "rattled_f08": {
+          "ok": true,
+          "error": null,
+          "energy_eV": -468.2296089625027,
+          "fmax": 50.26575186133948
+        },
+        "rattled_f10": {
+          "ok": true,
+          "error": null,
+          "energy_eV": -474.4831634419976,
+          "fmax": 31.63778420730411
+        }
+      },
+      "forces": {},
+      "timing_ms": {
+        "reactant": 16.1,
+        "product": 4.2,
+        "TS_guess": 4.1,
+        "scan_f05": 4.1,
+        "scan_f08": 4.2,
+        "scan_f10": 4.1,
+        "scan_f12": 4.2,
+        "rattled_f08": 4.6,
+        "rattled_f10": 4.8
+      }
+    },
+    "robust": {
+      "single_point": {
+        "reactant": {
+          "ok": true,
+          "error": null,
+          "energy_eV": -484.9873315174882,
+          "fmax": 0.01623835842730019
+        },
+        "product": {
+          "ok": true,
+          "error": null,
+          "energy_eV": -487.48678837802913,
+          "fmax": 0.014474265233038436
+        },
+        "TS_guess": {
+          "ok": true,
+          "error": null,
+          "energy_eV": -484.6962847478259,
+          "fmax": 0.028368532338597832
+        },
+        "scan_f05": {
+          "ok": true,
+          "error": null,
+          "energy_eV": -484.926366891239,
+          "fmax": 0.15453312108727263
+        },
+        "scan_f08": {
+          "ok": true,
+          "error": null,
+          "energy_eV": -484.78230334946363,
+          "fmax": 0.2851300640245103
+        },
+        "scan_f10": {
+          "ok": true,
+          "error": null,
+          "energy_eV": -484.6962847478259,
+          "fmax": 0.028368532338597832
+        },
+        "scan_f12": {
+          "ok": true,
+          "error": null,
+          "energy_eV": -484.9203699771746,
+          "fmax": 1.3190981561510202
+        },
+        "rattled_f08": {
+          "ok": true,
+          "error": null,
+          "energy_eV": -468.22960895646105,
+          "fmax": 50.26575185879335
+        },
+        "rattled_f10": {
+          "ok": true,
+          "error": null,
+          "energy_eV": -474.4831634608486,
+          "fmax": 31.637784154762624
+        }
+      },
+      "forces": {},
+      "timing_ms": {
+        "reactant": 4.3,
+        "product": 4.2,
+        "TS_guess": 4.2,
+        "scan_f05": 4.3,
+        "scan_f08": 4.4,
+        "scan_f10": 4.6,
+        "scan_f12": 4.2,
+        "rattled_f08": 4.6,
+        "rattled_f10": 4.8
+      }
+    }
+  },
+  "criteria": {
+    "C1_singlepoint_forces": true,
+    "C2_determinism": true,
+    "C3_optimization": true,
+    "C4_neb_smoke": true,
+    "C5_no_crash": true,
+    "plain_scf_success": true
+  },
+  "optimization": {
+    "ok": true,
+    "value": {
+      "converged": true,
+      "final_fmax": 0.02133666688255029
+    },
+    "error": null
+  },
+  "determinism": {
+    "TS_guess": {
+      "ok": true,
+      "value": {
+        "n": 20,
+        "energy_mean_eV": -484.6962847478259,
+        "energy_std_eV": 5.084229945850415e-14,
+        "energy_ptp_eV": 2.2737367544323206e-13,
+        "force_max_dev_eV_A": 2.1778585879150825e-14
+      },
+      "error": null
+    },
+    "rattled_f10": {
+      "ok": true,
+      "value": {
+        "n": 20,
+        "energy_mean_eV": -474.4831634608487,
+        "energy_std_eV": 1.4039288811578068e-13,
+        "energy_ptp_eV": 3.979039320256561e-13,
+        "force_max_dev_eV_A": 2.708944180085382e-14
+      },
+      "error": null
+    }
+  },
+  "neb_smoke": {
+    "ok": true,
+    "value": {
+      "n_images": 5,
+      "energies_finite": true,
+      "rel_kcal": [
+        0.0,
+        0.8,
+        6.9,
+        772.4,
+        -57.6
+      ],
+      "forming_CC": [
+        [
+          3.35,
+          3.35
+        ],
+        [
+          2.91,
+          2.91
+        ],
+        [
+          2.21,
+          2.2
+        ],
+        [
+          1.28,
+          1.35
+        ],
+        [
+          1.54,
+          1.54
+        ]
+      ],
+      "band_physical": true
+    },
+    "error": null
+  },
+  "verdict_trustworthy": true
+}

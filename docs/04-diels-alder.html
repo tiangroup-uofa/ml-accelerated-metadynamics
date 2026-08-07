@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -39,10 +42,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-317ac4b4b91482d7e4b8790d3f54c4a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-8f53ae70cd472c10746adc2081c82a4c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -157,6 +160,7 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#driving-and-properly-characterizing-a-dielsalder" id="toc-driving-and-properly-characterizing-a-dielsalder" class="nav-link active" data-scroll-target="#driving-and-properly-characterizing-a-dielsalder">Driving — and properly characterizing — a Diels–Alder</a></li>
   <li><a href="#can-mace-off23-reproduce-the-reaction-energetics-neb" id="toc-can-mace-off23-reproduce-the-reaction-energetics-neb" class="nav-link" data-scroll-target="#can-mace-off23-reproduce-the-reaction-energetics-neb">Can MACE-OFF23 reproduce the reaction energetics? (NEB)</a></li>
+  <li><a href="#jul-31-follow-up-aug-7-is-the-barrier-gap-a-method-artifact" id="toc-jul-31-follow-up-aug-7-is-the-barrier-gap-a-method-artifact" class="nav-link" data-scroll-target="#jul-31-follow-up-aug-7-is-the-barrier-gap-a-method-artifact">Jul 31 follow-up (Aug 7) — is the barrier gap a method artifact?</a></li>
   </ul>
 </nav>
     </div>
@@ -318,6 +322,110 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_neb.md">NEB findings — FINDINGS_neb.md →</a></p>
+</section>
+</section>
+<section id="jul-31-follow-up-aug-7-is-the-barrier-gap-a-method-artifact" class="level2">
+<h2 class="anchored" data-anchor-id="jul-31-follow-up-aug-7-is-the-barrier-gap-a-method-artifact">Jul 31 follow-up (Aug 7) — is the barrier gap a method artifact?</h2>
+<p>The obvious objection to the ~30 kcal/mol MACE–xTB barrier gap: MACE used NEB, xTB used its built-in path search. Maybe the gap is just a <strong>path-method mismatch</strong>. To rule that out we ran <em>both</em> potentials through the <strong>identical</strong> standardized NEB (13 images, k=0.5, FIRE / <code>NEBOptimizer</code>, fmax 0.05, climbing image, same concerted-scan seed).</p>
+<ul>
+<li><strong><code>xtb-python</code> stability gate passed</strong> — single-points, forces, and geometry optimization are reproducible (repeat-evaluation energy std ≈ 5e-14 eV), so the backend is trustworthy for the full band.</li>
+<li><strong>MACE’s barrier is method-invariant: ~36 kcal/mol across the relaxed scan (36.0), the Sella saddle (36.2), and the standardized NEB (36–37).</strong> It is also numerically converged (35.9 ± 1.0 for ≥11 images).</li>
+<li><strong>xTB ASE-NEB fails <em>physically</em> under the same settings</strong> — the band does not form a sensible path; atoms in the “TS” images fly apart (reported forming C–C of ~7–18 Å) and the apparent barrier balloons to 240–250 kcal/mol under both optimizers.</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>This is a PES/algorithm compatibility issue, not a backend failure
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The same <code>xtb-python</code> that passed the stability gate produces a clean single-point everywhere; only the <em>band optimization</em> on xTB’s flatter, low-barrier surface diverges under these settings (a file-based binary xTB would hit the identical problem). So the valid xTB reference stays the constrained relaxed scan + verified TS (6.7 kcal/mol). <strong>Because MACE’s barrier is the same ~36 kcal/mol no matter how it is computed, the ~30 kcal/mol MACE–xTB gap is a genuine difference between the two potential-energy surfaces — it is not explained by the original path-method mismatch.</strong></p>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/a2_standardized_neb.png" class="img-fluid figure-img" width="720"></p>
+<figcaption>Standardized NEB: MACE gives a consistent ~36 kcal/mol barrier; the xTB band does not converge to a physical path under the identical settings (shown as its valid relaxed-scan reference instead).</figcaption>
+</figure>
+</div>
+<section id="barrier-region-error-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="barrier-region-error-analysis">Barrier-region error analysis</h3>
+<p>Where along the reaction coordinate does the MACE↔︎xTB disagreement live? We partitioned 152 rattled path geometries into five regions by forming C–C distance and measured raw MACE-vs-xTB force RMSE, cosine, and energy discrepancy per region.</p>
+<table class="table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 27%">
+<col style="width: 27%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>region (forming C–C)</th>
+<th style="text-align: center;">force RMSE (eV/Å)</th>
+<th style="text-align: center;">cosine</th>
+<th style="text-align: center;">ΔE vs reactant (kcal/mol)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>reactant basin (&gt;2.9 Å)</td>
+<td style="text-align: center;">0.39</td>
+<td style="text-align: center;">0.996</td>
+<td style="text-align: center;">0 (ref)</td>
+</tr>
+<tr class="even">
+<td>pre-TS rising (2.4–2.9)</td>
+<td style="text-align: center;">0.43</td>
+<td style="text-align: center;">0.991</td>
+<td style="text-align: center;">8.7</td>
+</tr>
+<tr class="odd">
+<td><strong>TS region (1.96–2.4)</strong></td>
+<td style="text-align: center;"><strong>0.83</strong></td>
+<td style="text-align: center;"><strong>0.950</strong></td>
+<td style="text-align: center;"><strong>36.5</strong></td>
+</tr>
+<tr class="even">
+<td><strong>post-TS (1.7–1.96)</strong></td>
+<td style="text-align: center;"><strong>0.96</strong></td>
+<td style="text-align: center;">0.964</td>
+<td style="text-align: center;">31.3</td>
+</tr>
+<tr class="odd">
+<td>product basin (&lt;1.7 Å)</td>
+<td style="text-align: center;">0.33</td>
+<td style="text-align: center;">0.997</td>
+<td style="text-align: center;">23.1</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>In the <strong>reactant/product basins</strong> agreement is excellent — cosine ≈ 0.996–0.997 and low RMSE.</li>
+<li>In the <strong>TS/post-TS region the force RMSE rises ~2.5–2.9×</strong> (to 0.83–0.96 eV/Å), the <strong>TS cosine drops to ~0.950</strong>, and the <strong>energy discrepancy peaks in the same reactive window</strong> — the disagreement is concentrated exactly where the forming bonds are half-made and the geometry is most distorted.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/neb_regionwise_error.png" class="img-fluid figure-img" width="680"></p>
+<figcaption>Region-wise MACE↔︎xTB force RMSE and cosine: near-perfect in the basins, degrading sharply through the TS / post-TS region.</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Careful with the “why”
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>That the errors <em>concentrate</em> in the distorted barrier region is directly measured here. The natural explanation — that such highly distorted geometries are under-represented in the foundation model’s training distribution — is a <strong>supported hypothesis, not a demonstrated fact</strong>; this dataset shows <em>where</em> the error is, not <em>why</em>. It motivates, but does not prove, targeted data enrichment.</p>
+</div>
+</div>
+<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_jul31.md">Jul 31 follow-up findings — FINDINGS_jul31.md →</a></p>
 
 
 </section>

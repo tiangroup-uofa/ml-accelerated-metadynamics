@@ -1,0 +1,27 @@
+{
+  "xtb_target": {
+    "barrier": 6.7,
+    "reaction_energy": -57.6,
+    "ts_forming": 2.32
+  },
+  "raw_MACE": {
+    "barrier": 36.04842810043378,
+    "ts_forming": 2.0227897367955885,
+    "reaction_energy": -40.64459262392602
+  },
+  "A_baseline": {
+    "barrier": 14.068147859737001,
+    "ts_forming": 2.0227897367957395,
+    "reaction_energy": -47.31922366091853
+  },
+  "B_barrier": {
+    "barrier": 9.867719328864275,
+    "ts_forming": 2.616704314052379,
+    "reaction_energy": -50.680468190039704
+  },
+  "C_generic": {
+    "barrier": 15.005094525904136,
+    "ts_forming": 2.0227897367955743,
+    "reaction_energy": -51.10353791814914
+  }
+}

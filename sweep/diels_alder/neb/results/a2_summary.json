@@ -1,0 +1,104 @@
+{
+  "_optimizer": "neb",
+  "xtb": {
+    "method": "xtb",
+    "barrier_kcal": 251.58625724914924,
+    "reaction_energy_kcal": -57.63884490642952,
+    "ts_forming_A": [
+      1.2787691390846785,
+      7.394962975124988
+    ],
+    "ts_forming_mean": 4.336866057104833,
+    "ts_index": 11,
+    "n_images": 13,
+    "n_dropped": 0,
+    "fire_converged": true,
+    "fire_steps": 722,
+    "neb_fmax_final": 0.8376297042390131,
+    "settings": {
+      "n_images": 13,
+      "k": 0.5,
+      "fmax": 0.05,
+      "seed": "concerted-scan",
+      "optimizer": "FIRE",
+      "climb": true
+    },
+    "coord": [
+      3.347,
+      3.017,
+      2.595,
+      1.552,
+      1.537,
+      1.531,
+      1.524,
+      1.531,
+      1.535,
+      1.546,
+      1.333,
+      4.337,
+      1.539
+    ],
+    "monotonic_ordering": false,
+    "inversions": 1,
+    "collapsed_images": [
+      10,
+      11
+    ],
+    "scrambled_images": [
+      11
+    ],
+    "band_physical": false
+  },
+  "mace": {
+    "method": "mace",
+    "barrier_kcal": 36.49514919175367,
+    "reaction_energy_kcal": -36.09751942995354,
+    "ts_forming_A": [
+      2.0436795332750775,
+      2.0435088551698466
+    ],
+    "ts_forming_mean": 2.043594194222462,
+    "ts_index": 8,
+    "n_images": 13,
+    "n_dropped": 1,
+    "fire_converged": false,
+    "fire_steps": 47,
+    "neb_fmax_final": 25.549614702033754,
+    "settings": {
+      "n_images": 13,
+      "k": 0.5,
+      "fmax": 0.05,
+      "seed": "concerted-scan",
+      "optimizer": "FIRE",
+      "climb": true
+    },
+    "coord": [
+      3.347,
+      3.169,
+      3.07,
+      2.978,
+      2.835,
+      2.686,
+      2.57,
+      2.405,
+      2.044,
+      1.611,
+      1.531,
+      1.25,
+      1.543
+    ],
+    "monotonic_ordering": false,
+    "inversions": 1,
+    "collapsed_images": [
+      11
+    ],
+    "scrambled_images": [],
+    "band_physical": false
+  },
+  "xtb_prev_scan": {
+    "barrier_kcal": 6.7,
+    "reaction_energy_kcal": -57.63880133715788,
+    "ts_forming_mean": 2.32,
+    "source": "xtb built-in path search (relaxed scan)"
+  }
+}

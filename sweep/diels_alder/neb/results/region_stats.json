@@ -1,0 +1,77 @@
+[
+  {
+    "region": "reactant_basin",
+    "n": 35,
+    "forming_CC_range": [
+      2.9116431406170893,
+      3.3951499864638977
+    ],
+    "force_rmse_mean": 0.38867493783904306,
+    "force_rmse_median": 0.32937448936281266,
+    "force_rmse_std": 0.3920389192546399,
+    "cosine_mean": 0.9957677291241442,
+    "cosine_median": 0.9963933173150089,
+    "dE_rel_reactant_mean": 0.0,
+    "dE_rel_reactant_std": 4.31241325504045
+  },
+  {
+    "region": "pre_TS_rising",
+    "n": 43,
+    "forming_CC_range": [
+      2.4051072393525295,
+      2.890149771221209
+    ],
+    "force_rmse_mean": 0.4297057275925699,
+    "force_rmse_median": 0.4070615526342491,
+    "force_rmse_std": 0.13667588888966345,
+    "cosine_mean": 0.9911326928499573,
+    "cosine_median": 0.9923467075712713,
+    "dE_rel_reactant_mean": 8.726900368346833,
+    "dE_rel_reactant_std": 5.649173225572433
+  },
+  {
+    "region": "TS_region",
+    "n": 35,
+    "forming_CC_range": [
+      1.9619335200519874,
+      2.3670567059967853
+    ],
+    "force_rmse_mean": 0.8301318632637867,
+    "force_rmse_median": 0.8559839706199928,
+    "force_rmse_std": 0.17037353924540305,
+    "cosine_mean": 0.9497823094760438,
+    "cosine_median": 0.9612980661109927,
+    "dE_rel_reactant_mean": 36.46521965472493,
+    "dE_rel_reactant_std": 15.730161354530019
+  },
+  {
+    "region": "post_TS",
+    "n": 22,
+    "forming_CC_range": [
+      1.700166131266604,
+      1.9164066263195723
+    ],
+    "force_rmse_mean": 0.9581421855622426,
+    "force_rmse_median": 0.9772814148934006,
+    "force_rmse_std": 0.4664208790032025,
+    "cosine_mean": 0.9635221109253592,
+    "cosine_median": 0.9680014254152804,
+    "dE_rel_reactant_mean": 31.296939332562033,
+    "dE_rel_reactant_std": 7.036376071328131
+  },
+  {
+    "region": "product_basin",
+    "n": 17,
+    "forming_CC_range": [
+      1.4675016680603976,
+      1.6991410827959192
+    ],
+    "force_rmse_mean": 0.33101394050719174,
+    "force_rmse_median": 0.28275000494119207,
+    "force_rmse_std": 0.13917857492475658,
+    "cosine_mean": 0.9971546269574922,
+    "cosine_median": 0.9972297747236176,
+    "dE_rel_reactant_mean": 23.052215984236682,
+    "dE_rel_reactant_std": 1.8178524016944537
+  }
+]
