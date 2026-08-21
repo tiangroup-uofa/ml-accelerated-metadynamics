@@ -161,6 +161,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#driving-and-properly-characterizing-a-dielsalder" id="toc-driving-and-properly-characterizing-a-dielsalder" class="nav-link active" data-scroll-target="#driving-and-properly-characterizing-a-dielsalder">Driving — and properly characterizing — a Diels–Alder</a></li>
   <li><a href="#can-mace-off23-reproduce-the-reaction-energetics-neb" id="toc-can-mace-off23-reproduce-the-reaction-energetics-neb" class="nav-link" data-scroll-target="#can-mace-off23-reproduce-the-reaction-energetics-neb">Can MACE-OFF23 reproduce the reaction energetics? (NEB)</a></li>
   <li><a href="#jul-31-follow-up-aug-7-is-the-barrier-gap-a-method-artifact" id="toc-jul-31-follow-up-aug-7-is-the-barrier-gap-a-method-artifact" class="nav-link" data-scroll-target="#jul-31-follow-up-aug-7-is-the-barrier-gap-a-method-artifact">Jul 31 follow-up (Aug 7) — is the barrier gap a method artifact?</a></li>
+  <li><a href="#aug-7-follow-up-is-the-xtb-ts-also-a-mace-saddle" id="toc-aug-7-follow-up-is-the-xtb-ts-also-a-mace-saddle" class="nav-link" data-scroll-target="#aug-7-follow-up-is-the-xtb-ts-also-a-mace-saddle">Aug 7 follow-up — is the xTB TS also a MACE saddle?</a></li>
   </ul>
 </nav>
     </div>
@@ -426,6 +427,159 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_jul31.md">Jul 31 follow-up findings — FINDINGS_jul31.md →</a></p>
+</section>
+</section>
+<section id="aug-7-follow-up-is-the-xtb-ts-also-a-mace-saddle" class="level2">
+<h2 class="anchored" data-anchor-id="aug-7-follow-up-is-the-xtb-ts-also-a-mace-saddle">Aug 7 follow-up — is the xTB TS also a MACE saddle?</h2>
+<p>The ~30 kcal/mol barrier gap was confirmed as real on identical geometries (Phase Jul 31). But a natural follow-up: does the native xTB transition state (2.32 Å forming C–C) also serve as the MACE transition state? Or does MACE have its own distinct saddle nearby?</p>
+<p>We used the verified xTB TS as a starting point for a <strong>MACE saddle search via Sella</strong>, then tested whether the result is robust to small perturbations.</p>
+<section id="identical-geometry-cross-check" class="level3">
+<h3 class="anchored" data-anchor-id="identical-geometry-cross-check">Identical-geometry cross-check</h3>
+<p>First, frozen-geometry evaluation confirmed the gap is intrinsic:</p>
+<table class="table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Calculation</th>
+<th>xTB</th>
+<th>MACE @ xTB geoms</th>
+<th>Difference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Barrier at frozen xTB TS</strong></td>
+<td><strong>6.7 kcal/mol</strong></td>
+<td><strong>27.9 kcal/mol</strong></td>
+<td><strong>−21.2</strong></td>
+</tr>
+<tr class="even">
+<td>Force residual at xTB TS</td>
+<td>0.00093 eV/Å</td>
+<td><strong>1.84 eV/Å</strong></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>The xTB TS is a true saddle on xTB’s PES (tiny residual force). On MACE’s PES, the same geometry carries <strong>large residual forces (1.84 eV/Å)</strong> — it is NOT a saddle point on MACE.</p>
+</section>
+<section id="mace-saddle-search-from-xtb-ts" class="level3">
+<h3 class="anchored" data-anchor-id="mace-saddle-search-from-xtb-ts">MACE saddle search from xTB TS</h3>
+<p>Started Sella at the xTB TS geometry. Result:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Converged</strong></td>
+<td>YES (66 iterations)</td>
+</tr>
+<tr class="even">
+<td><strong>MACE TS forming C–C</strong></td>
+<td><strong>2.004 Å</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>xTB TS forming C–C</strong></td>
+<td>2.315 Å</td>
+</tr>
+<tr class="even">
+<td><strong>Geometric shift</strong></td>
+<td><strong>0.311 Å</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>MACE barrier at converged TS</strong></td>
+<td><strong>35.8 kcal/mol</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Independent NEB barrier (reference)</strong></td>
+<td>36.0 kcal/mol</td>
+</tr>
+<tr class="odd">
+<td><strong>First-order saddle?</strong></td>
+<td>YES — one imaginary mode ✓</td>
+</tr>
+</tbody>
+</table>
+<p>The converged MACE TS is <strong>distinct from the xTB TS</strong> in both location and energy, yet it <strong>matches the independently obtained NEB barrier</strong> (35.8 vs 36.0 kcal/mol, RMSD &lt; 0.001 Å). This agreement across two separate methods is strong evidence for a well-defined MACE saddle.</p>
+</section>
+<section id="robustness-small-perturbations-along-the-reaction-mode" class="level3">
+<h3 class="anchored" data-anchor-id="robustness-small-perturbations-along-the-reaction-mode">Robustness: small perturbations along the reaction mode</h3>
+<p>To verify the MACE saddle is not an artifact, we created four small perturbations (±0.02 Å, ±0.05 Å) along the Hessian’s imaginary eigenvector and ran Sella from each.</p>
+<p><strong>Result: perfect recovery to the same saddle.</strong></p>
+<table class="table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Perturbation</th>
+<th>Iterations to converge</th>
+<th>Barrier (kcal/mol)</th>
+<th>RMSD to reference (Å)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>−0.05 Å</td>
+<td>38</td>
+<td>35.806</td>
+<td>5.0e−6</td>
+</tr>
+<tr class="even">
+<td>−0.02 Å</td>
+<td>30</td>
+<td>35.806</td>
+<td>1.6e−6</td>
+</tr>
+<tr class="odd">
+<td>+0.02 Å</td>
+<td>37</td>
+<td>35.806</td>
+<td>1.6e−6</td>
+</tr>
+<tr class="even">
+<td>+0.05 Å</td>
+<td>61</td>
+<td>35.806</td>
+<td>1.6e−6</td>
+</tr>
+<tr class="odd">
+<td><strong>Spread</strong></td>
+<td>—</td>
+<td><strong>0.000 kcal/mol</strong></td>
+<td><strong>&lt; 1e−5 Å</strong></td>
+</tr>
+</tbody>
+</table>
+<p>All four perturbations converge back to <strong>the exact same MACE saddle</strong> (barrier 35.806 ± 0.000 kcal/mol, zero geometry spread). This is characteristic of a well-isolated, robust first-order saddle point — not a numerical artifact or an optimizer quirk.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>The barrier disagreement is a genuine PES difference
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>The xTB and MACE potential-energy surfaces describe fundamentally different reaction barriers in the same geometric region.</strong></p>
+<p>The 29 kcal/mol gap is not explained by: - Path-search methodology (identical frozen geometries still show 21 kcal/mol difference) - Lack of MACE TS convergence (independent methods consistently recover ~36 kcal/mol) - Optimizer artifacts (robustness test shows zero variability under perturbations)</p>
+<p>The two models agree on mechanism (concerted, synchronous bond-forming, ~2.0–2.3 Å TS region) but assign very different barrier heights.</p>
+</div>
+</div>
+<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/PHASE1_COMPLETE_FINDINGS.md">Phase 1 complete findings — PHASE1_COMPLETE_FINDINGS.md →</a></p>
 
 
 </section>
