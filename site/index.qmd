@@ -1,39 +1,110 @@
 ---
-title: "Metadynamics of water: from clusters to a surrogate"
-subtitle: "Enhanced-sampling MD of water clusters with GFN2-xTB, and a MACE-OFF23 machine-learned potential as the route to accelerated sampling."
+title: "ML-Accelerated Metadynamics"
+subtitle: "Can a pretrained machine-learned potential stand in for a quantum-chemical reference — and where it can't, can we correct it without retraining?"
+toc: false
 ---
 
-This is a running results notebook for the project. We validate **GFN2-xTB**
-RMSD-metadynamics workflows for water — bias and size sweeps, periodic and free
-droplets, and a Diels–Alder reaction — then benchmark a **MACE-OFF23** foundation
-potential against xTB, with the longer-term aim of accelerating enhanced sampling.
+The long-term goal is a workflow where enhanced sampling runs on a **machine-learned
+surrogate** at the accuracy of the underlying quantum-chemical reference. Getting
+there means answering four questions in order: does an off-the-shelf potential agree
+with the reference at equilibrium, does that agreement survive bond breaking, can a
+lightweight correction close the gap that appears, and does that correction keep
+improving when fed more data.
 
-::: {.callout-note}
-## What the RMSD bias is
-xTB biases along **Cartesian RMSD** to previously visited structures — not along
-any bond or angle. Every CV computed in analysis is a *post-hoc descriptor*, and
-`Epot` vs a CV is a **sampled potential-energy landscape from a biased run**, not a
-free-energy surface.
+Each pillar below is a 2–4 minute read. The detailed **Studies** remain the source of
+truth for methodology, full tables, convergence tests, and troubleshooting.
+
+::: {.pillar-grid}
+
+::: {.pillar-card}
+[PILLAR 1]{.num}
+
+### [MACE ↔ xTB validation](p1-validation.qmd)
+
+[Does off-the-shelf MACE-OFF23 reproduce GFN2-xTB for equilibrium water?]{.q}
+
+[**Yes.** Forces correlate at r ≈ 0.99 and MD reproduces droplet structure.]{.hit}
 :::
+
+::: {.pillar-card .flagship}
+[PILLAR 2]{.num}
+
+### [Reactive chemistry](p2-reactive.qmd)
+
+[Does that agreement survive bond-forming chemistry?]{.q}
+
+[**No.** Barriers differ by ~29 kcal/mol — a genuine difference between the two
+potential-energy surfaces, not a path-search artifact.]{.hit}
+:::
+
+::: {.pillar-card .flagship}
+[PILLAR 3]{.num}
+
+### [Post-training correction](p3-correction.qmd)
+
+[Can a lightweight correction close that gap without touching the foundation model?]{.q}
+
+[**Largely, once.** A targeted conservative Delta puts the certified saddle at
+6.33 kcal/mol against an xTB target of 6.7.]{.hit}
+:::
+
+::: {.pillar-card}
+[PILLAR 4]{.num}
+
+### [Iterative calibration](p4-iterative.qmd)
+
+[Does repeating that correction with more targeted data keep improving it?]{.q}
+
+[**No.** 42 further reference calculations did not improve on iteration 0 — a
+useful negative result.]{.hit}
+:::
+
+:::
+
+## The scientific chain
+
+Each pillar exists because the previous one produced a specific question:
+
+1. **Equilibrium agreement is strong** — which makes the reactive test meaningful
+   rather than a foregone conclusion.
+2. **Reactive agreement fails, and the failure is localized** to the transition-state
+   region — which motivates correcting *there* rather than globally.
+3. **Targeted correction works, once** — which raises the obvious follow-up: does it
+   keep working if iterated?
+4. **It does not** — which points at correction capacity, not reference-data quantity,
+   as the next thing to test.
+
+The [Research Map](research-map.qmd) shows how the individual studies attach to this
+chain. It is optional — everything on the main pages stands on its own.
 
 ## Results at a glance
 
-| # | Study | Headline result |
-|---|-------|-----------------|
-| 01 | [Bias × size](01-sweep.qmd) | The bias breaks the **weakest** bond — H-bond for clusters, covalent O–H only for a lone molecule; small clusters evaporate. |
-| 02 | [PBC & temperature](02-pbc.qmd) | Periodicity **confines** the system (removes evaporation); a large O–O gap is *drift*, not dissociation. |
-| 03 | [Droplets](03-droplets.qmd) | **Size suppresses evaporation** — free n=20–50 droplets stay intact; raising `kpush` barely perturbs them (a bias-scaling artifact). |
-| 04 | [Diels–Alder](04-diels-alder.qmd) | A real reaction driven and verified: concerted TS, **6.7 kcal/mol** barrier, −394 cm⁻¹ imaginary mode. |
-| 05 | [MACE-OFF23](05-mace.qmd) | MACE-OFF23 tracks xTB forces at **r ≈ 0.99**, reproduces droplet MD structure, and scales better (crossover by n≈50). |
-| 06 | [kpush scaling](06-kpush.qmd) | The RMSD-bias per-atom force ∝ **kpush/N** — so `kpush` must scale **∝ N**; confirmed on the n=30 droplet. |
-| 07 | [CV design](07-cv-design.qmd) | 7 candidate CVs collapse to ~3 axes (network integrity, size, chemistry); a minimal biasing set recommended. |
-| 08 | [Corrections](08-corrections.qmd) | A conservative **delta** correction removes ~all reaction-energy and ~2/3 barrier error MACE→xTB; scalar/element corrections don't. |
+| # | Study | Headline result | Pillar |
+|---|-------|-----------------|:---:|
+| 01 | [Bias × size](01-sweep.qmd) | The RMSD bias breaks the **weakest** bond; small clusters evaporate. | [1](p1-validation.qmd) |
+| 02 | [PBC & temperature](02-pbc.qmd) | Periodicity confines the system; a large O–O gap is *drift*, not dissociation. | [1](p1-validation.qmd) |
+| 03 | [Droplets](03-droplets.qmd) | **Size suppresses evaporation**; raising `kpush` barely perturbs n=20–50. | [1](p1-validation.qmd) |
+| 04 | [Diels–Alder](04-diels-alder.qmd) | Verified concerted TS at **6.7 kcal/mol**, −394 cm⁻¹; raw MACE gives ~36. | [2](p2-reactive.qmd) |
+| 05 | [MACE-OFF23](05-mace.qmd) | Forces track xTB at **r ≈ 0.99**; MD structure reproduced; crossover by n≈50. | [1](p1-validation.qmd) |
+| 06 | [kpush scaling](06-kpush.qmd) | Bias force ∝ **kpush/N**, so `kpush` must scale ∝ N. | [1](p1-validation.qmd) |
+| 07 | [CV design](07-cv-design.qmd) | 7 candidate CVs collapse to ~3 independent axes. | [1](p1-validation.qmd) |
+| 08 | [Corrections](08-corrections.qmd) | A conservative pairwise **Delta** removes most of the barrier error; iterating it does not help further. | [3](p3-correction.qmd) · [4](p4-iterative.qmd) |
 
 ## Methods in one paragraph
 
-Gas-phase and periodic **GFN2/GFN1-xTB** metadynamics (built-in RMSD bias),
-NVT, 0.5 fs timestep; analysis with ASE / NumPy / pandas. Reactions via
-`xtb --path` + relaxed scan + Sella saddle optimization. Surrogate benchmarking
-with **MACE-OFF23 (small)** as an ASE calculator. All code, data and figures are
-in the [repository](https://github.com/tiangroup-uofa/xtb_metadynamics); each
-study page links to its detailed `FINDINGS` document.
+Gas-phase and periodic **GFN2/GFN1-xTB** metadynamics (built-in Cartesian-RMSD bias),
+NVT, 0.5 fs timestep; analysis with ASE / NumPy / pandas. Reactions via `xtb --path`,
+relaxed concerted scans, and **Sella** saddle optimization with Hessian verification.
+Surrogate benchmarking with **MACE-OFF23 (small)** as an ASE calculator; corrections
+applied through a `CorrectedCalculator` wrapper so the foundation model is never
+modified. All code, data, and figures are in the
+[repository](https://github.com/tiangroup-uofa/xtb_metadynamics); each study page links
+to its detailed `FINDINGS` document.
+
+::: {.methodnote}
+[On the RMSD bias]{.lbl}
+xTB biases along **Cartesian RMSD** to previously visited structures — not along any
+bond or angle. Every collective variable computed in analysis is a *post-hoc
+descriptor*, and `Epot` versus a CV is a **sampled potential-energy landscape from a
+biased run**, not a free-energy surface.
+:::

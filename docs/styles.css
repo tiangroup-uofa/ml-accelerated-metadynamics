@@ -1,0 +1,239 @@
+/* ------------------------------------------------------------------
+   Restrained academic styling for the xTB-metadynamics research site.
+   Layer on top of the cosmo bootswatch theme; no framework overrides.
+   ------------------------------------------------------------------ */
+
+:root {
+  --ink: #1f2933;
+  --ink-soft: #52606d;
+  --rule: #e4e7eb;
+  --accent: #2e6f95;      /* MACE / primary */
+  --accent-warm: #c1121f; /* xTB / reference */
+  --tint: #f4f7f9;
+  --tint-warm: #fdf6f5;
+}
+
+body {
+  color: var(--ink);
+  line-height: 1.65;
+}
+
+/* ---------- typography & hierarchy ---------- */
+h1.title {
+  font-weight: 650;
+  letter-spacing: -0.018em;
+  line-height: 1.2;
+}
+.subtitle {
+  color: var(--ink-soft);
+  font-size: 1.03rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+main h2 {
+  margin-top: 2.9rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--rule);
+  font-size: 1.42rem;
+  font-weight: 620;
+  letter-spacing: -0.012em;
+}
+main h3 {
+  margin-top: 2rem;
+  font-size: 1.11rem;
+  font-weight: 620;
+  color: #2b3a45;
+}
+main p { max-width: 68ch; }
+main ul, main ol { max-width: 66ch; }
+
+/* the five-part pillar spine: question / context / evidence / learned / related */
+.pillar-section-label {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.71rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.15rem;
+}
+
+/* ---------- lead question block ---------- */
+.question {
+  border-left: 4px solid var(--accent);
+  background: var(--tint);
+  padding: 1rem 1.2rem;
+  margin: 1.4rem 0 1.8rem;
+  border-radius: 0 5px 5px 0;
+}
+.question p { margin: 0; font-size: 1.06rem; font-weight: 500; max-width: 62ch; }
+.question .pillar-section-label { margin-bottom: 0.3rem; }
+
+/* ---------- key result / method note ---------- */
+.keyresult {
+  border: 1px solid #cfe0ea;
+  border-left: 4px solid var(--accent);
+  background: var(--tint);
+  padding: 0.95rem 1.15rem;
+  margin: 1.5rem 0;
+  border-radius: 0 5px 5px 0;
+}
+.keyresult > .lbl {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-size: 0.71rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.35rem;
+}
+.keyresult p:last-child { margin-bottom: 0; }
+
+.methodnote {
+  border-left: 3px solid #c3ccd4;
+  background: #fafbfc;
+  padding: 0.8rem 1.05rem;
+  margin: 1.3rem 0;
+  font-size: 0.93rem;
+  color: var(--ink-soft);
+  border-radius: 0 4px 4px 0;
+}
+.methodnote > .lbl {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #7b8794;
+  margin-bottom: 0.3rem;
+}
+.methodnote p:last-child { margin-bottom: 0; }
+
+/* negative / caution result */
+.keyresult.caution { border-left-color: var(--accent-warm); border-color: #eccfcd; background: var(--tint-warm); }
+.keyresult.caution > .lbl { color: var(--accent-warm); }
+
+/* ---------- pillar cards on the overview ---------- */
+.pillar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  gap: 1rem;
+  margin: 1.6rem 0 2.2rem;
+}
+.pillar-card {
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 1.05rem 1.15rem 1.1rem;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+.pillar-card .num {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8f9aa6;
+  font-weight: 700;
+}
+.pillar-card h3 {
+  margin: 0.25rem 0 0.4rem;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  font-weight: 640;
+}
+.pillar-card h3 a { text-decoration: none; color: var(--ink); }
+.pillar-card h3 a:hover { color: var(--accent); }
+.pillar-card .q {
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin: 0 0 0.6rem;
+  flex-grow: 1;
+}
+.pillar-card .hit {
+  font-size: 0.86rem;
+  color: var(--ink);
+  border-top: 1px solid var(--rule);
+  padding-top: 0.55rem;
+  margin: 0;
+}
+/* the two heavyweight pillars carry more visual weight */
+.pillar-card.flagship { border-top-width: 5px; box-shadow: 0 2px 6px rgba(31,41,51,.09); }
+.pillar-card.flagship .num { color: var(--accent); }
+
+/* ---------- related-study chips ---------- */
+.studylinks { margin: 1rem 0 0.4rem; padding: 0; }
+.studylinks a {
+  display: inline-block;
+  margin: 0.2rem 0.35rem 0.2rem 0;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid #d6dde4;
+  border-radius: 999px;
+  font-size: 0.87rem;
+  text-decoration: none;
+  color: var(--ink);
+  background: #fff;
+}
+.studylinks a:hover { border-color: var(--accent); color: var(--accent); }
+.studylinks a.primary { border-color: var(--accent); color: var(--accent); font-weight: 550; }
+
+/* ---------- tables ---------- */
+main table {
+  font-size: 0.93rem;
+  margin: 1.1rem 0 0.5rem;
+}
+main table thead th {
+  border-bottom: 2px solid var(--rule);
+  font-weight: 640;
+  white-space: nowrap;
+}
+main table td, main table th { padding: 0.42rem 0.6rem; }
+main table tbody tr:last-child td { border-bottom: 1px solid var(--rule); }
+.table-note { font-size: 0.85rem; color: var(--ink-soft); margin-top: 0.25rem; }
+
+/* ---------- figures ---------- */
+figure { margin: 1.6rem 0; }
+figure img, p > img {
+  border: 1px solid #eceff2;
+  border-radius: 4px;
+  background: #fff;
+}
+figcaption, .figure-caption {
+  font-size: 0.86rem !important;
+  color: var(--ink-soft);
+  line-height: 1.45;
+  margin-top: 0.5rem;
+}
+
+/* ---------- research map ---------- */
+.research-map {
+  margin: 1.5rem 0 1rem;
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: #fff;
+  padding: 0.4rem;
+}
+.research-map svg { display: block; width: 100%; height: auto; min-width: 640px; }
+.research-map a { cursor: pointer; text-decoration: none; }
+.research-map a:hover .node-box { filter: brightness(0.94); }
+.research-map a:hover .node-label { text-decoration: underline; }
+.map-legend { font-size: 0.87rem; color: var(--ink-soft); }
+.map-legend span { display: inline-block; margin-right: 1.1rem; white-space: nowrap; }
+.map-legend i {
+  display: inline-block; width: 0.75rem; height: 0.75rem;
+  border-radius: 2px; margin-right: 0.35rem; vertical-align: baseline;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 640px) {
+  main h2 { margin-top: 2.2rem; font-size: 1.28rem; }
+  .pillar-grid { grid-template-columns: 1fr; gap: 0.8rem; }
+  main table { font-size: 0.86rem; }
+  .question p { font-size: 1rem; }
+}
+
+/* keep wide tables scrollable rather than breaking the layout */
+main .table-responsive, main table { max-width: 100%; }

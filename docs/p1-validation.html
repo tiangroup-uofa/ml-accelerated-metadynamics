@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Study 02 — Periodicity &amp; temperature – ML-Accelerated Metadynamics</title>
+<title>Pillar 1 — MACE ↔︎ xTB validation – ML-Accelerated Metadynamics</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -100,7 +100,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Overview</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./p1-validation.html"> 
+    <a class="nav-link active" href="./p1-validation.html" aria-current="page"> 
 <span class="menu-text">Validation</span></a>
   </li>  
   <li class="nav-item">
@@ -186,8 +186,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul class="collapse">
-  <li><a href="#confinement-fixes-evaporation" id="toc-confinement-fixes-evaporation" class="nav-link active" data-scroll-target="#confinement-fixes-evaporation">Confinement fixes evaporation</a></li>
-  <li><a href="#a-big-oo-gap-is-drift-not-dissociation" id="toc-a-big-oo-gap-is-drift-not-dissociation" class="nav-link" data-scroll-target="#a-big-oo-gap-is-drift-not-dissociation">A big O–O gap is drift, not dissociation</a></li>
+  <li><a href="#why-we-tested-it" id="toc-why-we-tested-it" class="nav-link active" data-scroll-target="#why-we-tested-it">Why we tested it</a></li>
+  <li><a href="#key-evidence" id="toc-key-evidence" class="nav-link" data-scroll-target="#key-evidence">Key evidence</a></li>
+  <li><a href="#what-we-learned" id="toc-what-we-learned" class="nav-link" data-scroll-target="#what-we-learned">What we learned</a></li>
+  <li><a href="#related-studies" id="toc-related-studies" class="nav-link" data-scroll-target="#related-studies">Related studies</a></li>
   </ul>
 </nav>
     </div>
@@ -196,8 +198,8 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Study 02 — Periodicity &amp; temperature</h1>
-<p class="subtitle lead">(H₂O)₈ periodic (GFN1) · trimer temperature sweep</p>
+<h1 class="title">Pillar 1 — MACE ↔︎ xTB validation</h1>
+<p class="subtitle lead">Does an off-the-shelf machine-learned potential reproduce the quantum-chemical reference for equilibrium water?</p>
 </div>
 
 
@@ -214,26 +216,133 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="confinement-fixes-evaporation" class="level2">
-<h2 class="anchored" data-anchor-id="confinement-fixes-evaporation">Confinement fixes evaporation</h2>
-<p>An 8-water periodic box stays condensed for the whole run (max O–O oscillates 6–7 Å, never leaves the cell) while the gas-phase cluster separates past 100 Å. <strong>Periodicity removes the evaporation channel</strong> — though it forces GFN1, since GFN2 has no PBC multipoles in this build, so gas (GFN2) and periodic (GFN1) results are not at the same level of theory.</p>
+<div class="question">
+<p><span class="pillar-section-label">Scientific question</span> Can <strong>MACE-OFF23</strong>, used off the shelf with no fine-tuning, stand in for <strong>GFN2-xTB</strong> in equilibrium molecular dynamics of water clusters?</p>
+</div>
+<section id="why-we-tested-it" class="level2">
+<h2 class="anchored" data-anchor-id="why-we-tested-it">Why we tested it</h2>
+<p>The whole programme depends on replacing an expensive reference with a cheap surrogate. xTB scales roughly O(N³) while a message-passing potential scales ~linearly, so the surrogate only becomes worthwhile if it is <em>both</em> faster at size and faithful at equilibrium. This pillar establishes the baseline: if agreement failed here, nothing downstream would be interpretable.</p>
+<p>MACE-OFF23 is trained on DFT (ωB97M-D3BJ), <strong>not</strong> on xTB. Agreement is therefore two independent methods converging, not a fit.</p>
+</section>
+<section id="key-evidence" class="level2">
+<h2 class="anchored" data-anchor-id="key-evidence">Key evidence</h2>
+<section id="static-forces-and-energies" class="level3">
+<h3 class="anchored" data-anchor-id="static-forces-and-energies">Static forces and energies</h3>
+<table class="table">
+<colgroup>
+<col style="width: 4%">
+<col style="width: 10%">
+<col style="width: 13%">
+<col style="width: 18%">
+<col style="width: 25%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>n</th>
+<th style="text-align: center;">atoms</th>
+<th style="text-align: center;">force r</th>
+<th style="text-align: center;">force RMSE</th>
+<th style="text-align: center;">relative energy</th>
+<th style="text-align: center;">MACE cost vs xTB</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>20</td>
+<td style="text-align: center;">60</td>
+<td style="text-align: center;">0.992</td>
+<td style="text-align: center;">0.185 eV/Å</td>
+<td style="text-align: center;">3.3 meV/atom</td>
+<td style="text-align: center;">2.5×</td>
+</tr>
+<tr class="even">
+<td>30</td>
+<td style="text-align: center;">90</td>
+<td style="text-align: center;">0.992</td>
+<td style="text-align: center;">0.190 eV/Å</td>
+<td style="text-align: center;">2.5 meV/atom</td>
+<td style="text-align: center;">1.6×</td>
+</tr>
+<tr class="odd">
+<td>50</td>
+<td style="text-align: center;">150</td>
+<td style="text-align: center;">0.991</td>
+<td style="text-align: center;">0.198 eV/Å</td>
+<td style="text-align: center;">2.3 meV/atom</td>
+<td style="text-align: center;"><strong>1.0×</strong></td>
+</tr>
+</tbody>
+</table>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="assets/pbc_vs_gas.png" class="img-fluid figure-img" width="560"></p>
-<figcaption>Periodic box stays bounded (≤ 7.7 Å); the gas-phase cluster evaporates past 100 Å.</figcaption>
+<p><img src="assets/force_parity.png" class="img-fluid figure-img" width="560"></p>
+<figcaption>Force parity (left) is tight along the diagonal at r ≈ 0.99; relative energies (right) track frame by frame.</figcaption>
 </figure>
 </div>
 </section>
-<section id="a-big-oo-gap-is-drift-not-dissociation" class="level2">
-<h2 class="anchored" data-anchor-id="a-big-oo-gap-is-drift-not-dissociation">A big O–O gap is drift, not dissociation</h2>
-<p>A complementary CV pair resolves the ambiguity: checking the intramolecular O–H shows the clusters are <strong>intact molecules drifting apart</strong>, not dissociating — only the lone water truly breaks a bond. Higher temperature just makes intact molecules escape faster (max O–O 81 → 143 Å over 200 → 350 K).</p>
+<section id="structure-in-unbiased-md" class="level3">
+<h3 class="anchored" data-anchor-id="structure-in-unbiased-md">Structure in unbiased MD</h3>
+<p>Static forces are necessary but not sufficient — the real test is whether the surrogate produces the same <em>ensemble</em>.</p>
+<table class="table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: center;">O–O first peak</th>
+<th style="text-align: center;">radius of gyration</th>
+<th style="text-align: center;">mean coordination</th>
+<th style="text-align: center;">condensed?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>GFN2-xTB</td>
+<td style="text-align: center;">2.83 Å</td>
+<td style="text-align: center;">3.78 ± 0.07 Å</td>
+<td style="text-align: center;">4.01</td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr class="even">
+<td>MACE-OFF23</td>
+<td style="text-align: center;">2.83 Å</td>
+<td style="text-align: center;">3.85 ± 0.05 Å</td>
+<td style="text-align: center;">3.72</td>
+<td style="text-align: center;">yes</td>
+</tr>
+</tbody>
+</table>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="assets/movie_n3_low.gif" class="img-fluid figure-img" width="360"></p>
-<figcaption>Gas trimer: three intact waters drift to the corners, each keeping its two O–H bonds — drift, not dissociation.</figcaption>
+<p><img src="assets/md_structure_n20.png" class="img-fluid figure-img" width="680"></p>
+<figcaption>O–O pair distribution (left) is essentially identical — same hydrogen-bond peak at 2.83 Å; droplet-size distributions (right) overlap.</figcaption>
 </figure>
 </div>
-<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/FINDINGS_phase2.md">Full findings — FINDINGS_phase2.md →</a></p>
+<div class="keyresult">
+<p><span class="lbl">Key result</span> MACE-OFF23 reproduces GFN2-xTB water at equilibrium: forces at <strong>r ≈ 0.99</strong> (~0.19 eV/Å RMSE), relative energies within <strong>2–3 meV/atom</strong>, an <strong>identical O–O peak at 2.83 Å</strong>, and comparable droplet size. Real throughput is <strong>~37 ms/step</strong> (float32, 4 threads) — on par with xTB at n=20 and favourable beyond n≈50.</p>
+</div>
+</section>
+</section>
+<section id="what-we-learned" class="level2">
+<h2 class="anchored" data-anchor-id="what-we-learned">What we learned</h2>
+<p>Equilibrium agreement is strong enough to build on, and the cost crossover means the surrogate is worth using at the sizes we care about. This is the licence to ask the harder question: agreement on a smooth equilibrium basin says nothing about a bond-breaking event, where the potential must extrapolate far from its training distribution. That is <a href="./p2-reactive.html">Pillar 2</a>.</p>
+<div class="methodnote">
+<p><span class="lbl">Method control</span> An early MD benchmark appeared to show ~2817 ms/step. That was CPU contention from concurrent downloads, not a real cost; a clean re-benchmark gives ~37 ms/step. The original misleading number is retained in <a href="./05-mace.html">Study 05</a> rather than deleted.</p>
+</div>
+</section>
+<section id="related-studies" class="level2">
+<h2 class="anchored" data-anchor-id="related-studies">Related studies</h2>
+<p>The metadynamics-methodology work below supports this pillar but is not part of the MACE-vs-xTB comparison itself. It establishes that the <em>reference</em> workflow behaves sensibly before a surrogate is introduced.</p>
+<div class="studylinks">
+<p><a href="./05-mace.html" class="primary">Study 05 — MACE-OFF23 validation (full study)</a> <a href="./03-droplets.html">Study 03 — Large vacuum droplets</a> <a href="./06-kpush.html">Study 06 — kpush must scale with N</a> <a href="./07-cv-design.html">Study 07 — Collective-variable scoping</a> <a href="./01-sweep.html">Study 01 — Bias × size</a> <a href="./02-pbc.html">Study 02 — Periodicity &amp; temperature</a></p>
+</div>
+<p>In one line each: droplets show <strong>size suppresses evaporation</strong>; kpush scaling shows the RMSD-bias force goes as <strong>kpush/N</strong>, so the bias strength must scale with system size; CV scoping shows seven candidate collective variables collapse to about <strong>three independent axes</strong>; and the early sweeps establish that the bias breaks the <em>weakest</em> available bond rather than doing chemistry.</p>
 
 
 </section>

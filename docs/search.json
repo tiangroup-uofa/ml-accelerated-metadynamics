@@ -1,52 +1,304 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Metadynamics of water: from clusters to a surrogate",
+    "objectID": "research-map.html",
+    "href": "research-map.html",
+    "title": "Research map",
     "section": "",
-    "text": "This is a running results notebook for the project. We validate GFN2-xTB RMSD-metadynamics workflows for water — bias and size sweeps, periodic and free droplets, and a Diels–Alder reaction — then benchmark a MACE-OFF23 foundation potential against xTB, with the longer-term aim of accelerating enhanced sampling."
+    "text": "The studies in this project were run one at a time, each answering the question the previous one raised. This map makes that chain explicit. Every box is a link — pillar boxes open the overview page, study boxes open the detailed study, and result boxes jump to the relevant section. Hover any box for a one-line summary.\nThis page is optional. The overview and the four pillar pages stand on their own without it.\nprogramme\n  pillar\n  detailed study\n  major result\n  open question\nSolid grey links show what belongs to what. Coloured dashed links carry the scientific argument: red motivates edges are where one result made the next experiment necessary, and the green validates edge is where an independent method confirmed a result."
   },
   {
-    "objectID": "index.html#results-at-a-glance",
-    "href": "index.html#results-at-a-glance",
-    "title": "Metadynamics of water: from clusters to a surrogate",
-    "section": "Results at a glance",
-    "text": "Results at a glance\n\n\n\n#\nStudy\nHeadline result\n\n\n\n\n01\nBias × size\nThe bias breaks the weakest bond — H-bond for clusters, covalent O–H only for a lone molecule; small clusters evaporate.\n\n\n02\nPBC & temperature\nPeriodicity confines the system (removes evaporation); a large O–O gap is drift, not dissociation.\n\n\n03\nDroplets\nSize suppresses evaporation — free n=20–50 droplets stay intact; raising kpush barely perturbs them (a bias-scaling artifact).\n\n\n04\nDiels–Alder\nA real reaction driven and verified: concerted TS, 6.7 kcal/mol barrier, −394 cm⁻¹ imaginary mode.\n\n\n05\nMACE-OFF23\nMACE-OFF23 tracks xTB forces at r ≈ 0.99, reproduces droplet MD structure, and scales better (crossover by n≈50).\n\n\n06\nkpush scaling\nThe RMSD-bias per-atom force ∝ kpush/N — so kpush must scale ∝ N; confirmed on the n=30 droplet.\n\n\n07\nCV design\n7 candidate CVs collapse to ~3 axes (network integrity, size, chemistry); a minimal biasing set recommended.\n\n\n08\nCorrections\nA conservative delta correction removes ~all reaction-energy and ~2/3 barrier error MACE→xTB; scalar/element corrections don’t."
+    "objectID": "research-map.html#the-chain-in-words",
+    "href": "research-map.html#the-chain-in-words",
+    "title": "Research map",
+    "section": "The chain in words",
+    "text": "The chain in words\n\nEquilibrium validation (Pillar 1) shows MACE-OFF23 reproduces GFN2-xTB for water — which is what makes the reactive test a real test rather than a foregone conclusion. → motivates\nReactive benchmarking (Pillar 2) finds a ~29 kcal/mol barrier disagreement, then localizes it to the transition-state region and rules out a path-search artifact by evaluating both potentials on identical frozen geometries. The cross-PES saddle search independently validates that the two surfaces have distinct but nearby stationary points. → motivates\nTargeted correction (Pillar 3) puts the correction data where the error is, beating an equal-budget generic control, and reaches a certified saddle barrier of 6.33 kcal/mol against an xTB target of 6.7. → motivates\nIterating that correction (Pillar 4) does not keep improving it — iteration 0 remains the best model after 42 further reference calculations, which → motivates a controlled capacity ablation as the next experiment."
   },
   {
-    "objectID": "index.html#methods-in-one-paragraph",
-    "href": "index.html#methods-in-one-paragraph",
-    "title": "Metadynamics of water: from clusters to a surrogate",
-    "section": "Methods in one paragraph",
-    "text": "Methods in one paragraph\nGas-phase and periodic GFN2/GFN1-xTB metadynamics (built-in RMSD bias), NVT, 0.5 fs timestep; analysis with ASE / NumPy / pandas. Reactions via xtb --path + relaxed scan + Sella saddle optimization. Surrogate benchmarking with MACE-OFF23 (small) as an ASE calculator. All code, data and figures are in the repository; each study page links to its detailed FINDINGS document."
+    "objectID": "research-map.html#maintaining-this-map",
+    "href": "research-map.html#maintaining-this-map",
+    "title": "Research map",
+    "section": "Maintaining this map",
+    "text": "Maintaining this map\nThe graph is generated from a single data file, with no runtime dependency and no build step beyond one script:\nsite/research-map.json      →  site/build_research_map.py  →  site/research-map.svg\nNode kinds are core, pillar, study, result, and future; edge kinds are pillar, contains, motivates, and validates. Layout is a deterministic col/row grid, so the diagram never reflows unpredictably between renders. A project-local Claude skill at .claude/skills/research-map/ documents the conventions for adding a node or an edge."
   },
   {
-    "objectID": "07-cv-design.html",
-    "href": "07-cv-design.html",
-    "title": "Study 07 — Collective-variable scoping",
+    "objectID": "p3-correction.html",
+    "href": "p3-correction.html",
+    "title": "Pillar 3 — Post-training correction",
     "section": "",
-    "text": "Metadynamics needs collective variables to bias along. We compute a battery of seven candidate CVs on trajectories spanning the distinct states (stable droplet, fragmenting droplet, big droplet, drifting cluster, monomer dissociation) and ask which are informative, non-redundant, and capture the processes we care about."
+    "text": "Scientific question Can a lightweight post-training correction adapt a pretrained MACE toward a chosen reference, without fine-tuning the foundation model?"
   },
   {
-    "objectID": "07-cv-design.html#what-separates-the-states",
-    "href": "07-cv-design.html#what-separates-the-states",
-    "title": "Study 07 — Collective-variable scoping",
-    "section": "What separates the states",
-    "text": "What separates the states\nBetween/within-state variance ratio (higher = more discriminating):\n\n\n\nCV\nseparation\ndefined on\n\n\n\n\ncoord_OO (O–O coordination)\n50.9\nall\n\n\nn_hbond_pm (angular H-bonds/mol)\n12.6\nall\n\n\nasphericity\n4.9\ndroplets\n\n\nq_tet (tetrahedral order)\n1.4\ndroplets\n\n\nmax_OO\n1.0\nall\n\n\nRg\n1.0\nall\n\n\nmax_OH\n0.8\nall\n\n\n\nO–O coordination and the angular H-bond count separate the states best. max_OH scores low only because a single state dissociates — but it’s the only CV that fires there, so it’s an essential orthogonal chemical coordinate."
+    "objectID": "p3-correction.html#why-we-tested-it",
+    "href": "p3-correction.html#why-we-tested-it",
+    "title": "Pillar 3 — Post-training correction",
+    "section": "Why we tested it",
+    "text": "Why we tested it\nPillar 2 established two things that together make a correction plausible. First, the disagreement is systematic, not random: force directions already agree (cosine ≈ 0.98) and it is magnitude that is off. Second, it is localized in the transition-state region rather than spread across the surface. A systematic, localized residual is exactly the kind of thing a small model can absorb.\nFine-tuning MACE-OFF23 is deliberately off the table here — the point is to see how far a cheap wrapper gets. Every correction below is applied through a CorrectedCalculator that leaves the foundation model untouched."
   },
   {
-    "objectID": "07-cv-design.html#the-7-cvs-collapse-to-3-directions",
-    "href": "07-cv-design.html#the-7-cvs-collapse-to-3-directions",
-    "title": "Study 07 — Collective-variable scoping",
-    "section": "The 7 CVs collapse to ~3 directions",
-    "text": "The 7 CVs collapse to ~3 directions\nRedundant families (|r| &gt; 0.9): Rg ≈ max_OO (size); coord_OO ≈ n_hbond_pm ≈ −asphericity (network integrity). PCA: PC1 (43%) = network integrity, PC2 (30%) = size + dissociation — 73% in two components, and the states separate cleanly in that plane.\n\n\n\nStates in CV space: droplets cluster at high network integrity (left); the drifting cluster traces a path across as its network breaks; the dissociating monomer splits off along the O–H axis.\n\n\n\n\n\nCV correlation — the redundancy structure (size family, network family)."
+    "objectID": "p3-correction.html#sec-architectures",
+    "href": "p3-correction.html#sec-architectures",
+    "title": "Pillar 3 — Post-training correction",
+    "section": "1 · Four correction architectures",
+    "text": "1 · Four correction architectures\n\n\n\n\n\n\n\n\nmodel\nform\nconservative?\n\n\n\n\nglobal\nF′ = αF\nyes\n\n\naffine\nF′ = αF, E′ = αE + β\nyes\n\n\nelement\nF′ᵢ = α(Zᵢ) Fᵢ, per element\nno\n\n\npairwise Delta\nΔE = Σ fitted radial pair potentials; F = −∇ΔE\nyes\n\n\n\nThe Delta is a sum of Gaussian radial basis functions per element pair (48 coefficients across 6 pair channels, 3.6 Å cutoff), fit by ridge least-squares on the force residual F_xTB − F_MACE. Being an energy expression differentiated analytically, it is conservative and therefore safe for MD and metadynamics — unlike per-element force scaling.\n\n\n\n\n\n\n\n\n\n\nmodel\nheld-out force RMSE ↓\nDA barrier\nreaction energy\ndroplet R_g\n\n\n\n\nbaseline MACE\nref\n36.0\n−40.6\n3.94 Å\n\n\nglobal / affine\n8%\n32.3\n−36.5\n3.9–4.0\n\n\nelement\n9%\n36.0 (inert)\n−40.6\n4.02\n\n\npairwise Delta\n16%\n11.7\n−57.1\n3.71\n\n\nxTB (target)\n—\n6.7\n−57.6\n3.89\n\n\n\nScalar corrections are too weak; element scaling is energetically inert (it rescales forces without changing relative energies) and breaks conservativeness. Only the pairwise Delta moves the energetics meaningfully.\n\n\n\nHeld-out force RMSE per correction, by domain."
   },
   {
-    "objectID": "07-cv-design.html#recommended-cv-set-minimal-non-redundant",
-    "href": "07-cv-design.html#recommended-cv-set-minimal-non-redundant",
-    "title": "Study 07 — Collective-variable scoping",
-    "section": "Recommended CV set (minimal, non-redundant)",
-    "text": "Recommended CV set (minimal, non-redundant)\n\nNetwork integrity — mean O–O coordination or angular H-bond count (pick one).\nSize / spread — Rg (or max_OO).\nChemistry — max_OH + a per-oxygen O–H coordination for proton transfer.\n\n\n\n\n\n\n\nImportantCaveat & next step\n\n\n\nThis separates different systems, so some discriminating power reflects size, not slow dynamics within one droplet. For choosing what to bias, the sharper question — which CV captures the slow reorganization within a single droplet — needs a time-lagged analysis (TICA / VAMP) or a learned CV on one system’s trajectory. That’s the next step, on top of this physically-motivated shortlist.\n\n\nFull findings — FINDINGS_cv_design.md →"
+    "objectID": "p3-correction.html#sec-where",
+    "href": "p3-correction.html#sec-where",
+    "title": "Pillar 3 — Post-training correction",
+    "section": "2 · Where does calibration actually matter?",
+    "text": "2 · Where does calibration actually matter?\nIf the error is concentrated at the barrier, the training data for the correction should be too. Region-wise held-out force errors on a strict no-leakage split by parent path geometry confirm the target:\n\n\n\n\n\n\n\n\n\n\nregion\nraw MACE\nbaseline Delta\nbarrier-enriched Delta\ngeneric control\n\n\n\n\noverall\n0.556\n0.432\n0.456\n0.427\n\n\nTS region\n0.712\n0.519\n0.487\n0.532\n\n\nTS + post-TS\n0.906\n0.714\n0.688\n0.734\n\n\n\n\n\n\nRegion-wise held-out force error: the barrier-enriched Delta has the lowest TS and post-TS error."
+  },
+  {
+    "objectID": "p3-correction.html#sec-targeted",
+    "href": "p3-correction.html#sec-targeted",
+    "title": "Pillar 3 — Post-training correction",
+    "section": "3 · Targeted versus generic data, at equal budget",
+    "text": "3 · Targeted versus generic data, at equal budget\nThe controlled experiment: hold the architecture and hyperparameters fixed, and add the same number of extra training configurations — 32 either way — placed either in the barrier region (forming C–C ≈ 1.7–2.4 Å) or spread generically.\n\n\n\n\n\n\n\n\n\nmodel\nbarrier (constrained scan)\nreaction energy\nTS forming C–C\n\n\n\n\nraw MACE\n36.0\n−40.6\n2.02 Å\n\n\nbaseline Delta\n14.1\n−47.3\n2.02 Å\n\n\nbarrier-enriched Delta\n9.9\n−50.7\n2.62 Å\n\n\ngeneric control (equal count)\n15.0\n−51.1\n2.02 Å\n\n\nxTB (target)\n6.7\n−57.6\n2.32 Å\n\n\n\n\n\n\nCorrected reaction profiles against the xTB target.\n\n\n\nKey result Where the data goes matters more than how much of it there is. Barrier-region configurations moved the barrier 14.1 → 9.9; the same number of generic configurations did essentially nothing (14.1 → 15.0). The cost is a small increase in overall held-out error (0.432 → 0.456) — the fixed-capacity Delta reallocates toward the barrier.\n\n\nWater is not damaged\n\n\n\n\nO–O peak\ndroplet R_g\n\n\n\n\nraw MACE\n2.84 Å\n3.90 Å\n\n\nbaseline Delta\n2.74 Å\n3.82 Å\n\n\nbarrier-enriched Delta\n2.74 Å\n3.82 Å\n\n\nxTB\n2.84 Å\n3.77 Å\n\n\n\n\n\n\nDroplet O–O distribution and size: barrier enrichment leaves water unchanged relative to the baseline Delta.\n\n\nBarrier enrichment leaves the equilibrium subsystem identical to the baseline Delta. The reason is structural: the Delta has separate channels per element pair, so added C–C/C–H barrier data touches only the carbon channels and leaves the O–O/O–H channels that govern water alone. That channel separation buys clean selectivity."
+  },
+  {
+    "objectID": "p3-correction.html#sec-scan-vs-saddle",
+    "href": "p3-correction.html#sec-scan-vs-saddle",
+    "title": "Pillar 3 — Post-training correction",
+    "section": "4 · Scan versus saddle: a methodological refinement",
+    "text": "4 · Scan versus saddle: a methodological refinement\nThe 9.9 kcal/mol above is a constrained-scan barrier — the maximum along a path in which both forming C–C distances are held equal and everything else relaxes. That is a useful, cheap estimator, but the scan path is not guaranteed to pass through the true saddle.\nRunning a proper Sella first-order saddle search on the same barrier-enriched Delta model, and certifying it with a mass-weighted Hessian, gives a different and better-founded number:\n\n\n\n\n\n\n\n\n\nestimator, same corrected model\nbarrier\nforming C–C\ncertification\n\n\n\n\nconstrained scan\n9.9 kcal/mol\n2.617 Å\nnot a stationary point\n\n\ncertified first-order saddle\n6.33 kcal/mol\n2.428 Å\n1 imaginary mode, −358.3 cm⁻¹\n\n\nxTB reference\n6.7 kcal/mol\n2.315 Å\n1 imaginary mode, −394 cm⁻¹\n\n\n\n\nKey result Measured as a certified saddle rather than a scan maximum, the targeted Delta sits at 6.33 kcal/mol against an xTB target of 6.7 — a 0.37 kcal/mol difference — with its reaction mode at −358.3 cm⁻¹ (xTB: −394) and RMSD 0.173 Å to the xTB TS. This is the strongest one-shot correction result in the project.\n\n\nBoth numbers are real — they measure different things 9.9 kcal/mol is the constrained-scan estimator and remains the correct value for that quantity; it is what earlier write-ups reported and it has not been withdrawn. 6.33 kcal/mol is the certified saddle on the same model. The scan overestimates by ≈3.5 kcal/mol here because its constrained path misses the saddle by ~0.19 Å in the forming C–C coordinate. Both estimators are tracked separately throughout Study 08; neither replaces the other."
+  },
+  {
+    "objectID": "p3-correction.html#what-we-learned",
+    "href": "p3-correction.html#what-we-learned",
+    "title": "Pillar 3 — Post-training correction",
+    "section": "What we learned",
+    "text": "What we learned\nA lightweight conservative correction, fit only on force residuals and applied without touching the foundation model, can bring the corrected surrogate’s certified reaction barrier to within 0.4 kcal/mol of the chosen reference — and can do so with data concentrated in the region that actually disagrees, at no cost to unrelated equilibrium chemistry.\nTwo honest caveats. The reference here is xTB, which under-estimates this barrier relative to DFT and experiment, so this demonstrates reference-matching, not improved physical accuracy. And the corrected saddle still sits 0.173 Å from the xTB one — energetic agreement is better than geometric agreement.\nThe obvious next question is whether the same targeting trick keeps paying off when iterated. That is Pillar 4."
+  },
+  {
+    "objectID": "p3-correction.html#related-studies",
+    "href": "p3-correction.html#related-studies",
+    "title": "Pillar 3 — Post-training correction",
+    "section": "Related studies",
+    "text": "Related studies\n\nStudy 08 — Post-training corrections, full study Barrier-region error localization Scan vs saddle detail Pillar 4 — iterating the correction"
+  },
+  {
+    "objectID": "p1-validation.html",
+    "href": "p1-validation.html",
+    "title": "Pillar 1 — MACE ↔︎ xTB validation",
+    "section": "",
+    "text": "Scientific question Can MACE-OFF23, used off the shelf with no fine-tuning, stand in for GFN2-xTB in equilibrium molecular dynamics of water clusters?"
+  },
+  {
+    "objectID": "p1-validation.html#why-we-tested-it",
+    "href": "p1-validation.html#why-we-tested-it",
+    "title": "Pillar 1 — MACE ↔︎ xTB validation",
+    "section": "Why we tested it",
+    "text": "Why we tested it\nThe whole programme depends on replacing an expensive reference with a cheap surrogate. xTB scales roughly O(N³) while a message-passing potential scales ~linearly, so the surrogate only becomes worthwhile if it is both faster at size and faithful at equilibrium. This pillar establishes the baseline: if agreement failed here, nothing downstream would be interpretable.\nMACE-OFF23 is trained on DFT (ωB97M-D3BJ), not on xTB. Agreement is therefore two independent methods converging, not a fit."
+  },
+  {
+    "objectID": "p1-validation.html#key-evidence",
+    "href": "p1-validation.html#key-evidence",
+    "title": "Pillar 1 — MACE ↔︎ xTB validation",
+    "section": "Key evidence",
+    "text": "Key evidence\n\nStatic forces and energies\n\n\n\n\n\n\n\n\n\n\n\nn\natoms\nforce r\nforce RMSE\nrelative energy\nMACE cost vs xTB\n\n\n\n\n20\n60\n0.992\n0.185 eV/Å\n3.3 meV/atom\n2.5×\n\n\n30\n90\n0.992\n0.190 eV/Å\n2.5 meV/atom\n1.6×\n\n\n50\n150\n0.991\n0.198 eV/Å\n2.3 meV/atom\n1.0×\n\n\n\n\n\n\nForce parity (left) is tight along the diagonal at r ≈ 0.99; relative energies (right) track frame by frame.\n\n\n\n\nStructure in unbiased MD\nStatic forces are necessary but not sufficient — the real test is whether the surrogate produces the same ensemble.\n\n\n\n\n\n\n\n\n\n\n\nO–O first peak\nradius of gyration\nmean coordination\ncondensed?\n\n\n\n\nGFN2-xTB\n2.83 Å\n3.78 ± 0.07 Å\n4.01\nyes\n\n\nMACE-OFF23\n2.83 Å\n3.85 ± 0.05 Å\n3.72\nyes\n\n\n\n\n\n\nO–O pair distribution (left) is essentially identical — same hydrogen-bond peak at 2.83 Å; droplet-size distributions (right) overlap.\n\n\n\nKey result MACE-OFF23 reproduces GFN2-xTB water at equilibrium: forces at r ≈ 0.99 (~0.19 eV/Å RMSE), relative energies within 2–3 meV/atom, an identical O–O peak at 2.83 Å, and comparable droplet size. Real throughput is ~37 ms/step (float32, 4 threads) — on par with xTB at n=20 and favourable beyond n≈50."
+  },
+  {
+    "objectID": "p1-validation.html#what-we-learned",
+    "href": "p1-validation.html#what-we-learned",
+    "title": "Pillar 1 — MACE ↔︎ xTB validation",
+    "section": "What we learned",
+    "text": "What we learned\nEquilibrium agreement is strong enough to build on, and the cost crossover means the surrogate is worth using at the sizes we care about. This is the licence to ask the harder question: agreement on a smooth equilibrium basin says nothing about a bond-breaking event, where the potential must extrapolate far from its training distribution. That is Pillar 2.\n\nMethod control An early MD benchmark appeared to show ~2817 ms/step. That was CPU contention from concurrent downloads, not a real cost; a clean re-benchmark gives ~37 ms/step. The original misleading number is retained in Study 05 rather than deleted."
+  },
+  {
+    "objectID": "p1-validation.html#related-studies",
+    "href": "p1-validation.html#related-studies",
+    "title": "Pillar 1 — MACE ↔︎ xTB validation",
+    "section": "Related studies",
+    "text": "Related studies\nThe metadynamics-methodology work below supports this pillar but is not part of the MACE-vs-xTB comparison itself. It establishes that the reference workflow behaves sensibly before a surrogate is introduced.\n\nStudy 05 — MACE-OFF23 validation (full study) Study 03 — Large vacuum droplets Study 06 — kpush must scale with N Study 07 — Collective-variable scoping Study 01 — Bias × size Study 02 — Periodicity & temperature\n\nIn one line each: droplets show size suppresses evaporation; kpush scaling shows the RMSD-bias force goes as kpush/N, so the bias strength must scale with system size; CV scoping shows seven candidate collective variables collapse to about three independent axes; and the early sweeps establish that the bias breaks the weakest available bond rather than doing chemistry."
+  },
+  {
+    "objectID": "08-corrections.html",
+    "href": "08-corrections.html",
+    "title": "Study 08 — Post-training corrections",
+    "section": "",
+    "text": "This is the detailed study behind Pillar 3 — Post-training correction and Pillar 4 — Iterative calibration. Those pages carry the argument; this page keeps the full tables, controls, and limitations."
+  },
+  {
+    "objectID": "08-corrections.html#sec-motivation",
+    "href": "08-corrections.html#sec-motivation",
+    "title": "Study 08 — Post-training corrections",
+    "section": "1 · Motivation",
+    "text": "1 · Motivation\nThe Diels–Alder benchmark (Study 04) showed MACE and xTB agree on force direction but differ in magnitude, localized in the reactive region. A systematic, localized residual is the kind of thing a small model can absorb. The question is whether a lightweight post-training correction — fit on paired MACE/xTB forces, with no foundation-model retraining — can remove it.\nBase = MACE-OFF23, target = GFN2-xTB (a cheap stand-in for the eventual DFT reference); all applied through the existing CorrectedCalculator, which leaves the foundation model untouched."
+  },
+  {
+    "objectID": "08-corrections.html#sec-architectures",
+    "href": "08-corrections.html#sec-architectures",
+    "title": "Study 08 — Post-training corrections",
+    "section": "2 · Correction architectures",
+    "text": "2 · Correction architectures\nFour models: global (F′ = αF), affine (+ energy shift), element (per-element force scaling, non-conservative), and a conservative delta (energy = fitted radial pair potentials, forces = −∇, linear least-squares fit).\nThe delta is a sum of Gaussian radial basis functions per element pair — 48 coefficients across 6 pair channels, 3.6 Å cutoff, ridge 1e−3 — fit on the force residual F_xTB − F_MACE. Because it is an energy expression differentiated analytically, it is conservative and therefore MD- and metadynamics-safe."
+  },
+  {
+    "objectID": "08-corrections.html#sec-benchmark",
+    "href": "08-corrections.html#sec-benchmark",
+    "title": "Study 08 — Post-training corrections",
+    "section": "3 · Initial benchmark",
+    "text": "3 · Initial benchmark\n\n\n\n\n\n\n\n\n\n\n\nmodel\nval force RMSE ↓\nDA barrier\nDA ΔE\ndroplet Rg (Å)\nconservative\n\n\n\n\nbaseline (MACE)\nref\n36.0\n−40.6\n3.94\nyes\n\n\nglobal / affine\n8%\n32.3\n−36.5\n3.9–4.0\nyes\n\n\nelement\n9%\n36.0 (inert)\n−40.6\n4.02\nno\n\n\ndelta\n16%\n11.7\n−57.1\n3.71\nyes\n\n\nxTB (target)\n—\n6.7\n−57.6\n3.89\n—\n\n\n\n\nForces: corrections fix magnitude, not direction\nForce direction is already aligned (cosine 0.985); the delta removes the most magnitude error (16%), scalar corrections ~8–9%.\n\n\n\nHeld-out force RMSE per correction, by domain.\n\n\n\n\nDiels–Alder: the delta is transformative, the others are not\nA modest force improvement yields a large energetics correction — the delta captures the bonding-region residual that integrates into the reaction energetics: reaction energy −40.6 → −57.1 (target −57.6, essentially exact) and barrier 36 → 11.7 (target 6.7). Scalar corrections only apply α; element-scaling is energetically inert.\n\n\n\nCorrected MACE reaction profiles and energetics vs the xTB target.\n\n\n\n\nWater: MACE was already right; corrections don’t help (and can hurt)\nBaseline MACE already matches the xTB droplet; no correction improves agreement, and this first delta slightly over-compacts it (Rg 3.71 vs 3.89) — a reactive-data-dominated correction mildly degrading already-good equilibrium behaviour. Section 5 shows how targeted enrichment avoids this.\n\n\n\nDroplet O–O distribution and size vs the xTB reference.\n\n\nFull findings — FINDINGS_corrections.md →"
+  },
+  {
+    "objectID": "08-corrections.html#sec-localization",
+    "href": "08-corrections.html#sec-localization",
+    "title": "Study 08 — Post-training corrections",
+    "section": "4 · Barrier-region error localization",
+    "text": "4 · Barrier-region error localization\nIf the error concentrates at the barrier (Study 04), the correction’s training data should too. Held-out force errors on a strict no-leakage split by parent path geometry (test parents never contribute to any fit):\n\n\n\n\n\n\n\n\n\n\nregion\nraw MACE\nbaseline Delta\nbarrier-enriched Delta\ngeneric control\n\n\n\n\noverall\n0.556\n0.432\n0.456\n0.427\n\n\nTS region\n0.712\n0.519\n0.487\n0.532\n\n\nTS + post-TS\n0.906\n0.714\n0.688\n0.734\n\n\ncosine, TS region\n0.970\n0.981\n0.983\n0.980\n\n\n\n\n\n\nRegion-wise held-out force error.\n\n\nThe barrier-enriched model has the lowest barrier-region error but is slightly worse overall (0.456 vs 0.432) — the fixed-capacity Delta reallocates toward the barrier at a small cost in the basins where all models already agree."
+  },
+  {
+    "objectID": "08-corrections.html#sec-targeted",
+    "href": "08-corrections.html#sec-targeted",
+    "title": "Study 08 — Post-training corrections",
+    "section": "5 · Targeted vs generic calibration",
+    "text": "5 · Targeted vs generic calibration\nThe controlled experiment: identical architecture and hyperparameters, identical data budget — 32 extra configurations either way — placed either in the barrier region (forming C–C ≈ 1.7–2.4 Å) or sampled generically.\n\n\n\n\n\n\n\n\n\nmodel\nbarrier (constrained scan)\nreaction energy\nTS forming C–C\n\n\n\n\nraw MACE\n36.0\n−40.6\n2.02 Å\n\n\nbaseline Delta\n14.1\n−47.3\n2.02 Å\n\n\nbarrier-enriched Delta\n9.9\n−50.7\n2.62 Å\n\n\ngeneric control (equal count)\n15.0\n−51.1\n2.02 Å\n\n\nxTB (target)\n6.7\n−57.6\n2.32 Å\n\n\n\n\n\n\nCorrected reaction profiles.\n\n\nBarrier-region data moved the barrier 14.1 → 9.9; the same number of generic configurations did essentially nothing (14.1 → 15.0). Where the data goes matters more than how much of it there is.\n\nWater is preserved\n\n\n\n\nO–O peak\ndroplet Rg\n\n\n\n\nraw MACE\n2.84 Å\n3.90 Å\n\n\nbaseline Delta\n2.74 Å\n3.82 Å\n\n\nbarrier-enriched Delta\n2.74 Å\n3.82 Å\n\n\nxTB\n2.84 Å\n3.77 Å\n\n\n\n\n\n\nDroplet O–O distribution and size.\n\n\nBarrier enrichment leaves water identical to the baseline Delta. The pairwise Delta has separate channels per element pair, so added C–C/C–H data touches only the carbon channels and leaves the O–O/O–H channels that govern water untouched — clean selectivity.\nJul 31 follow-up findings — FINDINGS_jul31.md →"
+  },
+  {
+    "objectID": "08-corrections.html#sec-scan-vs-saddle",
+    "href": "08-corrections.html#sec-scan-vs-saddle",
+    "title": "Study 08 — Post-training corrections",
+    "section": "6 · Scan versus saddle: a methodological refinement",
+    "text": "6 · Scan versus saddle: a methodological refinement\nThe 9.9 kcal/mol above is a constrained-scan barrier: the maximum along a path with both forming C–C distances held equal and everything else relaxed. That is a cheap, useful estimator, but the constrained path is not guaranteed to pass through the true saddle.\nRunning a Sella first-order saddle search on the same barrier-enriched Delta and certifying it with a mass-weighted Hessian gives a different, better-founded number:\n\n\n\n\n\n\n\n\n\nestimator, same corrected model\nbarrier\nforming C–C\ncertification\n\n\n\n\nconstrained scan\n9.9 kcal/mol\n2.617 Å\nnot a stationary point\n\n\ncertified first-order saddle\n6.33 kcal/mol\n2.428 Å\n1 imaginary mode, −358.3 cm⁻¹\n\n\nxTB reference\n6.7 kcal/mol\n2.315 Å\n1 imaginary mode, −394 cm⁻¹\n\n\n\nThe certified saddle also sits 0.173 Å (RMSD) from the xTB TS, and its reaction-mode overlap with the forming-bond coordinate is 0.381 — a genuine Diels–Alder mode, though less pure than xTB’s own 0.801.\n\n\n\n\n\n\nImportantBoth numbers are real; they measure different things\n\n\n\n9.9 kcal/mol is the constrained-scan estimator and remains correct for that quantity — it is what the earlier write-ups reported and it has not been withdrawn. 6.33 kcal/mol is the certified saddle on the same model. The scan overestimates by ≈3.5 kcal/mol here because its constrained path misses the saddle by ~0.19 Å in the forming C–C coordinate. Both are tracked separately; neither replaces the other."
+  },
+  {
+    "objectID": "08-corrections.html#sec-iterative",
+    "href": "08-corrections.html#sec-iterative",
+    "title": "Study 08 — Post-training corrections",
+    "section": "7 · Iterative correction experiment",
+    "text": "7 · Iterative correction experiment\nIf targeted calibration works once, does repeating it keep working? The loop: find the current corrected saddle → query xTB there → add the data → refit the same Delta → re-search. Run as a controlled experiment with a hand-fixed query rule; no acquisition function or uncertainty estimate was involved.\nOne iteration. Relaxed scan (giving both a scan barrier and a Sella seed) → Sella saddle search → TS validity gate (converged, exactly one imaginary mode, forming C–C in 1.5–3.0 Å, reaction-mode overlap ≥ 0.30) → xTB query at that geometry → a packet of the saddle plus ±0.05/±0.10 Å along the imaginary mode plus 2 isotropic 0.05 Å perturbations = 7 new xTB calculations → refit on the cumulative dataset.\nHeld fixed: architecture and every hyperparameter; a 48-configuration held-out reactive split never trained on.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\niter\ncum. xTB calls\ncertified saddle barrier\nscan barrier\nforming C–C\ncertified?\nimaginary mode\nxTB |F|max at TS\nheld-out TS+post\nwater Rg\n\n\n\n\n0\n7\n6.33\n9.87\n2.428 Å\nyes\n−358.3 cm⁻¹\n0.770\n0.6879\n3.738\n\n\n1\n14\n9.72\n10.51\n1.996 Å\nyes\n−758.1\n2.805\n0.6880\n3.690\n\n\n2\n21\n7.11\n12.50\n2.415 Å\nyes\n−333.4\n0.686\n0.6973\n3.841\n\n\n3\n28\n8.62\n12.75\n2.519 Å\nno (2 modes)\n−309.6\n0.461\n0.6966\n3.796\n\n\n4\n35\n9.46\n13.54\n2.046 Å\nyes\n−461.3\n2.340\n0.6987\n3.803\n\n\n5\n42\n9.25\n13.91\n2.519 Å\nno (2 modes)\n−312.8\n0.428\n0.7113\n3.834\n\n\nxTB target\n—\n6.7\n6.7\n2.315 Å\n1 mode\n0\n—\n3.77\n\n\n\n\n\n\n\nBarrier vs iteration.\n\n\n\n\n\nTS position and certification vs iteration.\n\n\n\n\n\nxTB residual force at the corrected saddle.\n\n\n\n\n\nHeld-out reactive error and water stability.\n\n\nIteration 0 was the best model of the run. Across 5 iterations and 42 additional xTB reference calculations, the certified saddle barrier oscillated away from target (error 0.37 → 2.55 kcal/mol) and the scan barrier degraded monotonically (9.87 → 13.91). Held-out TS+post-TS error rose 0.6879 → 0.7113 (+3.4%); overall rose 0.4556 → 0.4704 (+3.3%). Water stayed within MD noise throughout (Rg 3.690–3.841, per-iteration σ 0.037–0.086, no condensation).\nThe fit is not diverging. Delta coefficient norms across iterations: 6.051, 5.953, 5.988, 5.966, 5.947, 6.111. This is a fixed capacity being reallocated, not an unstable regression.\n\n\n\n\n\n\nNoteMethod control — seeding the saddle search\n\n\n\nAn earlier version of the loop seeded each saddle search from the xTB TS, the strategy that works for raw MACE. On a corrected surface it fails: Sella converges to a spurious reactant-basin saddle at 3.20 Å whose imaginary mode is orthogonal to bond formation (overlap 1.2e−06, versus ~0.14 for a random direction in 48 DOF) and whose “barrier” is −3.84 kcal/mol — below the reactant. Querying xTB there degraded the model (scan barrier 9.87 → 12.91). That run is retained as a negative control. The fix — seeding from each iteration’s own relaxed-scan maximum, plus the validity gate — follows the project’s standing convention of seeding saddle searches from a relaxed scan.\n\n\n\n\n\n\n\n\nNoteA metric not to over-read\n\n\n\nThe cosine between corrected and xTB forces at a converged saddle is meaningless: the corrected force there is ~1e−4 eV/Å by construction, so the cosine is a 0/0 noise ratio (observed values 0.296, 0.003, 0.108, −0.663, 0.011, −0.654, with no physical trend). The interpretable quantity is xTB’s own residual force at the corrected saddle, tabulated above, which oscillates over 0.43–2.81 eV/Å with no systematic decrease."
+  },
+  {
+    "objectID": "08-corrections.html#sec-limitations",
+    "href": "08-corrections.html#sec-limitations",
+    "title": "Study 08 — Post-training corrections",
+    "section": "8 · Limitations and next question",
+    "text": "8 · Limitations and next question\nReference, not truth. xTB is the chosen proof-of-concept target, not ground truth. For this reaction it under-estimates the barrier relative to DFT and experiment (≈22–27 kcal/mol), so matching it demonstrates reference-matching, not improved physical accuracy.\nEnergetic before geometric. Even the best corrected saddle sits 0.173 Å from the xTB TS. Energy agreement outran geometry agreement.\nScope. One reaction, one correction family, one acquisition rule, one budget. Nothing here transfers automatically to other systems.\nNot demonstrated. No active learning was implemented — no acquisition metric, no uncertainty estimate, no autonomous sampling — so this says nothing about active learning in general. And the pairwise Delta has not been shown incapable of matching the xTB saddle; only that it did not, under this rule and budget.\nNext question — is correction-model capacity the bottleneck? Two observations point that way: the Delta is a sum of radial pair potentials with no angular or many-body terms, while a cycloaddition saddle’s position and curvature depend on angular reorganization of the forming ring; and xTB is never near-stationary at the corrected saddle, so force-matching there asks the correction to reproduce a large reference gradient at a point the model believes is stationary. The discriminating experiment holds the acquisition rule fixed and varies expressiveness — angular/three-body terms, a larger cutoff, more radial channels. That behaviour is consistent with a correction-capacity limitation, which is a supported hypothesis, not a demonstrated result.\nPhase 2 findings — PHASE2_ITERATIVE_CORRECTION_FINDINGS.md →"
+  },
+  {
+    "objectID": "06-kpush.html",
+    "href": "06-kpush.html",
+    "title": "Study 06 — kpush should scale with size",
+    "section": "",
+    "text": "xTB’s bias is a Gaussian in root-mean-square deviation, \\(V = k_\\text{push}\\,e^{-\\alpha\\,\\mathrm{RMSD}^2}\\) with \\(\\mathrm{RMSD}^2 = \\frac1N\\sum_i|x_i-x_i^\\text{ref}|^2\\). The bias force on an atom,\n\\[F_i = k_\\text{push}\\,\\alpha\\,e^{-\\alpha\\,\\mathrm{RMSD}^2}\\,\\frac{2}{N}\\,(x_i-x_i^\\text{ref}),\\]\ncarries an explicit 1/N — the same kpush pushes each atom \\(1/N\\) as hard in a bigger system. To keep the per-atom bias effect constant, kpush must scale ∝ N (per-atom; per-molecule is the same with \\(N=3\\times\\#\\text{waters}\\)).\n\n\n\nFixed kpush follows the 1/N line (diluted); N-scaled kpush holds the per-atom force constant across n=3→96 atoms."
+  },
+  {
+    "objectID": "06-kpush.html#the-law",
+    "href": "06-kpush.html#the-law",
+    "title": "Study 06 — kpush should scale with size",
+    "section": "",
+    "text": "xTB’s bias is a Gaussian in root-mean-square deviation, \\(V = k_\\text{push}\\,e^{-\\alpha\\,\\mathrm{RMSD}^2}\\) with \\(\\mathrm{RMSD}^2 = \\frac1N\\sum_i|x_i-x_i^\\text{ref}|^2\\). The bias force on an atom,\n\\[F_i = k_\\text{push}\\,\\alpha\\,e^{-\\alpha\\,\\mathrm{RMSD}^2}\\,\\frac{2}{N}\\,(x_i-x_i^\\text{ref}),\\]\ncarries an explicit 1/N — the same kpush pushes each atom \\(1/N\\) as hard in a bigger system. To keep the per-atom bias effect constant, kpush must scale ∝ N (per-atom; per-molecule is the same with \\(N=3\\times\\#\\text{waters}\\)).\n\n\n\nFixed kpush follows the 1/N line (diluted); N-scaled kpush holds the per-atom force constant across n=3→96 atoms."
+  },
+  {
+    "objectID": "06-kpush.html#empirical-confirmation",
+    "href": "06-kpush.html#empirical-confirmation",
+    "title": "Study 06 — kpush should scale with size",
+    "section": "Empirical confirmation",
+    "text": "Empirical confirmation\nThe trimer first fragments at kpush = 0.008, so the N-scaling predicts the 30-water droplet reaches the same per-atom bias at kpush ≈ 0.008 × 90/9 = 0.08. The droplet is intact up to 0.05 — and at ~0.08 it starts shedding a molecule, right on the prediction.\n\n\n\nIntact through kpush 0.05; onset of fragmentation at the N-scaled ~0.08.\n\n\n\n\n\n\n\n\nNoteCaveat\n\n\n\nThe onset is soft because size changes two things at once: it dilutes the per-atom force (1/N — corrected here) and raises cohesion (more H-bonds per interior molecule). The kpush ∝ N law fixes the first exactly; the second means a big droplet still resists a bit more than bare force-scaling predicts.\n\n\nPractical rule: set kpush per atom, kpush_eff = kpush_ref · N / N_ref, so bias strength is comparable across cluster sizes.\nFull findings — FINDINGS_kpush_scaling.md →"
+  },
+  {
+    "objectID": "04-diels-alder.html",
+    "href": "04-diels-alder.html",
+    "title": "Study 04 — Diels–Alder reaction",
+    "section": "",
+    "text": "This is the detailed study behind Pillar 2 — Reactive chemistry. The pillar page carries the headline argument; this page keeps the full methodology, tables, convergence tests, and the troubleshooting that is worth recording."
+  },
+  {
+    "objectID": "04-diels-alder.html#sec-baseline",
+    "href": "04-diels-alder.html#sec-baseline",
+    "title": "Study 04 — Diels–Alder reaction",
+    "section": "1 · Baseline reaction benchmark",
+    "text": "1 · Baseline reaction benchmark\nUsing the same RMSD machinery pulled toward a product (xtb --path), the reaction runs: both new C–C σ-bonds form. But the path’s reported “barrier” (101 kcal/mol) is a biased-path artifact — the driver had to escalate the bias to connect. A relaxed concerted scan plus a Sella saddle optimization gives the real answer.\n\n\n\n\n\n\n\nQuantity\nValue\n\n\n\n\nForming C–C at TS\n2.32 Å (symmetric)\n\n\nImaginary frequency\n−394 cm⁻¹ (exactly one)\n\n\nConcerted barrier\n6.7 kcal/mol (scan and Sella agree)\n\n\nReaction energy\n−57.6 kcal/mol\n\n\nStepwise (first bond) barrier\n19.3 kcal/mol — concerted is preferred\n\n\n--path “barrier”\n101 kcal/mol — not physical\n\n\n\n\n\n\nConcerted reaction profile: barrier 6.7 kcal/mol at forming-bond distance 2.32 Å, then downhill to the product.\n\n\n\n\n\n\n\n\nTipTies back to the metadynamics theme\n\n\n\nEnhanced sampling finds that a transition is reachable, but a quantitative barrier needs a proper TS treatment — the RMSD bias alone is chemically blind. (Also: xtb has no TS optimizer — --optts is not a flag; use Sella. And read the vibspectrum file for frequencies, not the --hess stdout.)\n\n\nFull findings — FINDINGS_diels_alder.md →"
+  },
+  {
+    "objectID": "04-diels-alder.html#sec-mechanism",
+    "href": "04-diels-alder.html#sec-mechanism",
+    "title": "Study 04 — Diels–Alder reaction",
+    "section": "2 · Mechanism and energetics",
+    "text": "2 · Mechanism and energetics\nDoes the MACE-OFF23 surrogate get reaction energetics right with no fine-tuning? xTB has a built-in path search; MACE doesn’t, so we build the profile with a climbing-image NEB (ASE) and compare.\n\n\n\nquantity\nGFN2-xTB (built-in path)\nMACE-OFF23 (NEB)\n\n\n\n\nactivation barrier\n6.7 kcal/mol\n36.2 kcal/mol\n\n\nreaction energy\n−57.6 kcal/mol\n−36.1 kcal/mol\n\n\nTS forming C–C\n2.32 Å\n2.03 / 1.98 Å (slightly asynchronous)\n\n\n\n\n\n\nMinimum energy path and energetics: MACE-OFF23 (CI-NEB) vs GFN2-xTB (built-in path).\n\n\nOutcome (2): same TS location (~2.0–2.3 Å), very different energetics. Experiment/DFT give a barrier ≈ 22–27 kcal/mol and ΔH ≈ −40. GFN2-xTB badly underestimates the barrier (6.7) and overbinds the product (−57.6); MACE-OFF23 (DFT-trained) is closer on both, off the shelf. The refined MACE TS is a genuine first-order saddle (one imaginary mode, −740 cm⁻¹) and slightly asynchronous — MACE makes the perfectly synchronous geometry a second-order saddle.\nBoth potentials agree the reaction is a concerted, synchronous cycloaddition — the two forming bonds contract together (b1 ≈ b2 along the whole path), with only MACE’s TS marginally asynchronous (2.03 / 1.98 Å). They differ in energetics, not mechanism.\n\n\n\nForming-bond evolution: b1 and b2 contract synchronously for both methods; MACE’s TS carries a small 0.05 Å asynchrony.\n\n\nLiterature context: experiment gives a barrier ≈ 27.5 and ΔH ≈ −40 kcal/mol. xTB (6.7 / −57.6) is qualitatively wrong on both; MACE-OFF23 (36 / −36…−41) nails the reaction energy and is in the right kinetic regime, though it overestimates the barrier by ~9 kcal/mol."
+  },
+  {
+    "objectID": "04-diels-alder.html#sec-divergence",
+    "href": "04-diels-alder.html#sec-divergence",
+    "title": "Study 04 — Diels–Alder reaction",
+    "section": "3 · Where the potentials diverge",
+    "text": "3 · Where the potentials diverge\nThe disagreement is a reactive-region effect. The energy difference ΔE = E_MACE − E_xTB is ~0 for the separated reactants, grows as the bonds form, peaks in the TS region, and leaves a persistent ~+23 kcal/mol product offset — not a constant shift.\n\n\n\nEnergy-difference profile (both potentials relaxed at each point along the reaction coordinate).\n\n\nAnd the forces: on rattled reaction-path geometries the MACE and xTB force vectors are directionally almost identical (cosine 0.98), but the magnitude gap (RMSE) spikes in the TS region — exactly where the energy difference peaks.\n\n\n\nForce RMSE and cosine similarity along the path — agreement is near-perfect in the reactant/product basins and degrades only in the TS region.\n\n\n\nRegion-wise error partition\n152 rattled path geometries partitioned into five regions by forming C–C distance, with raw MACE-vs-xTB force RMSE, cosine, and energy discrepancy per region.\n\n\n\n\n\n\n\n\n\nregion (forming C–C)\nforce RMSE (eV/Å)\ncosine\nΔE vs reactant (kcal/mol)\n\n\n\n\nreactant basin (&gt;2.9 Å)\n0.39\n0.996\n0 (ref)\n\n\npre-TS rising (2.4–2.9)\n0.43\n0.991\n8.7\n\n\nTS region (1.96–2.4)\n0.83\n0.950\n36.5\n\n\npost-TS (1.7–1.96)\n0.96\n0.964\n31.3\n\n\nproduct basin (&lt;1.7 Å)\n0.33\n0.997\n23.1\n\n\n\n\n\n\nRegion-wise MACE↔︎xTB force RMSE and cosine: near-perfect in the basins, degrading sharply through the TS / post-TS region.\n\n\n\n\n\n\n\n\nNoteCareful with the “why”\n\n\n\nThat the errors concentrate in the distorted barrier region is directly measured here. The natural explanation — that such highly distorted geometries are under-represented in the foundation model’s training distribution — is a supported hypothesis, not a demonstrated fact; this dataset shows where the error is, not why. It motivates, but does not prove, targeted data enrichment.\n\n\n\n\n\n\n\n\nNoteWhat this tells the correction framework\n\n\n\nMACE and xTB agree on geometry, mechanism, and force direction (cosine 0.98) and disagree on energy/force magnitude, localized in the bond-forming region. So a global energy shift is ruled out (ΔE is zero at the reactant); the direction-agrees / magnitude-differs signature points to a force-scaling correction, and the localization points to an environment/coordination-dependent (or delta) form. The NEB pipeline already wraps every potential in a CorrectedCalculator with these plug-in models — see Study 08."
+  },
+  {
+    "objectID": "04-diels-alder.html#sec-controls",
+    "href": "04-diels-alder.html#sec-controls",
+    "title": "Study 04 — Diels–Alder reaction",
+    "section": "4 · Methodological controls",
+    "text": "4 · Methodological controls\nThe obvious objection to the ~30 kcal/mol gap: MACE used NEB, xTB used its built-in path search, so maybe the gap is a path-method mismatch. Three controls close that off.\n\nMACE’s barrier is method-invariant\nAcross the relaxed scan (36.0), the Sella saddle (36.2), and a standardized 13-image CI-NEB (36–37), MACE gives the same answer. It is also numerically converged — 35.9 ± 1.0 kcal/mol for ≥11 NEB images (9 images is too few: the barrier collapses to ~18 and the TS drifts to 2.5 Å).\n\n\n\nActivation barrier vs NEB image count: converged for ≥11 images; 9 is under-resolved.\n\n\n\n\nThe xtb-python stability gate\nBefore running xTB through the same NEB driver, the backend was gated: single-points, forces, and geometry optimization are reproducible, with repeat-evaluation energy scatter of 5.08e−14 eV (machine precision), a converged optimization at fmax 0.021, and ~4.4 ms per call. The robust settings (electronic_temperature=1000, max_iterations=500, accuracy=1.0) do not perturb path energetics.\n\n\nxTB ASE-NEB fails under the standardized settings\nRunning both potentials through the identical 13-image CI-NEB (k = 0.5, FIRE / NEBOptimizer, fmax 0.05, climbing image, same concerted-scan seed): MACE converges, xTB does not. The band never forms a sensible path — atoms in the “TS” images fly apart (reported forming C–C of ~7–18 Å) and the apparent barrier balloons to 240–250 kcal/mol under both optimizers.\n\n\n\nStandardized NEB: MACE gives a consistent ~36 kcal/mol barrier; the xTB band does not converge to a physical path under the identical settings (shown as its valid relaxed-scan reference instead).\n\n\n\n\n\n\n\n\nImportantA PES/algorithm compatibility issue, not a backend failure\n\n\n\nThe same xtb-python that passed the stability gate produces a clean single-point everywhere; only the band optimization on xTB’s flatter, low-barrier surface diverges under these settings, and a file-based binary xTB would hit the identical problem. So the valid xTB reference stays the constrained relaxed scan + verified TS (6.7 kcal/mol). Because MACE’s barrier is the same ~36 kcal/mol no matter how it is computed, the ~30 kcal/mol gap is a genuine difference between the two potential-energy surfaces — not the original path-method mismatch.\n\n\nJul 31 follow-up findings — FINDINGS_jul31.md →"
+  },
+  {
+    "objectID": "04-diels-alder.html#sec-cross-pes",
+    "href": "04-diels-alder.html#sec-cross-pes",
+    "title": "Study 04 — Diels–Alder reaction",
+    "section": "5 · Cross-PES transition-state validation",
+    "text": "5 · Cross-PES transition-state validation\nIf path search is not the explanation, the sharper question is whether the two potentials even share a transition state.\n\nGeometry verification\nAll three structures were confirmed as the exact geometries associated with the reported 6.7 kcal/mol result: C₆H₁₀ throughout, matched atom ordering, forming pairs (0,5) and (3,4). Reactant start.xyz (3.35 Å forming C–C), TS ts_opt.xyz (2.315 Å, Sella-refined and Hessian-verified), product end.xyz (1.54 Å new σ-bonds).\n\n\nIdentical frozen geometries\nEvaluating both potentials on those exact structures, with no relaxation, removes path search as a variable entirely.\n\n\n\non frozen xTB geometries\nGFN2-xTB\nMACE-OFF23\ndifference\n\n\n\n\nbarrier\n6.7 kcal/mol\n27.9 kcal/mol\n21.2\n\n\nreaction energy\n−57.6\n−36.2\n21.4\n\n\nmax atomic force at the TS\n0.00093 eV/Å\n1.84 eV/Å\n—\n\n\nforce norm at the TS\n—\n4.11 eV/Å\n—\n\n\n\n\n\n\nBoth potentials on the same three frozen xTB geometries.\n\n\nThe xTB TS is a true stationary point on xTB’s surface but carries 1.84 eV/Å of MACE force — nearly 40× a typical 0.05 eV/Å convergence threshold. It is not a stationary point on the MACE surface.\n\n\nThe MACE saddle, found from the xTB TS\nUsing the xTB TS as the initial guess for a Sella saddle search on MACE:\n\n\n\n\nGFN2-xTB saddle\nMACE saddle (Sella from the xTB TS)\n\n\n\n\nforming C–C\n2.315 Å\n1.976 / 2.031 Å (mean 2.004)\n\n\nbarrier\n6.7 kcal/mol\n35.8 kcal/mol\n\n\nimaginary modes\n1 (−394 cm⁻¹)\n1\n\n\nconvergence\n—\n66 iterations, fmax 8.0e−6 eV/Å\n\n\ndisplacement between the two saddles\n—\n0.316 Å\n\n\n\n\n\n\nLeft: the xTB TS is not stationary on MACE. Right: two distinct but nearby saddles, and every δx perturbation recovers the same one.\n\n\nThis recovered saddle agrees with the independently obtained CI-NEB result (35.8 vs 36.0 kcal/mol; 2.004 vs 2.005 Å mean forming C–C) — two different methods from two different starting points converging on the same structure.\n\n\nδx robustness\nDisplacing the MACE saddle along its imaginary mode and re-running Sella from each perturbed structure:\n\n\n\n\n\n\n\n\n\n\nperturbation\niterations\nfinal fmax (eV/Å)\nRMSD to reference (Å)\nbarrier (kcal/mol)\n\n\n\n\n−0.05 Å\n38\n8.9e−6\n5.0e−6\n35.806\n\n\n−0.02 Å\n30\n9.3e−6\n2.4e−6\n35.806\n\n\n+0.02 Å\n37\n8.9e−6\n1.6e−6\n35.806\n\n\n+0.05 Å\n61\n9.1e−6\n1.6e−6\n35.806\n\n\nspread\n—\n—\n&lt; 1e−5\n0.000\n\n\n\nAll four recover the same saddle. It is well isolated, not an optimizer artifact.\n\n\n\n\n\n\nNoteHessian convention\n\n\n\nThe Phase 1 Hessian was mass-unweighted, so its eigenvalue→cm⁻¹ conversion produced a non-physical magnitude. The count of imaginary modes was unaffected (mass weighting is a congruence transform and preserves the sign structure by Sylvester’s law of inertia), and no conclusion depended on the numeric value. Later work uses a properly mass-weighted Hessian, validated by reproducing xTB’s own vibspectrum value at the xTB TS: −394.1 cm⁻¹ against the reference −394, with the six translation/rotation modes cleanly separated (next-lowest −13.3 cm⁻¹)."
+  },
+  {
+    "objectID": "04-diels-alder.html#sec-interpretation",
+    "href": "04-diels-alder.html#sec-interpretation",
+    "title": "Study 04 — Diels–Alder reaction",
+    "section": "6 · Final interpretation",
+    "text": "6 · Final interpretation\nDirectly demonstrated. On identical frozen geometries the two potentials disagree by 21.2 kcal/mol on the barrier; the xTB TS is not a MACE stationary point (1.84 eV/Å); Sella from that TS converges to a genuine first-order MACE saddle 0.316 Å away at 35.8 kcal/mol, matching the independent NEB result; and that saddle is robustly recovered from ±0.05 Å perturbations with zero barrier spread.\nSupported interpretation. The two surfaces describe nearby but distinct saddle regions. The barrier disagreement is intrinsic to the potentials rather than an artifact of methodology or convergence.\nNot demonstrated. Which method is physically more accurate cannot be settled from this experiment — though DFT/experiment (≈22–27 kcal/mol) sits between them, closer to MACE. Nothing here establishes that the foundation model’s training set lacks these geometries, and nothing transfers automatically to other reactions.\nTwo claims that are easy to conflate stay separate: nearby TS geometry and matching TS energy are different achievements, and this system has the first without the second.\nPhase 1 complete findings — PHASE1_COMPLETE_FINDINGS.md → · NEB findings — FINDINGS_neb.md →"
+  },
+  {
+    "objectID": "02-pbc.html",
+    "href": "02-pbc.html",
+    "title": "Study 02 — Periodicity & temperature",
+    "section": "",
+    "text": "An 8-water periodic box stays condensed for the whole run (max O–O oscillates 6–7 Å, never leaves the cell) while the gas-phase cluster separates past 100 Å. Periodicity removes the evaporation channel — though it forces GFN1, since GFN2 has no PBC multipoles in this build, so gas (GFN2) and periodic (GFN1) results are not at the same level of theory.\n\n\n\nPeriodic box stays bounded (≤ 7.7 Å); the gas-phase cluster evaporates past 100 Å."
+  },
+  {
+    "objectID": "02-pbc.html#confinement-fixes-evaporation",
+    "href": "02-pbc.html#confinement-fixes-evaporation",
+    "title": "Study 02 — Periodicity & temperature",
+    "section": "",
+    "text": "An 8-water periodic box stays condensed for the whole run (max O–O oscillates 6–7 Å, never leaves the cell) while the gas-phase cluster separates past 100 Å. Periodicity removes the evaporation channel — though it forces GFN1, since GFN2 has no PBC multipoles in this build, so gas (GFN2) and periodic (GFN1) results are not at the same level of theory.\n\n\n\nPeriodic box stays bounded (≤ 7.7 Å); the gas-phase cluster evaporates past 100 Å."
+  },
+  {
+    "objectID": "02-pbc.html#a-big-oo-gap-is-drift-not-dissociation",
+    "href": "02-pbc.html#a-big-oo-gap-is-drift-not-dissociation",
+    "title": "Study 02 — Periodicity & temperature",
+    "section": "A big O–O gap is drift, not dissociation",
+    "text": "A big O–O gap is drift, not dissociation\nA complementary CV pair resolves the ambiguity: checking the intramolecular O–H shows the clusters are intact molecules drifting apart, not dissociating — only the lone water truly breaks a bond. Higher temperature just makes intact molecules escape faster (max O–O 81 → 143 Å over 200 → 350 K).\n\n\n\nGas trimer: three intact waters drift to the corners, each keeping its two O–H bonds — drift, not dissociation.\n\n\nFull findings — FINDINGS_phase2.md →"
+  },
+  {
+    "objectID": "01-sweep.html",
+    "href": "01-sweep.html",
+    "title": "Study 01 — Bias × size",
+    "section": "",
+    "text": "Sweeping bias strength kpush against cluster size shows the RMSD bias preferentially rips whatever bond is weakest. A lone water resists and only dissociates at high bias — it has to break a covalent O–H (~5 eV). Hydrogen-bonded clusters come apart even at the lowest bias, because the intermolecular H-bond (~0.2 eV) snaps first. The tetramer is the most robust, held by more H-bonds.\n\n\n\nFraction of the 20 ps run each cluster stayed intact (one fragment, all O–H present). Reading across a row, more bias breaks clusters sooner.\n\n\n\n\n\n\n\n\nTipTakeaway\n\n\n\nWhat breaks depends on what holds the system together: a global-RMSD bias just maximizes structural novelty, and the cheapest way to do that is to snap the weakest bond — which for clusters means evaporation, not rearrangement.\n\n\nFull findings — FINDINGS.md →"
+  },
+  {
+    "objectID": "01-sweep.html#the-bias-breaks-the-weakest-bond",
+    "href": "01-sweep.html#the-bias-breaks-the-weakest-bond",
+    "title": "Study 01 — Bias × size",
+    "section": "",
+    "text": "Sweeping bias strength kpush against cluster size shows the RMSD bias preferentially rips whatever bond is weakest. A lone water resists and only dissociates at high bias — it has to break a covalent O–H (~5 eV). Hydrogen-bonded clusters come apart even at the lowest bias, because the intermolecular H-bond (~0.2 eV) snaps first. The tetramer is the most robust, held by more H-bonds.\n\n\n\nFraction of the 20 ps run each cluster stayed intact (one fragment, all O–H present). Reading across a row, more bias breaks clusters sooner.\n\n\n\n\n\n\n\n\nTipTakeaway\n\n\n\nWhat breaks depends on what holds the system together: a global-RMSD bias just maximizes structural novelty, and the cheapest way to do that is to snap the weakest bond — which for clusters means evaporation, not rearrangement.\n\n\nFull findings — FINDINGS.md →"
+  },
+  {
+    "objectID": "03-droplets.html",
+    "href": "03-droplets.html",
+    "title": "Study 03 — Large vacuum droplets",
+    "section": "",
+    "text": "Scaling the free clusters up, every size holds together as a single droplet at low bias: stable radius of gyration, zero molecules evaporated, all O–H intact — the opposite of the tiny n=2–4 clusters, and with GFN2 retained (no periodic box needed).\n\n\n\nn\nR_g start → end\nfraction in droplet\nevaporated\nO–H\n\n\n\n\n20\n3.61 → 3.96 Å\n1.00\n0\nintact\n\n\n30\n4.45 → 4.18 Å\n1.00\n0\nintact\n\n\n50\n4.99 → 4.95 Å\n1.00\n0\nintact\n\n\n\n\n\n\nRadius of gyration stays flat and no molecule evaporates, all three sizes (low bias)."
+  },
+  {
+    "objectID": "03-droplets.html#size-suppresses-evaporation",
+    "href": "03-droplets.html#size-suppresses-evaporation",
+    "title": "Study 03 — Large vacuum droplets",
+    "section": "",
+    "text": "Scaling the free clusters up, every size holds together as a single droplet at low bias: stable radius of gyration, zero molecules evaporated, all O–H intact — the opposite of the tiny n=2–4 clusters, and with GFN2 retained (no periodic box needed).\n\n\n\nn\nR_g start → end\nfraction in droplet\nevaporated\nO–H\n\n\n\n\n20\n3.61 → 3.96 Å\n1.00\n0\nintact\n\n\n30\n4.45 → 4.18 Å\n1.00\n0\nintact\n\n\n50\n4.99 → 4.95 Å\n1.00\n0\nintact\n\n\n\n\n\n\nRadius of gyration stays flat and no molecule evaporates, all three sizes (low bias)."
+  },
+  {
+    "objectID": "03-droplets.html#and-reveals-a-bias-scaling-artifact",
+    "href": "03-droplets.html#and-reveals-a-bias-scaling-artifact",
+    "title": "Study 03 — Large vacuum droplets",
+    "section": "…and reveals a bias-scaling artifact",
+    "text": "…and reveals a bias-scaling artifact\nRaising kpush from 0.008 → 0.05 at n = 30 barely perturbs the droplet. That is not intrinsic robustness: the bias is a function of global RMSD spread over all degrees of freedom, so the same nominal kpush is far gentler on a 90-atom droplet than on a dimer.\n\n\n\n\n\n\nImportantImplication\n\n\n\nA single kpush number does not transfer across system sizes. This is the empirical case for a size-normalized (per-molecule / per-atom) bias.\n\n\nFull findings — FINDINGS_large.md →"
   },
   {
     "objectID": "05-mace.html",
@@ -77,136 +329,178 @@
     "text": "Next\n\nExtend the size ladder past n=50 (n=100, 200) to confirm MACE overtakes xTB.\nMACE-driven metadynamics (ASE/PLUMED) — which unlocks biasing along proper collective variables. Which CV is the open question: coordination numbers, per-O O–H (proton transfer), tetrahedral order, or a learned CV.\n\nStatic findings — FINDINGS_mace.md → · MD findings — FINDINGS_mace_md.md →"
   },
   {
-    "objectID": "03-droplets.html",
-    "href": "03-droplets.html",
-    "title": "Study 03 — Large vacuum droplets",
+    "objectID": "07-cv-design.html",
+    "href": "07-cv-design.html",
+    "title": "Study 07 — Collective-variable scoping",
     "section": "",
-    "text": "Scaling the free clusters up, every size holds together as a single droplet at low bias: stable radius of gyration, zero molecules evaporated, all O–H intact — the opposite of the tiny n=2–4 clusters, and with GFN2 retained (no periodic box needed).\n\n\n\nn\nR_g start → end\nfraction in droplet\nevaporated\nO–H\n\n\n\n\n20\n3.61 → 3.96 Å\n1.00\n0\nintact\n\n\n30\n4.45 → 4.18 Å\n1.00\n0\nintact\n\n\n50\n4.99 → 4.95 Å\n1.00\n0\nintact\n\n\n\n\n\n\nRadius of gyration stays flat and no molecule evaporates, all three sizes (low bias)."
+    "text": "Metadynamics needs collective variables to bias along. We compute a battery of seven candidate CVs on trajectories spanning the distinct states (stable droplet, fragmenting droplet, big droplet, drifting cluster, monomer dissociation) and ask which are informative, non-redundant, and capture the processes we care about."
   },
   {
-    "objectID": "03-droplets.html#size-suppresses-evaporation",
-    "href": "03-droplets.html#size-suppresses-evaporation",
-    "title": "Study 03 — Large vacuum droplets",
+    "objectID": "07-cv-design.html#what-separates-the-states",
+    "href": "07-cv-design.html#what-separates-the-states",
+    "title": "Study 07 — Collective-variable scoping",
+    "section": "What separates the states",
+    "text": "What separates the states\nBetween/within-state variance ratio (higher = more discriminating):\n\n\n\nCV\nseparation\ndefined on\n\n\n\n\ncoord_OO (O–O coordination)\n50.9\nall\n\n\nn_hbond_pm (angular H-bonds/mol)\n12.6\nall\n\n\nasphericity\n4.9\ndroplets\n\n\nq_tet (tetrahedral order)\n1.4\ndroplets\n\n\nmax_OO\n1.0\nall\n\n\nRg\n1.0\nall\n\n\nmax_OH\n0.8\nall\n\n\n\nO–O coordination and the angular H-bond count separate the states best. max_OH scores low only because a single state dissociates — but it’s the only CV that fires there, so it’s an essential orthogonal chemical coordinate."
+  },
+  {
+    "objectID": "07-cv-design.html#the-7-cvs-collapse-to-3-directions",
+    "href": "07-cv-design.html#the-7-cvs-collapse-to-3-directions",
+    "title": "Study 07 — Collective-variable scoping",
+    "section": "The 7 CVs collapse to ~3 directions",
+    "text": "The 7 CVs collapse to ~3 directions\nRedundant families (|r| &gt; 0.9): Rg ≈ max_OO (size); coord_OO ≈ n_hbond_pm ≈ −asphericity (network integrity). PCA: PC1 (43%) = network integrity, PC2 (30%) = size + dissociation — 73% in two components, and the states separate cleanly in that plane.\n\n\n\nStates in CV space: droplets cluster at high network integrity (left); the drifting cluster traces a path across as its network breaks; the dissociating monomer splits off along the O–H axis.\n\n\n\n\n\nCV correlation — the redundancy structure (size family, network family)."
+  },
+  {
+    "objectID": "07-cv-design.html#recommended-cv-set-minimal-non-redundant",
+    "href": "07-cv-design.html#recommended-cv-set-minimal-non-redundant",
+    "title": "Study 07 — Collective-variable scoping",
+    "section": "Recommended CV set (minimal, non-redundant)",
+    "text": "Recommended CV set (minimal, non-redundant)\n\nNetwork integrity — mean O–O coordination or angular H-bond count (pick one).\nSize / spread — Rg (or max_OO).\nChemistry — max_OH + a per-oxygen O–H coordination for proton transfer.\n\n\n\n\n\n\n\nImportantCaveat & next step\n\n\n\nThis separates different systems, so some discriminating power reflects size, not slow dynamics within one droplet. For choosing what to bias, the sharper question — which CV captures the slow reorganization within a single droplet — needs a time-lagged analysis (TICA / VAMP) or a learned CV on one system’s trajectory. That’s the next step, on top of this physically-motivated shortlist.\n\n\nFull findings — FINDINGS_cv_design.md →"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "ML-Accelerated Metadynamics",
     "section": "",
-    "text": "Scaling the free clusters up, every size holds together as a single droplet at low bias: stable radius of gyration, zero molecules evaporated, all O–H intact — the opposite of the tiny n=2–4 clusters, and with GFN2 retained (no periodic box needed).\n\n\n\nn\nR_g start → end\nfraction in droplet\nevaporated\nO–H\n\n\n\n\n20\n3.61 → 3.96 Å\n1.00\n0\nintact\n\n\n30\n4.45 → 4.18 Å\n1.00\n0\nintact\n\n\n50\n4.99 → 4.95 Å\n1.00\n0\nintact\n\n\n\n\n\n\nRadius of gyration stays flat and no molecule evaporates, all three sizes (low bias)."
+    "text": "The long-term goal is a workflow where enhanced sampling runs on a machine-learned surrogate at the accuracy of the underlying quantum-chemical reference. Getting there means answering four questions in order: does an off-the-shelf potential agree with the reference at equilibrium, does that agreement survive bond breaking, can a lightweight correction close the gap that appears, and does that correction keep improving when fed more data.\nEach pillar below is a 2–4 minute read. The detailed Studies remain the source of truth for methodology, full tables, convergence tests, and troubleshooting."
   },
   {
-    "objectID": "03-droplets.html#and-reveals-a-bias-scaling-artifact",
-    "href": "03-droplets.html#and-reveals-a-bias-scaling-artifact",
-    "title": "Study 03 — Large vacuum droplets",
-    "section": "…and reveals a bias-scaling artifact",
-    "text": "…and reveals a bias-scaling artifact\nRaising kpush from 0.008 → 0.05 at n = 30 barely perturbs the droplet. That is not intrinsic robustness: the bias is a function of global RMSD spread over all degrees of freedom, so the same nominal kpush is far gentler on a 90-atom droplet than on a dimer.\n\n\n\n\n\n\nImportantImplication\n\n\n\nA single kpush number does not transfer across system sizes. This is the empirical case for a size-normalized (per-molecule / per-atom) bias.\n\n\nFull findings — FINDINGS_large.md →"
+    "objectID": "index.html#the-scientific-chain",
+    "href": "index.html#the-scientific-chain",
+    "title": "ML-Accelerated Metadynamics",
+    "section": "The scientific chain",
+    "text": "The scientific chain\nEach pillar exists because the previous one produced a specific question:\n\nEquilibrium agreement is strong — which makes the reactive test meaningful rather than a foregone conclusion.\nReactive agreement fails, and the failure is localized to the transition-state region — which motivates correcting there rather than globally.\nTargeted correction works, once — which raises the obvious follow-up: does it keep working if iterated?\nIt does not — which points at correction capacity, not reference-data quantity, as the next thing to test.\n\nThe Research Map shows how the individual studies attach to this chain. It is optional — everything on the main pages stands on its own."
   },
   {
-    "objectID": "01-sweep.html",
-    "href": "01-sweep.html",
-    "title": "Study 01 — Bias × size",
+    "objectID": "index.html#results-at-a-glance",
+    "href": "index.html#results-at-a-glance",
+    "title": "ML-Accelerated Metadynamics",
+    "section": "Results at a glance",
+    "text": "Results at a glance\n\n\n\n#\nStudy\nHeadline result\nPillar\n\n\n\n\n01\nBias × size\nThe RMSD bias breaks the weakest bond; small clusters evaporate.\n1\n\n\n02\nPBC & temperature\nPeriodicity confines the system; a large O–O gap is drift, not dissociation.\n1\n\n\n03\nDroplets\nSize suppresses evaporation; raising kpush barely perturbs n=20–50.\n1\n\n\n04\nDiels–Alder\nVerified concerted TS at 6.7 kcal/mol, −394 cm⁻¹; raw MACE gives ~36.\n2\n\n\n05\nMACE-OFF23\nForces track xTB at r ≈ 0.99; MD structure reproduced; crossover by n≈50.\n1\n\n\n06\nkpush scaling\nBias force ∝ kpush/N, so kpush must scale ∝ N.\n1\n\n\n07\nCV design\n7 candidate CVs collapse to ~3 independent axes.\n1\n\n\n08\nCorrections\nA conservative pairwise Delta removes most of the barrier error; iterating it does not help further.\n3 · 4"
+  },
+  {
+    "objectID": "index.html#methods-in-one-paragraph",
+    "href": "index.html#methods-in-one-paragraph",
+    "title": "ML-Accelerated Metadynamics",
+    "section": "Methods in one paragraph",
+    "text": "Methods in one paragraph\nGas-phase and periodic GFN2/GFN1-xTB metadynamics (built-in Cartesian-RMSD bias), NVT, 0.5 fs timestep; analysis with ASE / NumPy / pandas. Reactions via xtb --path, relaxed concerted scans, and Sella saddle optimization with Hessian verification. Surrogate benchmarking with MACE-OFF23 (small) as an ASE calculator; corrections applied through a CorrectedCalculator wrapper so the foundation model is never modified. All code, data, and figures are in the repository; each study page links to its detailed FINDINGS document.\n\nOn the RMSD bias xTB biases along Cartesian RMSD to previously visited structures — not along any bond or angle. Every collective variable computed in analysis is a post-hoc descriptor, and Epot versus a CV is a sampled potential-energy landscape from a biased run, not a free-energy surface."
+  },
+  {
+    "objectID": "p2-reactive.html",
+    "href": "p2-reactive.html",
+    "title": "Pillar 2 — Reactive chemistry",
     "section": "",
-    "text": "Sweeping bias strength kpush against cluster size shows the RMSD bias preferentially rips whatever bond is weakest. A lone water resists and only dissociates at high bias — it has to break a covalent O–H (~5 eV). Hydrogen-bonded clusters come apart even at the lowest bias, because the intermolecular H-bond (~0.2 eV) snaps first. The tetramer is the most robust, held by more H-bonds.\n\n\n\nFraction of the 20 ps run each cluster stayed intact (one fragment, all O–H present). Reading across a row, more bias breaks clusters sooner.\n\n\n\n\n\n\n\n\nTipTakeaway\n\n\n\nWhat breaks depends on what holds the system together: a global-RMSD bias just maximizes structural novelty, and the cheapest way to do that is to snap the weakest bond — which for clusters means evaporation, not rearrangement.\n\n\nFull findings — FINDINGS.md →"
+    "text": "Scientific question Does the strong equilibrium agreement of Pillar 1 survive bond-breaking and bond-forming chemistry?"
   },
   {
-    "objectID": "01-sweep.html#the-bias-breaks-the-weakest-bond",
-    "href": "01-sweep.html#the-bias-breaks-the-weakest-bond",
-    "title": "Study 01 — Bias × size",
+    "objectID": "p2-reactive.html#why-we-tested-it",
+    "href": "p2-reactive.html#why-we-tested-it",
+    "title": "Pillar 2 — Reactive chemistry",
+    "section": "Why we tested it",
+    "text": "Why we tested it\nEquilibrium water samples a smooth basin well inside any potential’s comfort zone. A cycloaddition does the opposite: it drives the system through half-formed bonds and strongly distorted geometries. If a surrogate is going to carry reactive enhanced sampling, this is the regime that decides it.\nThe benchmark is butadiene + ethylene → cyclohexene, chosen because GFN2-xTB gives a fully characterized reference: a concerted, symmetric transition state verified by a relaxed scan, a Sella saddle optimization, and a Hessian showing exactly one imaginary mode."
+  },
+  {
+    "objectID": "p2-reactive.html#sec-energetics",
+    "href": "p2-reactive.html#sec-energetics",
+    "title": "Pillar 2 — Reactive chemistry",
+    "section": "1 · Raw reaction energetics",
+    "text": "1 · Raw reaction energetics\n\n\n\nquantity\nGFN2-xTB\nMACE-OFF23 (CI-NEB)\n\n\n\n\nactivation barrier\n6.7 kcal/mol\n36.2 kcal/mol\n\n\nreaction energy\n−57.6 kcal/mol\n−36.1 kcal/mol\n\n\nTS forming C–C\n2.32 Å (symmetric)\n2.03 / 1.98 Å\n\n\n\n\n\n\nMinimum-energy path: MACE-OFF23 (CI-NEB) against GFN2-xTB.\n\n\nBoth potentials place the transition state at essentially the same point on the reaction coordinate, and both are far apart in energy. Neither is obviously “right”: experiment and DFT put the barrier at ≈22–27 kcal/mol and ΔH ≈ −40, so xTB badly underestimates the barrier while MACE overestimates it slightly — a caveat that matters for every later pillar, where xTB is used as a convenient reference target rather than as ground truth."
+  },
+  {
+    "objectID": "p2-reactive.html#sec-mechanism",
+    "href": "p2-reactive.html#sec-mechanism",
+    "title": "Pillar 2 — Reactive chemistry",
+    "section": "2 · Mechanism and bond evolution",
+    "text": "2 · Mechanism and bond evolution\nThe disagreement is not mechanistic. Both potentials describe a concerted, essentially synchronous cycloaddition in which the two forming bonds contract together.\n\n\n\nForming-bond evolution: b1 and b2 contract synchronously for both methods; MACE’s TS carries a small 0.05 Å asynchrony."
+  },
+  {
+    "objectID": "p2-reactive.html#sec-forces",
+    "href": "p2-reactive.html#sec-forces",
+    "title": "Pillar 2 — Reactive chemistry",
+    "section": "3 · Force agreement",
+    "text": "3 · Force agreement\nOn rattled reaction-path geometries the two force fields point in nearly the same direction (cosine ≈ 0.98) but differ in magnitude, and the gap is not uniform along the path.\n\n\n\nForce RMSE and cosine similarity along the reaction coordinate."
+  },
+  {
+    "objectID": "p2-reactive.html#sec-localization",
+    "href": "p2-reactive.html#sec-localization",
+    "title": "Pillar 2 — Reactive chemistry",
+    "section": "4 · The disagreement is localized",
+    "text": "4 · The disagreement is localized\nPartitioning 152 rattled path geometries into five regions by forming C–C distance shows where the error actually lives.\n\n\n\n\n\n\n\n\n\nregion (forming C–C)\nforce RMSE (eV/Å)\ncosine\nΔE vs reactant (kcal/mol)\n\n\n\n\nreactant basin (&gt;2.9 Å)\n0.39\n0.996\n0 (ref)\n\n\npre-TS rising (2.4–2.9)\n0.43\n0.991\n8.7\n\n\nTS region (1.96–2.4)\n0.83\n0.950\n36.5\n\n\npost-TS (1.7–1.96)\n0.96\n0.964\n31.3\n\n\nproduct basin (&lt;1.7 Å)\n0.33\n0.997\n23.1\n\n\n\n\n\n\nRegion-wise force RMSE and cosine: near-perfect in the basins, degrading sharply through the TS and post-TS region.\n\n\n\nKey result Force error rises ~2.5–2.9× in the TS/post-TS window (0.83–0.96 vs 0.33–0.43 eV/Å in the basins), the cosine drops to 0.950, and the energy discrepancy peaks in the same place. The two potentials agree where the chemistry is easy and disagree precisely where bonds are half-made.\n\n\nCareful with the “why” That the error concentrates in the distorted barrier region is directly measured. The natural explanation — that such geometries are under-represented in the foundation model’s training distribution — is a supported hypothesis, not a demonstrated fact. This dataset shows where the error is, not why."
+  },
+  {
+    "objectID": "p2-reactive.html#sec-identical-geometry",
+    "href": "p2-reactive.html#sec-identical-geometry",
+    "title": "Pillar 2 — Reactive chemistry",
+    "section": "5 · Ruling out a methodology artifact",
+    "text": "5 · Ruling out a methodology artifact\nThe obvious objection: MACE used NEB, xTB used its own path search, so perhaps the gap is just a path-method mismatch. Two independent tests close that off.\nTest A — MACE’s barrier does not depend on the method. Across the relaxed scan (36.0), the Sella-refined saddle (36.2), and a standardized 13-image CI-NEB (36–37), MACE gives the same answer, and the NEB result is numerically converged at 35.9 ± 1.0 kcal/mol for ≥11 images.\nTest B — evaluate both potentials on the identical frozen geometries. Taking the native xTB reactant, TS, and product and evaluating both potentials on those exact structures removes path search entirely.\n\n\n\nBoth potentials on the same three frozen xTB geometries: the disagreement survives with path search removed.\n\n\n\n\n\non frozen xTB geometries\nGFN2-xTB\nMACE-OFF23\ndifference\n\n\n\n\nbarrier\n6.7\n27.9\n21.2 kcal/mol\n\n\nreaction energy\n−57.6\n−36.2\n21.4 kcal/mol\n\n\nmax force at the xTB TS\n0.00093 eV/Å\n1.84 eV/Å\n—\n\n\n\nThe last row is the important one. xTB’s TS is a true stationary point on xTB’s own surface, but MACE carries 1.84 eV/Å of residual force there — nearly 40× a typical 0.05 eV/Å convergence threshold. The xTB transition state is not a stationary point on the MACE surface at all.\n\nMethod control — the standardized NEB Running both potentials through the identical 13-image CI-NEB (k = 0.5, FIRE / NEBOptimizer, fmax 0.05, same concerted-scan seed) succeeds for MACE and fails physically for xTB: the band does not form a sensible path, atoms in the “TS” images separate to 7–18 Å, and the apparent barrier balloons to 240–250 kcal/mol under both optimizers. This is an algorithm/PES compatibility problem, not a backend failure — the same xtb-python build passes a stability gate with repeat-evaluation energy scatter of 5.1e−14 eV. The valid xTB reference therefore remains the constrained relaxed scan plus verified saddle. Details in Study 04."
+  },
+  {
+    "objectID": "p2-reactive.html#sec-ts-cross-pes",
+    "href": "p2-reactive.html#sec-ts-cross-pes",
+    "title": "Pillar 2 — Reactive chemistry",
+    "section": "6 · Cross-PES transition-state validation",
+    "text": "6 · Cross-PES transition-state validation\nIf the xTB TS is not a MACE stationary point, where is the MACE saddle? Using the xTB TS as a starting guess for a Sella saddle search on the MACE surface answers both that and the robustness question.\n\n\n\nLeft: the xTB TS is not stationary on MACE. Right: the two saddles are distinct but nearby, and every perturbation recovers the same MACE saddle.\n\n\n\n\n\n\nGFN2-xTB saddle\nMACE saddle (Sella from the xTB TS)\n\n\n\n\nforming C–C\n2.315 Å\n2.004 Å\n\n\nbarrier\n6.7 kcal/mol\n35.8 kcal/mol\n\n\nimaginary modes\n1 (−394 cm⁻¹)\n1\n\n\nconvergence\n—\n66 iterations, fmax 8e−6 eV/Å\n\n\n\nThe recovered MACE saddle sits 0.316 Å from the xTB one and agrees with the independently obtained CI-NEB result (35.8 vs 36.0 kcal/mol; 2.004 vs 2.005 Å) — two different methods from two different starting points landing on the same structure.\nRobustness. Displacing the MACE saddle by ±0.02 and ±0.05 Å along its imaginary mode and re-running Sella from each of the four perturbed structures recovers the same saddle every time: barrier 35.806 kcal/mol in all four runs (spread 0.000) and RMSD to the reference below 1e−5 Å. The saddle is well isolated, not an optimizer artifact.\n\nKey result The barrier disagreement is a genuine difference between the MACE and xTB potential-energy surfaces, not a path-search artifact. The two methods agree on mechanism and place their saddles only 0.316 Å apart, but those are distinct stationary points with very different energies — the xTB TS carries 1.84 eV/Å of MACE force, and MACE’s own saddle sits at 35.8 kcal/mol against xTB’s 6.7."
+  },
+  {
+    "objectID": "p2-reactive.html#what-we-learned",
+    "href": "p2-reactive.html#what-we-learned",
+    "title": "Pillar 2 — Reactive chemistry",
+    "section": "What we learned",
+    "text": "What we learned\nSame geometry region, same mechanism, different surface. Two claims that are easy to conflate must be kept apart: nearby TS geometry and matching TS energy are separate achievements, and this system has the first without the second.\nBecause the error is localized rather than global, a correction does not need to repair the whole surface — only the barrier region. That is the premise of Pillar 3."
+  },
+  {
+    "objectID": "p2-reactive.html#related-studies",
+    "href": "p2-reactive.html#related-studies",
+    "title": "Pillar 2 — Reactive chemistry",
+    "section": "Related studies",
+    "text": "Related studies\n\nStudy 04 — Diels–Alder, full study Methodological controls Cross-PES TS validation detail Pillar 3 — correcting the gap"
+  },
+  {
+    "objectID": "p4-iterative.html",
+    "href": "p4-iterative.html",
+    "title": "Pillar 4 — Iterative calibration",
     "section": "",
-    "text": "Sweeping bias strength kpush against cluster size shows the RMSD bias preferentially rips whatever bond is weakest. A lone water resists and only dissociates at high bias — it has to break a covalent O–H (~5 eV). Hydrogen-bonded clusters come apart even at the lowest bias, because the intermolecular H-bond (~0.2 eV) snaps first. The tetramer is the most robust, held by more H-bonds.\n\n\n\nFraction of the 20 ps run each cluster stayed intact (one fragment, all O–H present). Reading across a row, more bias breaks clusters sooner.\n\n\n\n\n\n\n\n\nTipTakeaway\n\n\n\nWhat breaks depends on what holds the system together: a global-RMSD bias just maximizes structural novelty, and the cheapest way to do that is to snap the weakest bond — which for clusters means evaporation, not rearrangement.\n\n\nFull findings — FINDINGS.md →"
+    "text": "Scientific question If targeted calibration works once, can repeated xTB queries around the current transition state progressively improve the correction further?"
   },
   {
-    "objectID": "02-pbc.html",
-    "href": "02-pbc.html",
-    "title": "Study 02 — Periodicity & temperature",
-    "section": "",
-    "text": "An 8-water periodic box stays condensed for the whole run (max O–O oscillates 6–7 Å, never leaves the cell) while the gas-phase cluster separates past 100 Å. Periodicity removes the evaporation channel — though it forces GFN1, since GFN2 has no PBC multipoles in this build, so gas (GFN2) and periodic (GFN1) results are not at the same level of theory.\n\n\n\nPeriodic box stays bounded (≤ 7.7 Å); the gas-phase cluster evaporates past 100 Å."
+    "objectID": "p4-iterative.html#why-we-tested-it",
+    "href": "p4-iterative.html#why-we-tested-it",
+    "title": "Pillar 4 — Iterative calibration",
+    "section": "Why we tested it",
+    "text": "Why we tested it\nPillar 3 showed that a single round of barrier-region data brings the certified corrected saddle to 6.33 kcal/mol against an xTB target of 6.7. The natural next move is a loop: find the current corrected saddle, ask the reference what it thinks there, add that data, refit, and repeat. If that converged, it would be the skeleton of a data-efficient calibration workflow.\nThe loop was run as a controlled experiment, not an autonomous system: the query rule was fixed by hand, and no acquisition function or uncertainty estimate was involved."
   },
   {
-    "objectID": "02-pbc.html#confinement-fixes-evaporation",
-    "href": "02-pbc.html#confinement-fixes-evaporation",
-    "title": "Study 02 — Periodicity & temperature",
-    "section": "",
-    "text": "An 8-water periodic box stays condensed for the whole run (max O–O oscillates 6–7 Å, never leaves the cell) while the gas-phase cluster separates past 100 Å. Periodicity removes the evaporation channel — though it forces GFN1, since GFN2 has no PBC multipoles in this build, so gas (GFN2) and periodic (GFN1) results are not at the same level of theory.\n\n\n\nPeriodic box stays bounded (≤ 7.7 Å); the gas-phase cluster evaporates past 100 Å."
+    "objectID": "p4-iterative.html#one-iteration",
+    "href": "p4-iterative.html#one-iteration",
+    "title": "Pillar 4 — Iterative calibration",
+    "section": "One iteration",
+    "text": "One iteration\n\nRelaxed concerted scan on the current corrected surface → scan barrier, and a seed geometry for the saddle search.\nSella first-order saddle search from that seed.\nTS validity gate — the structure counts as a Diels–Alder saddle only if it converged, has exactly one imaginary mode, has forming C–C in 1.5–3.0 Å, and its imaginary mode overlaps the forming-bond coordinate by ≥ 0.30.\nQuery GFN2-xTB at that geometry.\nBuild a small local packet — the saddle itself, ±0.05 and ±0.10 Å along the imaginary mode, and 2 isotropic 0.05 Å perturbations: 7 new xTB calculations.\nRefit the same Delta architecture on the cumulative dataset.\n\nHeld fixed throughout: the correction architecture and every hyperparameter, and a 48-configuration held-out reactive split that is never trained on."
   },
   {
-    "objectID": "02-pbc.html#a-big-oo-gap-is-drift-not-dissociation",
-    "href": "02-pbc.html#a-big-oo-gap-is-drift-not-dissociation",
-    "title": "Study 02 — Periodicity & temperature",
-    "section": "A big O–O gap is drift, not dissociation",
-    "text": "A big O–O gap is drift, not dissociation\nA complementary CV pair resolves the ambiguity: checking the intramolecular O–H shows the clusters are intact molecules drifting apart, not dissociating — only the lone water truly breaks a bond. Higher temperature just makes intact molecules escape faster (max O–O 81 → 143 Å over 200 → 350 K).\n\n\n\nGas trimer: three intact waters drift to the corners, each keeping its two O–H bonds — drift, not dissociation.\n\n\nFull findings — FINDINGS_phase2.md →"
+    "objectID": "p4-iterative.html#key-evidence",
+    "href": "p4-iterative.html#key-evidence",
+    "title": "Pillar 4 — Iterative calibration",
+    "section": "Key evidence",
+    "text": "Key evidence\n\n\n\n\n\n\n\n\n\n\n\n\n\niter\ncumulative new xTB calls\ncertified saddle barrier\nscan barrier\nforming C–C\ncertified?\nheld-out TS+post RMSE\nwater R_g\n\n\n\n\n0\n7\n6.33\n9.87\n2.428 Å\nyes\n0.6879\n3.738 Å\n\n\n1\n14\n9.72\n10.51\n1.996 Å\nyes\n0.6880\n3.690 Å\n\n\n2\n21\n7.11\n12.50\n2.415 Å\nyes\n0.6973\n3.841 Å\n\n\n3\n28\n8.62\n12.75\n2.519 Å\nno\n0.6966\n3.796 Å\n\n\n4\n35\n9.46\n13.54\n2.046 Å\nyes\n0.6987\n3.803 Å\n\n\n5\n42\n9.25\n13.91\n2.519 Å\nno\n0.7113\n3.834 Å\n\n\nxTB target\n—\n6.7\n6.7\n2.315 Å\n—\n—\n3.77\n\n\n\n\n\n\nBarrier against iteration. Iteration 0 is the closest to the xTB target; the constrained-scan barrier degrades monotonically.\n\n\n\n\n\nTS position oscillates by ±0.5 Å; open circles mark iterations that failed the saddle-certification gate.\n\n\n\n\n\nHeld-out reactive error drifts slightly upward while water stays within MD noise.\n\n\n\nKey result — negative A strong one-shot correction does not continue improving under repeated local TS queries with the fixed pairwise Delta architecture. Iteration 0 was the best model of the run. Across 5 iterations and 42 additional xTB reference calculations, the certified saddle barrier oscillated away from target (error 0.37 → 2.55 kcal/mol) and the constrained-scan barrier degraded monotonically from 9.87 to 13.91 kcal/mol.\n\nSupporting observations:\n\n2 of 6 iterations produced no certifiable first-order saddle (two imaginary modes), and fell back to the scan maximum as the query centre.\nHeld-out reactive error worsens slightly: TS+post-TS RMSE 0.6879 → 0.7113 (+3.4%). The added data is not generalizing.\nWater remains stable — R_g spans 3.690–3.841 Å around the xTB reference of 3.77, within per-iteration MD standard deviations of 0.037–0.086 Å, with no condensation.\nThe fit is not diverging. The Delta coefficient norm stays essentially constant (6.05, 5.95, 5.99, 5.97, 5.95, 6.11), so this is a fixed capacity being reallocated, not a numerically unstable regression.\n\n\nMethod control — seeding the saddle search An earlier version of this loop seeded each saddle search from the xTB TS, the strategy that works for raw MACE. On a corrected surface it fails: Sella converges to a spurious reactant-basin saddle at 3.20 Å whose imaginary mode is orthogonal to bond formation (overlap 1.2e−06) and whose “barrier” is −3.84 kcal/mol, below the reactant. That run is retained as a negative control. The fix — seeding from each iteration’s own relaxed-scan maximum, plus the validity gate above — follows the project’s existing convention for saddle searches.\n\n\nA metric not to over-read The cosine between corrected and xTB forces at a converged saddle is meaningless: the corrected force is ~1e−4 eV/Å there by construction, so the cosine is a 0/0 noise ratio. The interpretable quantity is xTB’s own residual force at the corrected saddle, which oscillates over 0.43–2.81 eV/Å with no systematic decrease."
   },
   {
-    "objectID": "04-diels-alder.html",
-    "href": "04-diels-alder.html",
-    "title": "Study 04 — A real reaction",
-    "section": "",
-    "text": "Using the same RMSD machinery pulled toward a product (xtb --path), the reaction runs: both new C–C σ-bonds form. But the path’s reported “barrier” (101 kcal/mol) is a biased-path artifact — the driver had to escalate the bias to connect. A relaxed concerted scan plus a Sella saddle optimization gives the real answer.\n\n\n\nQuantity\nValue\n\n\n\n\nForming C–C at TS\n2.32 Å (symmetric)\n\n\nImaginary frequency\n−394 cm⁻¹ (exactly one)\n\n\nConcerted barrier\n6.7 kcal/mol (scan and Sella agree)\n\n\nReaction energy\n−57.6 kcal/mol\n\n\n--path “barrier”\n101 kcal/mol — not physical\n\n\n\n\n\n\nConcerted reaction profile: barrier 6.7 kcal/mol at forming-bond distance 2.32 Å, then downhill to the product.\n\n\n\n\n\n\n\n\nTipTies back to the metadynamics theme\n\n\n\nEnhanced sampling finds that a transition is reachable, but a quantitative barrier needs a proper TS treatment — the RMSD bias alone is chemically blind. (Also: xtb has no TS optimizer — --optts is not a flag; use Sella. And read the vibspectrum file for frequencies, not the --hess stdout.)\n\n\nFull findings — FINDINGS_diels_alder.md →"
+    "objectID": "p4-iterative.html#what-we-learned",
+    "href": "p4-iterative.html#what-we-learned",
+    "title": "Pillar 4 — Iterative calibration",
+    "section": "What we learned",
+    "text": "What we learned\nMore targeted reference data is not automatically better for a fixed correction architecture. The result is specific and bounded: this correction form, this acquisition rule, this system, this budget.\nTwo mechanistic observations point the same direction. The Delta is a sum of radial pair potentials with no angular or many-body terms, while the position and curvature of a cycloaddition saddle depend on angular reorganization of the forming ring. And xTB is never near-stationary at the corrected saddle (0.43–2.81 eV/Å), so force-matching there asks the correction to reproduce a large reference gradient at a point the corrected model believes is stationary — a directly conflicting demand.\n\nWhat this does and does not claim The behaviour is consistent with a correction-capacity limitation, which motivates a controlled capacity ablation. That is a supported hypothesis, not a demonstrated result — establishing it requires holding the acquisition rule fixed while varying the correction’s expressiveness. This experiment does not show that active learning fails: no acquisition metric, uncertainty estimate, or autonomous sampling was implemented here."
   },
   {
-    "objectID": "04-diels-alder.html#driving-and-properly-characterizing-a-dielsalder",
-    "href": "04-diels-alder.html#driving-and-properly-characterizing-a-dielsalder",
-    "title": "Study 04 — A real reaction",
-    "section": "",
-    "text": "Using the same RMSD machinery pulled toward a product (xtb --path), the reaction runs: both new C–C σ-bonds form. But the path’s reported “barrier” (101 kcal/mol) is a biased-path artifact — the driver had to escalate the bias to connect. A relaxed concerted scan plus a Sella saddle optimization gives the real answer.\n\n\n\nQuantity\nValue\n\n\n\n\nForming C–C at TS\n2.32 Å (symmetric)\n\n\nImaginary frequency\n−394 cm⁻¹ (exactly one)\n\n\nConcerted barrier\n6.7 kcal/mol (scan and Sella agree)\n\n\nReaction energy\n−57.6 kcal/mol\n\n\n--path “barrier”\n101 kcal/mol — not physical\n\n\n\n\n\n\nConcerted reaction profile: barrier 6.7 kcal/mol at forming-bond distance 2.32 Å, then downhill to the product.\n\n\n\n\n\n\n\n\nTipTies back to the metadynamics theme\n\n\n\nEnhanced sampling finds that a transition is reachable, but a quantitative barrier needs a proper TS treatment — the RMSD bias alone is chemically blind. (Also: xtb has no TS optimizer — --optts is not a flag; use Sella. And read the vibspectrum file for frequencies, not the --hess stdout.)\n\n\nFull findings — FINDINGS_diels_alder.md →"
+    "objectID": "p4-iterative.html#next-question",
+    "href": "p4-iterative.html#next-question",
+    "title": "Pillar 4 — Iterative calibration",
+    "section": "Next question",
+    "text": "Next question\nIs correction-model capacity the bottleneck? The discriminating experiment holds the acquisition rule fixed and varies expressiveness — angular or three-body terms, a larger cutoff, more radial channels. If a richer correction converges on the same 42-query budget, the ceiling is architectural and an acquisition metric becomes worth building. If it does not, no acquisition function would rescue the loop."
   },
   {
-    "objectID": "04-diels-alder.html#can-mace-off23-reproduce-the-reaction-energetics-neb",
-    "href": "04-diels-alder.html#can-mace-off23-reproduce-the-reaction-energetics-neb",
-    "title": "Study 04 — A real reaction",
-    "section": "Can MACE-OFF23 reproduce the reaction energetics? (NEB)",
-    "text": "Can MACE-OFF23 reproduce the reaction energetics? (NEB)\nNext question: does the MACE-OFF23 surrogate get reaction energetics right with no fine-tuning? xTB has a built-in path search; MACE doesn’t, so we build the profile with a climbing-image NEB (ASE) and compare.\n\n\n\nquantity\nGFN2-xTB (built-in path)\nMACE-OFF23 (NEB)\n\n\n\n\nactivation barrier\n6.7 kcal/mol\n36.2 kcal/mol\n\n\nreaction energy\n−57.6 kcal/mol\n−36.1 kcal/mol\n\n\nTS forming C–C\n2.32 Å\n2.03 / 1.98 Å (slightly asynchronous)\n\n\n\n\n\n\nMinimum energy path and energetics: MACE-OFF23 (CI-NEB) vs GFN2-xTB (built-in path).\n\n\nOutcome (2): same TS location (~2.0–2.3 Å), very different energetics. And it’s the physical difference — experiment/DFT give a barrier ≈ 22–27 kcal/mol and ΔH ≈ −40. GFN2-xTB badly underestimates the barrier (6.7) and overbinds the product (−57.6); MACE-OFF23 (DFT-trained) is much closer on both, off the shelf. The refined MACE TS is a genuine first-order saddle (one imaginary mode, −740 cm⁻¹) and slightly asynchronous — MACE makes the perfectly synchronous geometry a second-order saddle.\n\nWhere do the two potentials actually differ?\nDigging into the benchmark: the disagreement is a reactive-region effect. The energy difference ΔE = E_MACE − E_xTB is ~0 for the separated reactants, grows as the bonds form, peaks in the TS region, and leaves a persistent ~+23 kcal/mol product offset — not a constant shift.\n\n\n\nEnergy-difference profile (both potentials relaxed at each point along the reaction coordinate).\n\n\nAnd the forces: on rattled reaction-path geometries the MACE and xTB force vectors are directionally almost identical (cosine 0.98), but the magnitude gap (RMSE) spikes in the TS region — exactly where the energy difference peaks.\n\n\n\nForce RMSE and cosine similarity along the path — agreement is near-perfect in the reactant/product basins and degrades only in the TS region.\n\n\nBoth potentials agree the reaction is a concerted, synchronous cycloaddition — the two forming bonds contract together (b1 ≈ b2 along the whole path), with only MACE’s TS marginally asynchronous (2.03 / 1.98 Å). They differ in energetics, not mechanism.\n\n\n\nForming-bond evolution: b1 and b2 contract synchronously for both methods; MACE’s TS carries a small 0.05 Å asynchrony.\n\n\nThe MACE barrier is numerically converged — 35.9 ± 1.0 kcal/mol for ≥11 NEB images (9 images is too few to resolve the TS: the barrier collapses to ~18 and the TS drifts to 2.5 Å), and it is cross-validated by the independent relaxed scan (36.0) and the Sella-refined saddle (36.2).\n\n\n\nActivation barrier vs NEB image count: converged for ≥11 images; 9 is under-resolved.\n\n\nLiterature context: experiment gives a barrier ≈ 27.5 and ΔH ≈ −40 kcal/mol. xTB (6.7 / −57.6) is qualitatively wrong on both; MACE-OFF23 (36 / −36…−41) nails the reaction energy and is in the right kinetic regime, though it overestimates the barrier by ~9 kcal/mol.\n\n\n\n\n\n\nNoteWhat this tells the correction framework\n\n\n\nMACE and xTB agree on geometry, mechanism, and force direction (cosine 0.98) and disagree on energy/force magnitude, localized in the bond-forming region. So a global energy shift is ruled out (ΔE is zero at the reactant); the direction-agrees / magnitude-differs signature points to a force-scaling correction, and the localization points to an environment/coordination-dependent (or delta) form. The NEB pipeline already wraps every potential in a CorrectedCalculator with these plug-in models — fitting one is the immediate next step.\n\n\nNEB findings — FINDINGS_neb.md →"
-  },
-  {
-    "objectID": "04-diels-alder.html#jul-31-follow-up-aug-7-is-the-barrier-gap-a-method-artifact",
-    "href": "04-diels-alder.html#jul-31-follow-up-aug-7-is-the-barrier-gap-a-method-artifact",
-    "title": "Study 04 — A real reaction",
-    "section": "Jul 31 follow-up (Aug 7) — is the barrier gap a method artifact?",
-    "text": "Jul 31 follow-up (Aug 7) — is the barrier gap a method artifact?\nThe obvious objection to the ~30 kcal/mol MACE–xTB barrier gap: MACE used NEB, xTB used its built-in path search. Maybe the gap is just a path-method mismatch. To rule that out we ran both potentials through the identical standardized NEB (13 images, k=0.5, FIRE / NEBOptimizer, fmax 0.05, climbing image, same concerted-scan seed).\n\nxtb-python stability gate passed — single-points, forces, and geometry optimization are reproducible (repeat-evaluation energy std ≈ 5e-14 eV), so the backend is trustworthy for the full band.\nMACE’s barrier is method-invariant: ~36 kcal/mol across the relaxed scan (36.0), the Sella saddle (36.2), and the standardized NEB (36–37). It is also numerically converged (35.9 ± 1.0 for ≥11 images).\nxTB ASE-NEB fails physically under the same settings — the band does not form a sensible path; atoms in the “TS” images fly apart (reported forming C–C of ~7–18 Å) and the apparent barrier balloons to 240–250 kcal/mol under both optimizers.\n\n\n\n\n\n\n\nImportantThis is a PES/algorithm compatibility issue, not a backend failure\n\n\n\nThe same xtb-python that passed the stability gate produces a clean single-point everywhere; only the band optimization on xTB’s flatter, low-barrier surface diverges under these settings (a file-based binary xTB would hit the identical problem). So the valid xTB reference stays the constrained relaxed scan + verified TS (6.7 kcal/mol). Because MACE’s barrier is the same ~36 kcal/mol no matter how it is computed, the ~30 kcal/mol MACE–xTB gap is a genuine difference between the two potential-energy surfaces — it is not explained by the original path-method mismatch.\n\n\n\n\n\nStandardized NEB: MACE gives a consistent ~36 kcal/mol barrier; the xTB band does not converge to a physical path under the identical settings (shown as its valid relaxed-scan reference instead).\n\n\n\nBarrier-region error analysis\nWhere along the reaction coordinate does the MACE↔︎xTB disagreement live? We partitioned 152 rattled path geometries into five regions by forming C–C distance and measured raw MACE-vs-xTB force RMSE, cosine, and energy discrepancy per region.\n\n\n\n\n\n\n\n\n\nregion (forming C–C)\nforce RMSE (eV/Å)\ncosine\nΔE vs reactant (kcal/mol)\n\n\n\n\nreactant basin (&gt;2.9 Å)\n0.39\n0.996\n0 (ref)\n\n\npre-TS rising (2.4–2.9)\n0.43\n0.991\n8.7\n\n\nTS region (1.96–2.4)\n0.83\n0.950\n36.5\n\n\npost-TS (1.7–1.96)\n0.96\n0.964\n31.3\n\n\nproduct basin (&lt;1.7 Å)\n0.33\n0.997\n23.1\n\n\n\n\nIn the reactant/product basins agreement is excellent — cosine ≈ 0.996–0.997 and low RMSE.\nIn the TS/post-TS region the force RMSE rises ~2.5–2.9× (to 0.83–0.96 eV/Å), the TS cosine drops to ~0.950, and the energy discrepancy peaks in the same reactive window — the disagreement is concentrated exactly where the forming bonds are half-made and the geometry is most distorted.\n\n\n\n\nRegion-wise MACE↔︎xTB force RMSE and cosine: near-perfect in the basins, degrading sharply through the TS / post-TS region.\n\n\n\n\n\n\n\n\nNoteCareful with the “why”\n\n\n\nThat the errors concentrate in the distorted barrier region is directly measured here. The natural explanation — that such highly distorted geometries are under-represented in the foundation model’s training distribution — is a supported hypothesis, not a demonstrated fact; this dataset shows where the error is, not why. It motivates, but does not prove, targeted data enrichment.\n\n\nJul 31 follow-up findings — FINDINGS_jul31.md →"
-  },
-  {
-    "objectID": "04-diels-alder.html#aug-7-follow-up-is-the-xtb-ts-also-a-mace-saddle",
-    "href": "04-diels-alder.html#aug-7-follow-up-is-the-xtb-ts-also-a-mace-saddle",
-    "title": "Study 04 — A real reaction",
-    "section": "Aug 7 follow-up — is the xTB TS also a MACE saddle?",
-    "text": "Aug 7 follow-up — is the xTB TS also a MACE saddle?\nThe ~30 kcal/mol barrier gap was confirmed as real on identical geometries (Phase Jul 31). But a natural follow-up: does the native xTB transition state (2.32 Å forming C–C) also serve as the MACE transition state? Or does MACE have its own distinct saddle nearby?\nWe used the verified xTB TS as a starting point for a MACE saddle search via Sella, then tested whether the result is robust to small perturbations.\n\nIdentical-geometry cross-check\nFirst, frozen-geometry evaluation confirmed the gap is intrinsic:\n\n\n\n\n\n\n\n\n\nCalculation\nxTB\nMACE @ xTB geoms\nDifference\n\n\n\n\nBarrier at frozen xTB TS\n6.7 kcal/mol\n27.9 kcal/mol\n−21.2\n\n\nForce residual at xTB TS\n0.00093 eV/Å\n1.84 eV/Å\n—\n\n\n\nThe xTB TS is a true saddle on xTB’s PES (tiny residual force). On MACE’s PES, the same geometry carries large residual forces (1.84 eV/Å) — it is NOT a saddle point on MACE.\n\n\nMACE saddle search from xTB TS\nStarted Sella at the xTB TS geometry. Result:\n\n\n\nMetric\nValue\n\n\n\n\nConverged\nYES (66 iterations)\n\n\nMACE TS forming C–C\n2.004 Å\n\n\nxTB TS forming C–C\n2.315 Å\n\n\nGeometric shift\n0.311 Å\n\n\nMACE barrier at converged TS\n35.8 kcal/mol\n\n\nIndependent NEB barrier (reference)\n36.0 kcal/mol\n\n\nFirst-order saddle?\nYES — one imaginary mode ✓\n\n\n\nThe converged MACE TS is distinct from the xTB TS in both location and energy, yet it matches the independently obtained NEB barrier (35.8 vs 36.0 kcal/mol, RMSD &lt; 0.001 Å). This agreement across two separate methods is strong evidence for a well-defined MACE saddle.\n\n\nRobustness: small perturbations along the reaction mode\nTo verify the MACE saddle is not an artifact, we created four small perturbations (±0.02 Å, ±0.05 Å) along the Hessian’s imaginary eigenvector and ran Sella from each.\nResult: perfect recovery to the same saddle.\n\n\n\n\n\n\n\n\n\nPerturbation\nIterations to converge\nBarrier (kcal/mol)\nRMSD to reference (Å)\n\n\n\n\n−0.05 Å\n38\n35.806\n5.0e−6\n\n\n−0.02 Å\n30\n35.806\n1.6e−6\n\n\n+0.02 Å\n37\n35.806\n1.6e−6\n\n\n+0.05 Å\n61\n35.806\n1.6e−6\n\n\nSpread\n—\n0.000 kcal/mol\n&lt; 1e−5 Å\n\n\n\nAll four perturbations converge back to the exact same MACE saddle (barrier 35.806 ± 0.000 kcal/mol, zero geometry spread). This is characteristic of a well-isolated, robust first-order saddle point — not a numerical artifact or an optimizer quirk.\n\n\n\n\n\n\nImportantThe barrier disagreement is a genuine PES difference\n\n\n\nThe xTB and MACE potential-energy surfaces describe fundamentally different reaction barriers in the same geometric region.\nThe 29 kcal/mol gap is not explained by: - Path-search methodology (identical frozen geometries still show 21 kcal/mol difference) - Lack of MACE TS convergence (independent methods consistently recover ~36 kcal/mol) - Optimizer artifacts (robustness test shows zero variability under perturbations)\nThe two models agree on mechanism (concerted, synchronous bond-forming, ~2.0–2.3 Å TS region) but assign very different barrier heights.\n\n\nPhase 1 complete findings — PHASE1_COMPLETE_FINDINGS.md →"
-  },
-  {
-    "objectID": "06-kpush.html",
-    "href": "06-kpush.html",
-    "title": "Study 06 — kpush should scale with size",
-    "section": "",
-    "text": "xTB’s bias is a Gaussian in root-mean-square deviation, \\(V = k_\\text{push}\\,e^{-\\alpha\\,\\mathrm{RMSD}^2}\\) with \\(\\mathrm{RMSD}^2 = \\frac1N\\sum_i|x_i-x_i^\\text{ref}|^2\\). The bias force on an atom,\n\\[F_i = k_\\text{push}\\,\\alpha\\,e^{-\\alpha\\,\\mathrm{RMSD}^2}\\,\\frac{2}{N}\\,(x_i-x_i^\\text{ref}),\\]\ncarries an explicit 1/N — the same kpush pushes each atom \\(1/N\\) as hard in a bigger system. To keep the per-atom bias effect constant, kpush must scale ∝ N (per-atom; per-molecule is the same with \\(N=3\\times\\#\\text{waters}\\)).\n\n\n\nFixed kpush follows the 1/N line (diluted); N-scaled kpush holds the per-atom force constant across n=3→96 atoms."
-  },
-  {
-    "objectID": "06-kpush.html#the-law",
-    "href": "06-kpush.html#the-law",
-    "title": "Study 06 — kpush should scale with size",
-    "section": "",
-    "text": "xTB’s bias is a Gaussian in root-mean-square deviation, \\(V = k_\\text{push}\\,e^{-\\alpha\\,\\mathrm{RMSD}^2}\\) with \\(\\mathrm{RMSD}^2 = \\frac1N\\sum_i|x_i-x_i^\\text{ref}|^2\\). The bias force on an atom,\n\\[F_i = k_\\text{push}\\,\\alpha\\,e^{-\\alpha\\,\\mathrm{RMSD}^2}\\,\\frac{2}{N}\\,(x_i-x_i^\\text{ref}),\\]\ncarries an explicit 1/N — the same kpush pushes each atom \\(1/N\\) as hard in a bigger system. To keep the per-atom bias effect constant, kpush must scale ∝ N (per-atom; per-molecule is the same with \\(N=3\\times\\#\\text{waters}\\)).\n\n\n\nFixed kpush follows the 1/N line (diluted); N-scaled kpush holds the per-atom force constant across n=3→96 atoms."
-  },
-  {
-    "objectID": "06-kpush.html#empirical-confirmation",
-    "href": "06-kpush.html#empirical-confirmation",
-    "title": "Study 06 — kpush should scale with size",
-    "section": "Empirical confirmation",
-    "text": "Empirical confirmation\nThe trimer first fragments at kpush = 0.008, so the N-scaling predicts the 30-water droplet reaches the same per-atom bias at kpush ≈ 0.008 × 90/9 = 0.08. The droplet is intact up to 0.05 — and at ~0.08 it starts shedding a molecule, right on the prediction.\n\n\n\nIntact through kpush 0.05; onset of fragmentation at the N-scaled ~0.08.\n\n\n\n\n\n\n\n\nNoteCaveat\n\n\n\nThe onset is soft because size changes two things at once: it dilutes the per-atom force (1/N — corrected here) and raises cohesion (more H-bonds per interior molecule). The kpush ∝ N law fixes the first exactly; the second means a big droplet still resists a bit more than bare force-scaling predicts.\n\n\nPractical rule: set kpush per atom, kpush_eff = kpush_ref · N / N_ref, so bias strength is comparable across cluster sizes.\nFull findings — FINDINGS_kpush_scaling.md →"
-  },
-  {
-    "objectID": "08-corrections.html",
-    "href": "08-corrections.html",
-    "title": "Study 08 — Post-training corrections",
-    "section": "",
-    "text": "The Diels–Alder benchmark (Study 04) showed MACE and xTB agree on force direction but differ in magnitude, localized in the reactive region. Here we test whether a lightweight post-training correction — fit on paired MACE/xTB forces, no foundation-model retraining — can remove that systematic error. Base = MACE-OFF23, target = GFN2-xTB (a cheap stand-in for the eventual DFT reference); all via the existing CorrectedCalculator.\nFour models: global (F′=αF), affine (+energy shift), element (per-element force scaling, non-conservative), and a conservative delta (energy = fitted radial pair potentials, forces = −∇, linear least-squares fit)."
-  },
-  {
-    "objectID": "08-corrections.html#results",
-    "href": "08-corrections.html#results",
-    "title": "Study 08 — Post-training corrections",
-    "section": "Results",
-    "text": "Results\n\n\n\n\n\n\n\n\n\n\n\nmodel\nval force RMSE ↓\nDA barrier\nDA ΔE\ndroplet Rg (Å)\nconservative\n\n\n\n\nbaseline (MACE)\nref\n36.0\n−40.6\n3.94\nyes\n\n\nglobal / affine\n8%\n32.3\n−36.5\n3.9–4.0\nyes\n\n\nelement\n9%\n36.0 (inert)\n−40.6\n4.02\nno\n\n\ndelta\n16%\n11.7\n−57.1\n3.71\nyes\n\n\nxTB (target)\n—\n6.7\n−57.6\n3.89\n—\n\n\n\n\nForces: corrections fix magnitude, not direction\nForce direction is already aligned (cosine 0.985); the delta removes the most magnitude error (16%), scalar corrections ~8–9%.\n\n\n\nHeld-out force RMSE per correction, by domain.\n\n\n\n\nDiels–Alder: the delta is transformative, the others are not\nA modest force improvement yields a large energetics correction — the delta captures the bonding-region residual that integrates into the reaction energetics: reaction energy −40.6 → −57.1 (target −57.6, essentially exact) and barrier 36 → 11.7 (target 6.7). Scalar corrections only apply α; element-scaling is energetically inert.\n\n\n\nCorrected MACE reaction profiles and energetics vs the xTB target.\n\n\n\n\nWater: MACE was already right; corrections don’t help (and can hurt)\nBaseline MACE already matches the xTB droplet; no correction improves agreement, and the delta slightly over-compacts it (Rg 3.71 vs 3.89) — the reactive-data- dominated correction mildly degrades the already-good equilibrium.\n\n\n\nDroplet O–O distribution and size vs the xTB reference.\n\n\n\n\n\n\n\n\nImportantRecommendation\n\n\n\nUse the conservative pairwise delta for future active-learning / metadynamics: it is the only correction that removes the systematic energetics error (what matters for reactions and free energies), it is conservative (MD-safe), and it is a lightweight linear fit — no foundation-model retraining. Avoid element-force scaling (non-conservative, energetically inert); global/affine are safe but too weak. Caveat: fit the delta on data representative of the deployment domain (it over-compacts water when dominated by reactive data), and a ~5 kcal/mol barrier residual remains for a richer model / eventual fine-tuning to close.\n\n\nFull findings — FINDINGS_corrections.md →"
-  },
-  {
-    "objectID": "08-corrections.html#jul-31-follow-up-aug-7-targeted-barrier-region-calibration",
-    "href": "08-corrections.html#jul-31-follow-up-aug-7-targeted-barrier-region-calibration",
-    "title": "Study 08 — Post-training corrections",
-    "section": "Jul 31 follow-up (Aug 7) — targeted barrier-region calibration",
-    "text": "Jul 31 follow-up (Aug 7) — targeted barrier-region calibration\nThe barrier-region error analysis (Study 04) showed the MACE↔︎xTB disagreement concentrates in the TS / post-TS region. So: does concentrating the correction data there help more than adding the same amount of generic data? We fit the same conservative pairwise-delta (identical architecture and hyperparameters — only the training data changes), with a strict no-leakage split by parent path geometry (test geometries never enter any fit):\n\nbaseline delta — reactive + water configs;\nbarrier-enriched delta — baseline + 32 configs at forming C–C ≈ 1.7–2.4 Å;\ngeneric control — baseline + 32 configs sampled generically (same count).\n\n\n\n\nmodel\nDA barrier (kcal/mol)\nreaction E\nTS forming C–C\n\n\n\n\nraw MACE\n36.0\n−40.6\n2.02 Å\n\n\nbaseline delta\n14.1\n−47.3\n2.02 Å\n\n\nbarrier-enriched delta\n9.9\n−50.7\n2.62 Å\n\n\ngeneric control (equal count)\n15.0\n−51.1\n2.02 Å\n\n\nxTB (target)\n6.7\n−57.6\n2.32 Å\n\n\n\n\nTargeted beats generic at equal data budget. Adding barrier-region data moved the barrier 14.1 → 9.9; the same number of generic configs did essentially nothing (14.1 → 15.0). The barrier-enriched delta removes ~89% of the raw MACE→xTB barrier gap.\nHeld-out barrier-region forces improve. On the parent-split held-out reactive test, TS+post-TS force RMSE drops from 0.906 (raw) to 0.688 (barrier-enriched, −24%), lower than both baseline (0.714) and the generic control (0.734). The cost is a small increase in overall RMSE (0.432 → 0.456) — the fixed-capacity delta reallocates toward the barrier.\nEnergetic agreement improves more than geometric agreement. The corrected TS shifts outward to ~2.62 Å (vs xTB’s 2.32 Å), so the barrier height matches far better than the TS position does — worth flagging honestly.\n\n\n\n\nRegion-wise held-out force error: the barrier-enriched delta has the lowest TS / post-TS RMSE.\n\n\n\n\n\nCorrected reaction profiles: the barrier-enriched delta gives the barrier closest to xTB.\n\n\n\nWater is not degraded\nRepeating the droplet benchmark, the barrier-enriched delta gives exactly the same water structure as the baseline delta (Rg 3.82 Å, O–O peak 2.74 Å for both; raw MACE 3.90, xTB 3.77) — barrier enrichment does not harm the equilibrium subsystem. The reason is structural: the pairwise delta has separate channels per element pair, so the added C–C/C–H barrier data touches only the carbon channels and leaves the O–O/O–H channels that govern water untouched — clean selectivity.\n\n\n\nDroplet O–O distribution and size: barrier enrichment leaves water unchanged relative to the baseline delta.\n\n\n\n\n\n\n\n\nImportantJul 31–Aug 7 takeaway\n\n\n\nErrors are concentrated in distorted reactive configurations, and targeted calibration of those regions is more effective than adding the same amount of generic data. What this does not claim: no active-learning loop was run (this is a static, hand-placed enrichment — it motivates active sampling, it does not implement it); no improvement in physical (DFT) accuracy is claimed — xTB is the chosen reference here, not the true target, and for this reaction it under-barriers relative to DFT/experiment; and we do not assert the foundation model’s training set definitely lacks these geometries. Those remain future work and open hypotheses.\n\n\nJul 31 follow-up findings — FINDINGS_jul31.md →"
+    "objectID": "p4-iterative.html#related-studies",
+    "href": "p4-iterative.html#related-studies",
+    "title": "Pillar 4 — Iterative calibration",
+    "section": "Related studies",
+    "text": "Related studies\n\nStudy 08 — full iterative-correction record Pillar 3 — the one-shot correction Scan vs saddle estimators"
   }
 ]

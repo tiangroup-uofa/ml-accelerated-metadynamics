@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Study 08 — Post-training corrections – xTB Metadynamics of Water</title>
+<title>Study 08 — Post-training corrections – ML-Accelerated Metadynamics</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -45,7 +45,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-8f53ae70cd472c10746adc2081c82a4c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-908d35bb53390a20ee9612226264221b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -75,6 +75,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -85,7 +86,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">xTB Metadynamics of Water</span>
+    <span class="navbar-title">ML-Accelerated Metadynamics</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -99,36 +100,63 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Overview</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./01-sweep.html"> 
-<span class="menu-text">Bias × size</span></a>
+    <a class="nav-link" href="./p1-validation.html"> 
+<span class="menu-text">Validation</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./02-pbc.html"> 
-<span class="menu-text">PBC &amp; temperature</span></a>
+    <a class="nav-link" href="./p2-reactive.html"> 
+<span class="menu-text">Reactive</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./03-droplets.html"> 
-<span class="menu-text">Droplets</span></a>
+    <a class="nav-link" href="./p3-correction.html"> 
+<span class="menu-text">Correction</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./04-diels-alder.html"> 
-<span class="menu-text">Diels–Alder</span></a>
+    <a class="nav-link" href="./p4-iterative.html"> 
+<span class="menu-text">Iterative</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./05-mace.html"> 
-<span class="menu-text">MACE-OFF23</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-studies" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Studies</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-studies">    
+        <li>
+    <a class="dropdown-item" href="./01-sweep.html">
+ <span class="dropdown-text">Study 01 — Bias × size</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./06-kpush.html"> 
-<span class="menu-text">kpush scaling</span></a>
+        <li>
+    <a class="dropdown-item" href="./02-pbc.html">
+ <span class="dropdown-text">Study 02 — Periodicity &amp; temperature</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./07-cv-design.html"> 
-<span class="menu-text">CV design</span></a>
+        <li>
+    <a class="dropdown-item" href="./03-droplets.html">
+ <span class="dropdown-text">Study 03 — Large vacuum droplets</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="./04-diels-alder.html">
+ <span class="dropdown-text">Study 04 — Diels–Alder reaction</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./05-mace.html">
+ <span class="dropdown-text">Study 05 — MACE-OFF23 surrogate</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./06-kpush.html">
+ <span class="dropdown-text">Study 06 — kpush scaling</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./07-cv-design.html">
+ <span class="dropdown-text">Study 07 — Collective-variable scoping</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./08-corrections.html">
+ <span class="dropdown-text">Study 08 — Post-training corrections</span></a>
+  </li>  
+    </ul>
+  </li>
   <li class="nav-item">
-    <a class="nav-link active" href="./08-corrections.html" aria-current="page"> 
-<span class="menu-text">Corrections</span></a>
+    <a class="nav-link" href="./research-map.html"> 
+<span class="menu-text">Research Map</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
@@ -158,8 +186,14 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul class="collapse">
-  <li><a href="#results" id="toc-results" class="nav-link active" data-scroll-target="#results">Results</a></li>
-  <li><a href="#jul-31-follow-up-aug-7-targeted-barrier-region-calibration" id="toc-jul-31-follow-up-aug-7-targeted-barrier-region-calibration" class="nav-link" data-scroll-target="#jul-31-follow-up-aug-7-targeted-barrier-region-calibration">Jul 31 follow-up (Aug 7) — targeted barrier-region calibration</a></li>
+  <li><a href="#sec-motivation" id="toc-sec-motivation" class="nav-link active" data-scroll-target="#sec-motivation">1 · Motivation</a></li>
+  <li><a href="#sec-architectures" id="toc-sec-architectures" class="nav-link" data-scroll-target="#sec-architectures">2 · Correction architectures</a></li>
+  <li><a href="#sec-benchmark" id="toc-sec-benchmark" class="nav-link" data-scroll-target="#sec-benchmark">3 · Initial benchmark</a></li>
+  <li><a href="#sec-localization" id="toc-sec-localization" class="nav-link" data-scroll-target="#sec-localization">4 · Barrier-region error localization</a></li>
+  <li><a href="#sec-targeted" id="toc-sec-targeted" class="nav-link" data-scroll-target="#sec-targeted">5 · Targeted vs generic calibration</a></li>
+  <li><a href="#sec-scan-vs-saddle" id="toc-sec-scan-vs-saddle" class="nav-link" data-scroll-target="#sec-scan-vs-saddle">6 · Scan versus saddle: a methodological refinement</a></li>
+  <li><a href="#sec-iterative" id="toc-sec-iterative" class="nav-link" data-scroll-target="#sec-iterative">7 · Iterative correction experiment</a></li>
+  <li><a href="#sec-limitations" id="toc-sec-limitations" class="nav-link" data-scroll-target="#sec-limitations">8 · Limitations and next question</a></li>
   </ul>
 </nav>
     </div>
@@ -169,7 +203,7 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">Study 08 — Post-training corrections</h1>
-<p class="subtitle lead">How much MACE↔︎xTB error can a lightweight correction remove, without retraining?</p>
+<p class="subtitle lead">How much MACE↔︎xTB error can a lightweight correction remove without retraining — and does iterating it help?</p>
 </div>
 
 
@@ -186,10 +220,19 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>The Diels–Alder benchmark (Study 04) showed MACE and xTB agree on force <em>direction</em> but differ in <em>magnitude</em>, localized in the reactive region. Here we test whether a <strong>lightweight post-training correction</strong> — fit on paired MACE/xTB forces, no foundation-model retraining — can remove that systematic error. Base = MACE-OFF23, target = GFN2-xTB (a cheap stand-in for the eventual DFT reference); all via the existing <code>CorrectedCalculator</code>.</p>
-<p>Four models: <strong>global</strong> (F′=αF), <strong>affine</strong> (+energy shift), <strong>element</strong> (per-element force scaling, <em>non-conservative</em>), and a conservative <strong>delta</strong> (energy = fitted radial pair potentials, forces = −∇, linear least-squares fit).</p>
-<section id="results" class="level2">
-<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>This is the detailed study behind <a href="./p3-correction.html">Pillar 3 — Post-training correction</a> and <a href="./p4-iterative.html">Pillar 4 — Iterative calibration</a>. Those pages carry the argument; this page keeps the full tables, controls, and limitations.</p>
+<section id="sec-motivation" class="level2">
+<h2 class="anchored" data-anchor-id="sec-motivation">1 · Motivation</h2>
+<p>The Diels–Alder benchmark (<a href="./04-diels-alder.html">Study 04</a>) showed MACE and xTB agree on force <em>direction</em> but differ in <em>magnitude</em>, localized in the reactive region. A systematic, localized residual is the kind of thing a small model can absorb. The question is whether a <strong>lightweight post-training correction</strong> — fit on paired MACE/xTB forces, with no foundation-model retraining — can remove it.</p>
+<p>Base = MACE-OFF23, target = GFN2-xTB (a cheap stand-in for the eventual DFT reference); all applied through the existing <code>CorrectedCalculator</code>, which leaves the foundation model untouched.</p>
+</section>
+<section id="sec-architectures" class="level2">
+<h2 class="anchored" data-anchor-id="sec-architectures">2 · Correction architectures</h2>
+<p>Four models: <strong>global</strong> (F′ = αF), <strong>affine</strong> (+ energy shift), <strong>element</strong> (per-element force scaling, <em>non-conservative</em>), and a conservative <strong>delta</strong> (energy = fitted radial pair potentials, forces = −∇, linear least-squares fit).</p>
+<p>The delta is a sum of Gaussian radial basis functions per element pair — 48 coefficients across 6 pair channels, 3.6 Å cutoff, ridge 1e−3 — fit on the force residual F_xTB − F_MACE. Because it is an energy expression differentiated analytically, it is conservative and therefore MD- and metadynamics-safe.</p>
+</section>
+<section id="sec-benchmark" class="level2">
+<h2 class="anchored" data-anchor-id="sec-benchmark">3 · Initial benchmark</h2>
 <table class="table">
 <colgroup>
 <col style="width: 10%">
@@ -274,43 +317,90 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="water-mace-was-already-right-corrections-dont-help-and-can-hurt" class="level3">
 <h3 class="anchored" data-anchor-id="water-mace-was-already-right-corrections-dont-help-and-can-hurt">Water: MACE was already right; corrections don’t help (and can hurt)</h3>
-<p>Baseline MACE already matches the xTB droplet; no correction improves agreement, and the delta slightly <strong>over-compacts</strong> it (Rg 3.71 vs 3.89) — the reactive-data- dominated correction mildly degrades the already-good equilibrium.</p>
+<p>Baseline MACE already matches the xTB droplet; no correction improves agreement, and this first delta slightly <strong>over-compacts</strong> it (Rg 3.71 vs 3.89) — a reactive-data-dominated correction mildly degrading already-good equilibrium behaviour. Section 5 shows how targeted enrichment avoids this.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="assets/corr_water_structure.png" class="img-fluid figure-img" width="760"></p>
 <figcaption>Droplet O–O distribution and size vs the xTB reference.</figcaption>
 </figure>
 </div>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Recommendation
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Use the <strong>conservative pairwise delta</strong> for future active-learning / metadynamics: it is the only correction that removes the systematic <em>energetics</em> error (what matters for reactions and free energies), it is <strong>conservative</strong> (MD-safe), and it is a lightweight linear fit — no foundation-model retraining. Avoid element-force scaling (non-conservative, energetically inert); global/affine are safe but too weak. Caveat: fit the delta on data representative of the deployment domain (it over-compacts water when dominated by reactive data), and a ~5 kcal/mol barrier residual remains for a richer model / eventual fine-tuning to close.</p>
-</div>
-</div>
 <p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/corrections/FINDINGS_corrections.md">Full findings — FINDINGS_corrections.md →</a></p>
 </section>
 </section>
-<section id="jul-31-follow-up-aug-7-targeted-barrier-region-calibration" class="level2">
-<h2 class="anchored" data-anchor-id="jul-31-follow-up-aug-7-targeted-barrier-region-calibration">Jul 31 follow-up (Aug 7) — targeted barrier-region calibration</h2>
-<p>The barrier-region error analysis (<a href="./04-diels-alder.html">Study 04</a>) showed the MACE↔︎xTB disagreement concentrates in the TS / post-TS region. So: does <strong>concentrating the correction data there</strong> help more than adding the <em>same amount</em> of generic data? We fit the <strong>same</strong> conservative pairwise-delta (identical architecture and hyperparameters — only the training data changes), with a strict no-leakage split <strong>by parent path geometry</strong> (test geometries never enter any fit):</p>
-<ul>
-<li><strong>baseline delta</strong> — reactive + water configs;</li>
-<li><strong>barrier-enriched delta</strong> — baseline + 32 configs at forming C–C ≈ 1.7–2.4 Å;</li>
-<li><strong>generic control</strong> — baseline + 32 configs sampled generically (same count).</li>
-</ul>
+<section id="sec-localization" class="level2">
+<h2 class="anchored" data-anchor-id="sec-localization">4 · Barrier-region error localization</h2>
+<p>If the error concentrates at the barrier (<a href="./04-diels-alder.html#sec-divergence">Study 04</a>), the correction’s training data should too. Held-out force errors on a strict <strong>no-leakage split by parent path geometry</strong> (test parents never contribute to any fit):</p>
 <table class="table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>region</th>
+<th style="text-align: center;">raw MACE</th>
+<th style="text-align: center;">baseline Delta</th>
+<th style="text-align: center;">barrier-enriched Delta</th>
+<th style="text-align: center;">generic control</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>overall</td>
+<td style="text-align: center;">0.556</td>
+<td style="text-align: center;">0.432</td>
+<td style="text-align: center;">0.456</td>
+<td style="text-align: center;"><strong>0.427</strong></td>
+</tr>
+<tr class="even">
+<td><strong>TS region</strong></td>
+<td style="text-align: center;">0.712</td>
+<td style="text-align: center;">0.519</td>
+<td style="text-align: center;"><strong>0.487</strong></td>
+<td style="text-align: center;">0.532</td>
+</tr>
+<tr class="odd">
+<td><strong>TS + post-TS</strong></td>
+<td style="text-align: center;">0.906</td>
+<td style="text-align: center;">0.714</td>
+<td style="text-align: center;"><strong>0.688</strong></td>
+<td style="text-align: center;">0.734</td>
+</tr>
+<tr class="even">
+<td>cosine, TS region</td>
+<td style="text-align: center;">0.970</td>
+<td style="text-align: center;">0.981</td>
+<td style="text-align: center;"><strong>0.983</strong></td>
+<td style="text-align: center;">0.980</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/phaseC_force_regions.png" class="img-fluid figure-img" width="680"></p>
+<figcaption>Region-wise held-out force error.</figcaption>
+</figure>
+</div>
+<p>The barrier-enriched model has the lowest barrier-region error but is slightly <em>worse</em> overall (0.456 vs 0.432) — the fixed-capacity Delta reallocates toward the barrier at a small cost in the basins where all models already agree.</p>
+</section>
+<section id="sec-targeted" class="level2">
+<h2 class="anchored" data-anchor-id="sec-targeted">5 · Targeted vs generic calibration</h2>
+<p>The controlled experiment: identical architecture and hyperparameters, identical data <em>budget</em> — 32 extra configurations either way — placed either in the barrier region (forming C–C ≈ 1.7–2.4 Å) or sampled generically.</p>
+<table class="table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 27%">
+<col style="width: 27%">
+<col style="width: 27%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>model</th>
-<th style="text-align: center;">DA barrier (kcal/mol)</th>
-<th style="text-align: center;">reaction E</th>
+<th style="text-align: center;">barrier (constrained scan)</th>
+<th style="text-align: center;">reaction energy</th>
 <th style="text-align: center;">TS forming C–C</th>
 </tr>
 </thead>
@@ -322,13 +412,13 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: center;">2.02 Å</td>
 </tr>
 <tr class="even">
-<td>baseline delta</td>
+<td>baseline Delta</td>
 <td style="text-align: center;">14.1</td>
 <td style="text-align: center;">−47.3</td>
 <td style="text-align: center;">2.02 Å</td>
 </tr>
 <tr class="odd">
-<td><strong>barrier-enriched delta</strong></td>
+<td><strong>barrier-enriched Delta</strong></td>
 <td style="text-align: center;"><strong>9.9</strong></td>
 <td style="text-align: center;">−50.7</td>
 <td style="text-align: center;">2.62 Å</td>
@@ -347,49 +437,293 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
-<ul>
-<li><strong>Targeted beats generic at equal data budget.</strong> Adding barrier-region data moved the barrier 14.1 → <strong>9.9</strong>; the <em>same number</em> of generic configs did essentially nothing (14.1 → 15.0). The barrier-enriched delta <strong>removes ~89% of the raw MACE→xTB barrier gap</strong>.</li>
-<li><strong>Held-out barrier-region forces improve.</strong> On the parent-split held-out reactive test, TS+post-TS force RMSE drops from 0.906 (raw) to <strong>0.688</strong> (barrier-enriched, −24%), lower than both baseline (0.714) and the generic control (0.734). The cost is a small increase in <em>overall</em> RMSE (0.432 → 0.456) — the fixed-capacity delta reallocates toward the barrier.</li>
-<li><strong>Energetic agreement improves more than geometric agreement.</strong> The corrected TS shifts <em>outward</em> to ~2.62 Å (vs xTB’s 2.32 Å), so the barrier height matches far better than the TS position does — worth flagging honestly.</li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="assets/phaseC_force_regions.png" class="img-fluid figure-img" width="680"></p>
-<figcaption>Region-wise held-out force error: the barrier-enriched delta has the lowest TS / post-TS RMSE.</figcaption>
-</figure>
-</div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="assets/phaseC_reaction.png" class="img-fluid figure-img" width="760"></p>
-<figcaption>Corrected reaction profiles: the barrier-enriched delta gives the barrier closest to xTB.</figcaption>
+<figcaption>Corrected reaction profiles.</figcaption>
 </figure>
 </div>
-<section id="water-is-not-degraded" class="level3">
-<h3 class="anchored" data-anchor-id="water-is-not-degraded">Water is not degraded</h3>
-<p>Repeating the droplet benchmark, the barrier-enriched delta gives <strong>exactly the same water structure as the baseline delta</strong> (Rg 3.82 Å, O–O peak 2.74 Å for both; raw MACE 3.90, xTB 3.77) — barrier enrichment does not harm the equilibrium subsystem. The reason is structural: the pairwise delta has <strong>separate channels per element pair</strong>, so the added C–C/C–H barrier data touches only the carbon channels and leaves the O–O/O–H channels that govern water untouched — clean selectivity.</p>
+<p>Barrier-region data moved the barrier 14.1 → <strong>9.9</strong>; the <em>same number</em> of generic configurations did essentially nothing (14.1 → 15.0). <strong>Where the data goes matters more than how much of it there is.</strong></p>
+<section id="water-is-preserved" class="level3">
+<h3 class="anchored" data-anchor-id="water-is-preserved">Water is preserved</h3>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: center;">O–O peak</th>
+<th style="text-align: center;">droplet Rg</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>raw MACE</td>
+<td style="text-align: center;">2.84 Å</td>
+<td style="text-align: center;">3.90 Å</td>
+</tr>
+<tr class="even">
+<td>baseline Delta</td>
+<td style="text-align: center;">2.74 Å</td>
+<td style="text-align: center;">3.82 Å</td>
+</tr>
+<tr class="odd">
+<td><strong>barrier-enriched Delta</strong></td>
+<td style="text-align: center;">2.74 Å</td>
+<td style="text-align: center;"><strong>3.82 Å</strong></td>
+</tr>
+<tr class="even">
+<td>xTB</td>
+<td style="text-align: center;">2.84 Å</td>
+<td style="text-align: center;">3.77 Å</td>
+</tr>
+</tbody>
+</table>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="assets/phaseC_water.png" class="img-fluid figure-img" width="760"></p>
-<figcaption>Droplet O–O distribution and size: barrier enrichment leaves water unchanged relative to the baseline delta.</figcaption>
+<figcaption>Droplet O–O distribution and size.</figcaption>
 </figure>
 </div>
+<p>Barrier enrichment leaves water <strong>identical</strong> to the baseline Delta. The pairwise Delta has separate channels per element pair, so added C–C/C–H data touches only the carbon channels and leaves the O–O/O–H channels that govern water untouched — clean selectivity.</p>
+<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_jul31.md">Jul 31 follow-up findings — FINDINGS_jul31.md →</a></p>
+</section>
+</section>
+<section id="sec-scan-vs-saddle" class="level2">
+<h2 class="anchored" data-anchor-id="sec-scan-vs-saddle">6 · Scan versus saddle: a methodological refinement</h2>
+<p>The 9.9 kcal/mol above is a <strong>constrained-scan</strong> barrier: the maximum along a path with both forming C–C distances held equal and everything else relaxed. That is a cheap, useful estimator, but the constrained path is not guaranteed to pass through the true saddle.</p>
+<p>Running a <strong>Sella first-order saddle search</strong> on the <em>same</em> barrier-enriched Delta and certifying it with a mass-weighted Hessian gives a different, better-founded number:</p>
+<table class="table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 27%">
+<col style="width: 27%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>estimator, same corrected model</th>
+<th style="text-align: center;">barrier</th>
+<th style="text-align: center;">forming C–C</th>
+<th style="text-align: center;">certification</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>constrained scan</td>
+<td style="text-align: center;">9.9 kcal/mol</td>
+<td style="text-align: center;">2.617 Å</td>
+<td style="text-align: center;">not a stationary point</td>
+</tr>
+<tr class="even">
+<td><strong>certified first-order saddle</strong></td>
+<td style="text-align: center;"><strong>6.33 kcal/mol</strong></td>
+<td style="text-align: center;"><strong>2.428 Å</strong></td>
+<td style="text-align: center;">1 imaginary mode, −358.3 cm⁻¹</td>
+</tr>
+<tr class="odd">
+<td><strong>xTB reference</strong></td>
+<td style="text-align: center;"><strong>6.7 kcal/mol</strong></td>
+<td style="text-align: center;">2.315 Å</td>
+<td style="text-align: center;">1 imaginary mode, −394 cm⁻¹</td>
+</tr>
+</tbody>
+</table>
+<p>The certified saddle also sits 0.173 Å (RMSD) from the xTB TS, and its reaction-mode overlap with the forming-bond coordinate is 0.381 — a genuine Diels–Alder mode, though less pure than xTB’s own 0.801.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Jul 31–Aug 7 takeaway
+<span class="screen-reader-only">Important</span>Both numbers are real; they measure different things
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Errors are concentrated in distorted reactive configurations, and targeted calibration of those regions is more effective than adding the same amount of generic data.</strong> What this does <strong>not</strong> claim: no active-learning loop was run (this is a static, hand-placed enrichment — it <em>motivates</em> active sampling, it does not implement it); no improvement in <em>physical</em> (DFT) accuracy is claimed — xTB is the chosen reference here, not the true target, and for this reaction it under-barriers relative to DFT/experiment; and we do not assert the foundation model’s training set definitely lacks these geometries. Those remain future work and open hypotheses.</p>
+<p><strong>9.9 kcal/mol</strong> is the constrained-scan estimator and remains correct for that quantity — it is what the earlier write-ups reported and it has not been withdrawn. <strong>6.33 kcal/mol</strong> is the certified saddle on the same model. The scan overestimates by ≈3.5 kcal/mol here because its constrained path misses the saddle by ~0.19 Å in the forming C–C coordinate. Both are tracked separately; neither replaces the other.</p>
 </div>
 </div>
-<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_jul31.md">Jul 31 follow-up findings — FINDINGS_jul31.md →</a></p>
-
-
 </section>
+<section id="sec-iterative" class="level2">
+<h2 class="anchored" data-anchor-id="sec-iterative">7 · Iterative correction experiment</h2>
+<p>If targeted calibration works once, does repeating it keep working? The loop: find the current corrected saddle → query xTB there → add the data → refit the same Delta → re-search. Run as a <strong>controlled experiment</strong> with a hand-fixed query rule; no acquisition function or uncertainty estimate was involved.</p>
+<p><strong>One iteration.</strong> Relaxed scan (giving both a scan barrier and a Sella seed) → Sella saddle search → TS validity gate (converged, exactly one imaginary mode, forming C–C in 1.5–3.0 Å, reaction-mode overlap ≥ 0.30) → xTB query at that geometry → a packet of the saddle plus ±0.05/±0.10 Å along the imaginary mode plus 2 isotropic 0.05 Å perturbations = <strong>7 new xTB calculations</strong> → refit on the cumulative dataset.</p>
+<p>Held fixed: architecture and every hyperparameter; a 48-configuration held-out reactive split never trained on.</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>iter</th>
+<th style="text-align: center;">cum. xTB calls</th>
+<th style="text-align: center;">certified saddle barrier</th>
+<th style="text-align: center;">scan barrier</th>
+<th style="text-align: center;">forming C–C</th>
+<th style="text-align: center;">certified?</th>
+<th style="text-align: center;">imaginary mode</th>
+<th style="text-align: center;">xTB |F|max at TS</th>
+<th style="text-align: center;">held-out TS+post</th>
+<th style="text-align: center;">water Rg</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>0</strong></td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;"><strong>6.33</strong></td>
+<td style="text-align: center;">9.87</td>
+<td style="text-align: center;">2.428 Å</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">−358.3 cm⁻¹</td>
+<td style="text-align: center;">0.770</td>
+<td style="text-align: center;">0.6879</td>
+<td style="text-align: center;">3.738</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">9.72</td>
+<td style="text-align: center;">10.51</td>
+<td style="text-align: center;">1.996 Å</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">−758.1</td>
+<td style="text-align: center;">2.805</td>
+<td style="text-align: center;">0.6880</td>
+<td style="text-align: center;">3.690</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td style="text-align: center;">21</td>
+<td style="text-align: center;">7.11</td>
+<td style="text-align: center;">12.50</td>
+<td style="text-align: center;">2.415 Å</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">−333.4</td>
+<td style="text-align: center;">0.686</td>
+<td style="text-align: center;">0.6973</td>
+<td style="text-align: center;">3.841</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td style="text-align: center;">28</td>
+<td style="text-align: center;">8.62</td>
+<td style="text-align: center;">12.75</td>
+<td style="text-align: center;">2.519 Å</td>
+<td style="text-align: center;"><strong>no</strong> (2 modes)</td>
+<td style="text-align: center;">−309.6</td>
+<td style="text-align: center;">0.461</td>
+<td style="text-align: center;">0.6966</td>
+<td style="text-align: center;">3.796</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td style="text-align: center;">35</td>
+<td style="text-align: center;">9.46</td>
+<td style="text-align: center;">13.54</td>
+<td style="text-align: center;">2.046 Å</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">−461.3</td>
+<td style="text-align: center;">2.340</td>
+<td style="text-align: center;">0.6987</td>
+<td style="text-align: center;">3.803</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td style="text-align: center;">42</td>
+<td style="text-align: center;">9.25</td>
+<td style="text-align: center;">13.91</td>
+<td style="text-align: center;">2.519 Å</td>
+<td style="text-align: center;"><strong>no</strong> (2 modes)</td>
+<td style="text-align: center;">−312.8</td>
+<td style="text-align: center;">0.428</td>
+<td style="text-align: center;">0.7113</td>
+<td style="text-align: center;">3.834</td>
+</tr>
+<tr class="odd">
+<td><strong>xTB target</strong></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><strong>6.7</strong></td>
+<td style="text-align: center;"><strong>6.7</strong></td>
+<td style="text-align: center;">2.315 Å</td>
+<td style="text-align: center;">1 mode</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><strong>3.77</strong></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/phase2_barrier.png" class="img-fluid figure-img" width="680"></p>
+<figcaption>Barrier vs iteration.</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/phase2_geometry.png" class="img-fluid figure-img" width="760"></p>
+<figcaption>TS position and certification vs iteration.</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/phase2_forces.png" class="img-fluid figure-img" width="680"></p>
+<figcaption>xTB residual force at the corrected saddle.</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/phase2_generalization.png" class="img-fluid figure-img" width="760"></p>
+<figcaption>Held-out reactive error and water stability.</figcaption>
+</figure>
+</div>
+<p><strong>Iteration 0 was the best model of the run.</strong> Across 5 iterations and 42 additional xTB reference calculations, the certified saddle barrier oscillated away from target (error 0.37 → 2.55 kcal/mol) and the scan barrier degraded monotonically (9.87 → 13.91). Held-out TS+post-TS error rose 0.6879 → 0.7113 (+3.4%); overall rose 0.4556 → 0.4704 (+3.3%). Water stayed within MD noise throughout (Rg 3.690–3.841, per-iteration σ 0.037–0.086, no condensation).</p>
+<p><strong>The fit is not diverging.</strong> Delta coefficient norms across iterations: 6.051, 5.953, 5.988, 5.966, 5.947, 6.111. This is a fixed capacity being <em>reallocated</em>, not an unstable regression.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Method control — seeding the saddle search
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An earlier version of the loop seeded each saddle search from the xTB TS, the strategy that works for <em>raw</em> MACE. On a <em>corrected</em> surface it fails: Sella converges to a spurious reactant-basin saddle at 3.20 Å whose imaginary mode is orthogonal to bond formation (overlap 1.2e−06, versus ~0.14 for a random direction in 48 DOF) and whose “barrier” is −3.84 kcal/mol — below the reactant. Querying xTB there degraded the model (scan barrier 9.87 → 12.91). That run is retained as a negative control. The fix — seeding from each iteration’s own relaxed-scan maximum, plus the validity gate — follows the project’s standing convention of seeding saddle searches from a relaxed scan.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A metric not to over-read
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The cosine between corrected and xTB forces <em>at a converged saddle</em> is meaningless: the corrected force there is ~1e−4 eV/Å by construction, so the cosine is a 0/0 noise ratio (observed values 0.296, 0.003, 0.108, −0.663, 0.011, −0.654, with no physical trend). The interpretable quantity is xTB’s own residual force at the corrected saddle, tabulated above, which oscillates over 0.43–2.81 eV/Å with no systematic decrease.</p>
+</div>
+</div>
+</section>
+<section id="sec-limitations" class="level2">
+<h2 class="anchored" data-anchor-id="sec-limitations">8 · Limitations and next question</h2>
+<p><strong>Reference, not truth.</strong> xTB is the chosen proof-of-concept target, not ground truth. For this reaction it <em>under</em>-estimates the barrier relative to DFT and experiment (≈22–27 kcal/mol), so matching it demonstrates <strong>reference-matching, not improved physical accuracy</strong>.</p>
+<p><strong>Energetic before geometric.</strong> Even the best corrected saddle sits 0.173 Å from the xTB TS. Energy agreement outran geometry agreement.</p>
+<p><strong>Scope.</strong> One reaction, one correction family, one acquisition rule, one budget. Nothing here transfers automatically to other systems.</p>
+<p><strong>Not demonstrated.</strong> No active learning was implemented — no acquisition metric, no uncertainty estimate, no autonomous sampling — so this says nothing about active learning in general. And the pairwise Delta has not been shown <em>incapable</em> of matching the xTB saddle; only that it did not, under this rule and budget.</p>
+<p><strong>Next question — is correction-model capacity the bottleneck?</strong> Two observations point that way: the Delta is a sum of <em>radial</em> pair potentials with no angular or many-body terms, while a cycloaddition saddle’s position and curvature depend on angular reorganization of the forming ring; and xTB is never near-stationary at the corrected saddle, so force-matching there asks the correction to reproduce a large reference gradient at a point the model believes is stationary. The discriminating experiment holds the acquisition rule fixed and varies expressiveness — angular/three-body terms, a larger cutoff, more radial channels. That behaviour is <strong>consistent with a correction-capacity limitation</strong>, which is a supported hypothesis, not a demonstrated result.</p>
+<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/corrections/PHASE2_ITERATIVE_CORRECTION_FINDINGS.md">Phase 2 findings — PHASE2_ITERATIVE_CORRECTION_FINDINGS.md →</a></p>
+
+
 </section>
 
 </main> <!-- /main -->

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Study 02 — Periodicity &amp; temperature – ML-Accelerated Metadynamics</title>
+<title>Pillar 4 — Iterative calibration – ML-Accelerated Metadynamics</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -112,7 +112,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Correction</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./p4-iterative.html"> 
+    <a class="nav-link active" href="./p4-iterative.html" aria-current="page"> 
 <span class="menu-text">Iterative</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -186,8 +186,12 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul class="collapse">
-  <li><a href="#confinement-fixes-evaporation" id="toc-confinement-fixes-evaporation" class="nav-link active" data-scroll-target="#confinement-fixes-evaporation">Confinement fixes evaporation</a></li>
-  <li><a href="#a-big-oo-gap-is-drift-not-dissociation" id="toc-a-big-oo-gap-is-drift-not-dissociation" class="nav-link" data-scroll-target="#a-big-oo-gap-is-drift-not-dissociation">A big O–O gap is drift, not dissociation</a></li>
+  <li><a href="#why-we-tested-it" id="toc-why-we-tested-it" class="nav-link active" data-scroll-target="#why-we-tested-it">Why we tested it</a></li>
+  <li><a href="#one-iteration" id="toc-one-iteration" class="nav-link" data-scroll-target="#one-iteration">One iteration</a></li>
+  <li><a href="#key-evidence" id="toc-key-evidence" class="nav-link" data-scroll-target="#key-evidence">Key evidence</a></li>
+  <li><a href="#what-we-learned" id="toc-what-we-learned" class="nav-link" data-scroll-target="#what-we-learned">What we learned</a></li>
+  <li><a href="#next-question" id="toc-next-question" class="nav-link" data-scroll-target="#next-question">Next question</a></li>
+  <li><a href="#related-studies" id="toc-related-studies" class="nav-link" data-scroll-target="#related-studies">Related studies</a></li>
   </ul>
 </nav>
     </div>
@@ -196,8 +200,8 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Study 02 — Periodicity &amp; temperature</h1>
-<p class="subtitle lead">(H₂O)₈ periodic (GFN1) · trimer temperature sweep</p>
+<h1 class="title">Pillar 4 — Iterative calibration</h1>
+<p class="subtitle lead">If targeted correction works once, does repeating it keep working? A negative result.</p>
 </div>
 
 
@@ -214,26 +218,176 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="confinement-fixes-evaporation" class="level2">
-<h2 class="anchored" data-anchor-id="confinement-fixes-evaporation">Confinement fixes evaporation</h2>
-<p>An 8-water periodic box stays condensed for the whole run (max O–O oscillates 6–7 Å, never leaves the cell) while the gas-phase cluster separates past 100 Å. <strong>Periodicity removes the evaporation channel</strong> — though it forces GFN1, since GFN2 has no PBC multipoles in this build, so gas (GFN2) and periodic (GFN1) results are not at the same level of theory.</p>
+<div class="question">
+<p><span class="pillar-section-label">Scientific question</span> If targeted calibration works once, can <strong>repeated xTB queries around the current transition state</strong> progressively improve the correction further?</p>
+</div>
+<section id="why-we-tested-it" class="level2">
+<h2 class="anchored" data-anchor-id="why-we-tested-it">Why we tested it</h2>
+<p><a href="./p3-correction.html">Pillar 3</a> showed that a single round of barrier-region data brings the certified corrected saddle to 6.33 kcal/mol against an xTB target of 6.7. The natural next move is a loop: find the current corrected saddle, ask the reference what it thinks <em>there</em>, add that data, refit, and repeat. If that converged, it would be the skeleton of a data-efficient calibration workflow.</p>
+<p>The loop was run as a <strong>controlled experiment</strong>, not an autonomous system: the query rule was fixed by hand, and no acquisition function or uncertainty estimate was involved.</p>
+</section>
+<section id="one-iteration" class="level2">
+<h2 class="anchored" data-anchor-id="one-iteration">One iteration</h2>
+<ol type="1">
+<li>Relaxed concerted scan on the current corrected surface → scan barrier, and a seed geometry for the saddle search.</li>
+<li><strong>Sella</strong> first-order saddle search from that seed.</li>
+<li><strong>TS validity gate</strong> — the structure counts as a Diels–Alder saddle only if it converged, has exactly one imaginary mode, has forming C–C in 1.5–3.0 Å, and its imaginary mode overlaps the forming-bond coordinate by ≥ 0.30.</li>
+<li>Query GFN2-xTB at that geometry.</li>
+<li>Build a small local packet — the saddle itself, ±0.05 and ±0.10 Å along the imaginary mode, and 2 isotropic 0.05 Å perturbations: <strong>7 new xTB calculations</strong>.</li>
+<li>Refit the <strong>same</strong> Delta architecture on the cumulative dataset.</li>
+</ol>
+<p>Held fixed throughout: the correction architecture and every hyperparameter, and a 48-configuration held-out reactive split that is never trained on.</p>
+</section>
+<section id="key-evidence" class="level2">
+<h2 class="anchored" data-anchor-id="key-evidence">Key evidence</h2>
+<table class="table">
+<colgroup>
+<col style="width: 7%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>iter</th>
+<th style="text-align: center;">cumulative new xTB calls</th>
+<th style="text-align: center;">certified saddle barrier</th>
+<th style="text-align: center;">scan barrier</th>
+<th style="text-align: center;">forming C–C</th>
+<th style="text-align: center;">certified?</th>
+<th style="text-align: center;">held-out TS+post RMSE</th>
+<th style="text-align: center;">water R_g</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>0</strong></td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;"><strong>6.33</strong></td>
+<td style="text-align: center;">9.87</td>
+<td style="text-align: center;">2.428 Å</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">0.6879</td>
+<td style="text-align: center;">3.738 Å</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">9.72</td>
+<td style="text-align: center;">10.51</td>
+<td style="text-align: center;">1.996 Å</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">0.6880</td>
+<td style="text-align: center;">3.690 Å</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td style="text-align: center;">21</td>
+<td style="text-align: center;">7.11</td>
+<td style="text-align: center;">12.50</td>
+<td style="text-align: center;">2.415 Å</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">0.6973</td>
+<td style="text-align: center;">3.841 Å</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td style="text-align: center;">28</td>
+<td style="text-align: center;">8.62</td>
+<td style="text-align: center;">12.75</td>
+<td style="text-align: center;">2.519 Å</td>
+<td style="text-align: center;"><strong>no</strong></td>
+<td style="text-align: center;">0.6966</td>
+<td style="text-align: center;">3.796 Å</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td style="text-align: center;">35</td>
+<td style="text-align: center;">9.46</td>
+<td style="text-align: center;">13.54</td>
+<td style="text-align: center;">2.046 Å</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">0.6987</td>
+<td style="text-align: center;">3.803 Å</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td style="text-align: center;">42</td>
+<td style="text-align: center;">9.25</td>
+<td style="text-align: center;">13.91</td>
+<td style="text-align: center;">2.519 Å</td>
+<td style="text-align: center;"><strong>no</strong></td>
+<td style="text-align: center;">0.7113</td>
+<td style="text-align: center;">3.834 Å</td>
+</tr>
+<tr class="odd">
+<td><strong>xTB target</strong></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><strong>6.7</strong></td>
+<td style="text-align: center;"><strong>6.7</strong></td>
+<td style="text-align: center;">2.315 Å</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><strong>3.77</strong></td>
+</tr>
+</tbody>
+</table>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="assets/pbc_vs_gas.png" class="img-fluid figure-img" width="560"></p>
-<figcaption>Periodic box stays bounded (≤ 7.7 Å); the gas-phase cluster evaporates past 100 Å.</figcaption>
+<p><img src="assets/phase2_barrier.png" class="img-fluid figure-img" width="680"></p>
+<figcaption>Barrier against iteration. Iteration 0 is the closest to the xTB target; the constrained-scan barrier degrades monotonically.</figcaption>
 </figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/phase2_geometry.png" class="img-fluid figure-img" width="760"></p>
+<figcaption>TS position oscillates by ±0.5 Å; open circles mark iterations that failed the saddle-certification gate.</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/phase2_generalization.png" class="img-fluid figure-img" width="760"></p>
+<figcaption>Held-out reactive error drifts slightly upward while water stays within MD noise.</figcaption>
+</figure>
+</div>
+<div class="keyresult caution">
+<p><span class="lbl">Key result — negative</span> <strong>A strong one-shot correction does not continue improving under repeated local TS queries with the fixed pairwise Delta architecture.</strong> Iteration 0 was the best model of the run. Across 5 iterations and <strong>42 additional xTB reference calculations</strong>, the certified saddle barrier oscillated <em>away</em> from target (error 0.37 → 2.55 kcal/mol) and the constrained-scan barrier degraded monotonically from 9.87 to 13.91 kcal/mol.</p>
+</div>
+<p>Supporting observations:</p>
+<ul>
+<li><strong>2 of 6 iterations produced no certifiable first-order saddle</strong> (two imaginary modes), and fell back to the scan maximum as the query centre.</li>
+<li><strong>Held-out reactive error worsens slightly</strong>: TS+post-TS RMSE 0.6879 → 0.7113 (+3.4%). The added data is not generalizing.</li>
+<li><strong>Water remains stable</strong> — R_g spans 3.690–3.841 Å around the xTB reference of 3.77, within per-iteration MD standard deviations of 0.037–0.086 Å, with no condensation.</li>
+<li><strong>The fit is not diverging.</strong> The Delta coefficient norm stays essentially constant (6.05, 5.95, 5.99, 5.97, 5.95, 6.11), so this is a fixed capacity being <em>reallocated</em>, not a numerically unstable regression.</li>
+</ul>
+<div class="methodnote">
+<p><span class="lbl">Method control — seeding the saddle search</span> An earlier version of this loop seeded each saddle search from the xTB TS, the strategy that works for <em>raw</em> MACE. On a <em>corrected</em> surface it fails: Sella converges to a spurious reactant-basin saddle at 3.20 Å whose imaginary mode is orthogonal to bond formation (overlap 1.2e−06) and whose “barrier” is −3.84 kcal/mol, below the reactant. That run is retained as a negative control. The fix — seeding from each iteration’s own relaxed-scan maximum, plus the validity gate above — follows the project’s existing convention for saddle searches.</p>
+</div>
+<div class="methodnote">
+<p><span class="lbl">A metric not to over-read</span> The cosine between corrected and xTB forces <em>at a converged saddle</em> is meaningless: the corrected force is ~1e−4 eV/Å there by construction, so the cosine is a 0/0 noise ratio. The interpretable quantity is xTB’s <strong>own</strong> residual force at the corrected saddle, which oscillates over 0.43–2.81 eV/Å with no systematic decrease.</p>
 </div>
 </section>
-<section id="a-big-oo-gap-is-drift-not-dissociation" class="level2">
-<h2 class="anchored" data-anchor-id="a-big-oo-gap-is-drift-not-dissociation">A big O–O gap is drift, not dissociation</h2>
-<p>A complementary CV pair resolves the ambiguity: checking the intramolecular O–H shows the clusters are <strong>intact molecules drifting apart</strong>, not dissociating — only the lone water truly breaks a bond. Higher temperature just makes intact molecules escape faster (max O–O 81 → 143 Å over 200 → 350 K).</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="assets/movie_n3_low.gif" class="img-fluid figure-img" width="360"></p>
-<figcaption>Gas trimer: three intact waters drift to the corners, each keeping its two O–H bonds — drift, not dissociation.</figcaption>
-</figure>
+<section id="what-we-learned" class="level2">
+<h2 class="anchored" data-anchor-id="what-we-learned">What we learned</h2>
+<p>More targeted reference data is <strong>not automatically better</strong> for a fixed correction architecture. The result is specific and bounded: this correction form, this acquisition rule, this system, this budget.</p>
+<p>Two mechanistic observations point the same direction. The Delta is a sum of <em>radial</em> pair potentials with no angular or many-body terms, while the position and curvature of a cycloaddition saddle depend on angular reorganization of the forming ring. And xTB is never near-stationary at the corrected saddle (0.43–2.81 eV/Å), so force-matching there asks the correction to reproduce a large reference gradient at a point the corrected model believes is stationary — a directly conflicting demand.</p>
+<div class="methodnote">
+<p><span class="lbl">What this does and does not claim</span> The behaviour is <strong>consistent with a correction-capacity limitation</strong>, which motivates a controlled capacity ablation. That is a supported hypothesis, not a demonstrated result — establishing it requires holding the acquisition rule fixed while varying the correction’s expressiveness. This experiment does <strong>not</strong> show that active learning fails: no acquisition metric, uncertainty estimate, or autonomous sampling was implemented here.</p>
 </div>
-<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/FINDINGS_phase2.md">Full findings — FINDINGS_phase2.md →</a></p>
+</section>
+<section id="next-question" class="level2">
+<h2 class="anchored" data-anchor-id="next-question">Next question</h2>
+<p><strong>Is correction-model capacity the bottleneck?</strong> The discriminating experiment holds the acquisition rule fixed and varies expressiveness — angular or three-body terms, a larger cutoff, more radial channels. If a richer correction converges on the same 42-query budget, the ceiling is architectural and an acquisition metric becomes worth building. If it does not, no acquisition function would rescue the loop.</p>
+</section>
+<section id="related-studies" class="level2">
+<h2 class="anchored" data-anchor-id="related-studies">Related studies</h2>
+<div class="studylinks">
+<p><a href="./08-corrections.html#sec-iterative" class="primary">Study 08 — full iterative-correction record</a> <a href="./p3-correction.html">Pillar 3 — the one-shot correction</a> <a href="./p3-correction.html#sec-scan-vs-saddle">Scan vs saddle estimators</a></p>
+</div>
 
 
 </section>

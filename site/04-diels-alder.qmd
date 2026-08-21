@@ -1,15 +1,18 @@
 ---
-title: "Study 04 — A real reaction"
-subtitle: "Butadiene + ethylene → cyclohexene · GFN2"
+title: "Study 04 — Diels–Alder reaction"
+subtitle: "Butadiene + ethylene → cyclohexene · GFN2-xTB reference, MACE-OFF23 comparison, and cross-PES transition-state validation"
 ---
 
-## Driving — and properly characterizing — a Diels–Alder
+This is the detailed study behind [Pillar 2 — Reactive chemistry](p2-reactive.qmd). The
+pillar page carries the headline argument; this page keeps the full methodology,
+tables, convergence tests, and the troubleshooting that is worth recording.
 
-Using the same RMSD machinery pulled *toward* a product (`xtb --path`), the
-reaction runs: both new C–C σ-bonds form. But the path's reported "barrier"
-(101 kcal/mol) is a **biased-path artifact** — the driver had to escalate the
-bias to connect. A relaxed concerted scan plus a Sella saddle optimization gives
-the real answer.
+## 1 · Baseline reaction benchmark {#sec-baseline}
+
+Using the same RMSD machinery pulled *toward* a product (`xtb --path`), the reaction
+runs: both new C–C σ-bonds form. But the path's reported "barrier" (101 kcal/mol) is a
+**biased-path artifact** — the driver had to escalate the bias to connect. A relaxed
+concerted scan plus a Sella saddle optimization gives the real answer.
 
 | Quantity | Value |
 |----------|-------|
@@ -17,26 +20,27 @@ the real answer.
 | Imaginary frequency | −394 cm⁻¹ (exactly one) |
 | **Concerted barrier** | **6.7 kcal/mol** (scan and Sella agree) |
 | Reaction energy | −57.6 kcal/mol |
+| Stepwise (first bond) barrier | 19.3 kcal/mol — concerted is preferred |
 | ~~`--path` "barrier"~~ | ~~101 kcal/mol~~ — not physical |
 
-![Concerted reaction profile: barrier 6.7 kcal/mol at forming-bond distance
-2.32 Å, then downhill to the product.](assets/reaction_profile.png){width=560}
+![Concerted reaction profile: barrier 6.7 kcal/mol at forming-bond distance 2.32 Å,
+then downhill to the product.](assets/reaction_profile.png){width=560}
 
 ::: {.callout-tip}
 ## Ties back to the metadynamics theme
-Enhanced sampling *finds* that a transition is reachable, but a quantitative
-barrier needs a proper TS treatment — the RMSD bias alone is chemically blind.
-(Also: xtb has no TS optimizer — `--optts` is not a flag; use Sella. And read the
-`vibspectrum` file for frequencies, not the `--hess` stdout.)
+Enhanced sampling *finds* that a transition is reachable, but a quantitative barrier
+needs a proper TS treatment — the RMSD bias alone is chemically blind. (Also: xtb has
+no TS optimizer — `--optts` is not a flag; use Sella. And read the `vibspectrum` file
+for frequencies, not the `--hess` stdout.)
 :::
 
 [Full findings — FINDINGS_diels_alder.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_diels_alder.md)
 
-## Can MACE-OFF23 reproduce the reaction energetics? (NEB)
+## 2 · Mechanism and energetics {#sec-mechanism}
 
-Next question: does the MACE-OFF23 surrogate get reaction *energetics* right with
-**no fine-tuning**? xTB has a built-in path search; MACE doesn't, so we build the
-profile with a climbing-image **NEB** (ASE) and compare.
+Does the MACE-OFF23 surrogate get reaction *energetics* right with **no fine-tuning**?
+xTB has a built-in path search; MACE doesn't, so we build the profile with a
+climbing-image **NEB** (ASE) and compare.
 
 | quantity | GFN2-xTB (built-in path) | MACE-OFF23 (NEB) |
 |----------|:------------------------:|:----------------:|
@@ -47,105 +51,46 @@ profile with a climbing-image **NEB** (ASE) and compare.
 ![Minimum energy path and energetics: MACE-OFF23 (CI-NEB) vs GFN2-xTB (built-in
 path).](assets/neb_da_mace_vs_xtb.png){width=760}
 
-**Outcome (2): same TS location (~2.0–2.3 Å), very different energetics.** And it's
-the *physical* difference — experiment/DFT give a barrier ≈ 22–27 kcal/mol and
-ΔH ≈ −40. GFN2-xTB badly underestimates the barrier (6.7) and overbinds the
-product (−57.6); MACE-OFF23 (DFT-trained) is much closer on both, off the shelf.
-The refined MACE TS is a genuine first-order saddle (one imaginary mode,
-−740 cm⁻¹) and slightly **asynchronous** — MACE makes the perfectly synchronous
-geometry a second-order saddle.
+**Outcome (2): same TS location (~2.0–2.3 Å), very different energetics.**
+Experiment/DFT give a barrier ≈ 22–27 kcal/mol and ΔH ≈ −40. GFN2-xTB badly
+underestimates the barrier (6.7) and overbinds the product (−57.6); MACE-OFF23
+(DFT-trained) is closer on both, off the shelf. The refined MACE TS is a genuine
+first-order saddle (one imaginary mode, −740 cm⁻¹) and slightly **asynchronous** —
+MACE makes the perfectly synchronous geometry a second-order saddle.
 
-### Where do the two potentials actually differ?
+Both potentials agree the reaction is a **concerted, synchronous** cycloaddition — the
+two forming bonds contract together (b1 ≈ b2 along the whole path), with only MACE's TS
+marginally asynchronous (2.03 / 1.98 Å). They differ in energetics, not mechanism.
 
-Digging into the benchmark: the disagreement is a **reactive-region** effect. The
-energy difference ΔE = E_MACE − E_xTB is ~0 for the separated reactants, grows as
-the bonds form, peaks in the TS region, and leaves a persistent ~+23 kcal/mol
-product offset — **not a constant shift.**
+![Forming-bond evolution: b1 and b2 contract synchronously for both methods; MACE's TS
+carries a small 0.05 Å asynchrony.](assets/neb_bond_evolution.png){width=680}
 
-![Energy-difference profile (both potentials relaxed at each point along the
-reaction coordinate).](assets/neb_energy_diff.png){width=680}
+**Literature context:** experiment gives a barrier ≈ 27.5 and ΔH ≈ −40 kcal/mol. xTB
+(6.7 / −57.6) is qualitatively wrong on both; MACE-OFF23 (36 / −36…−41) nails the
+reaction energy and is in the right kinetic regime, though it overestimates the barrier
+by ~9 kcal/mol.
 
-And the forces: on rattled reaction-path geometries the MACE and xTB force vectors
-are **directionally almost identical (cosine 0.98)**, but the **magnitude gap
-(RMSE) spikes in the TS region** — exactly where the energy difference peaks.
+## 3 · Where the potentials diverge {#sec-divergence}
 
-![Force RMSE and cosine similarity along the path — agreement is near-perfect in
-the reactant/product basins and degrades only in the TS region.](assets/neb_force_agreement.png){width=680}
+The disagreement is a **reactive-region** effect. The energy difference
+ΔE = E_MACE − E_xTB is ~0 for the separated reactants, grows as the bonds form, peaks
+in the TS region, and leaves a persistent ~+23 kcal/mol product offset — **not a
+constant shift.**
 
-Both potentials agree the reaction is a **concerted, synchronous** cycloaddition —
-the two forming bonds contract together (b1 ≈ b2 along the whole path), with only
-MACE's TS marginally asynchronous (2.03 / 1.98 Å). They differ in energetics, not
-mechanism.
+![Energy-difference profile (both potentials relaxed at each point along the reaction
+coordinate).](assets/neb_energy_diff.png){width=680}
 
-![Forming-bond evolution: b1 and b2 contract synchronously for both methods; MACE's
-TS carries a small 0.05 Å asynchrony.](assets/neb_bond_evolution.png){width=680}
+And the forces: on rattled reaction-path geometries the MACE and xTB force vectors are
+**directionally almost identical (cosine 0.98)**, but the **magnitude gap (RMSE) spikes
+in the TS region** — exactly where the energy difference peaks.
 
-The MACE barrier is **numerically converged — 35.9 ± 1.0 kcal/mol for ≥11 NEB
-images** (9 images is too few to resolve the TS: the barrier collapses to ~18 and the
-TS drifts to 2.5 Å), and it is cross-validated by the independent relaxed scan (36.0)
-and the Sella-refined saddle (36.2).
+![Force RMSE and cosine similarity along the path — agreement is near-perfect in the
+reactant/product basins and degrades only in the TS region.](assets/neb_force_agreement.png){width=680}
 
-![Activation barrier vs NEB image count: converged for ≥11 images; 9 is
-under-resolved.](assets/neb_barrier_convergence.png){width=560}
+### Region-wise error partition
 
-**Literature context:** experiment gives a barrier ≈ 27.5 and ΔH ≈ −40 kcal/mol.
-xTB (6.7 / −57.6) is qualitatively wrong on both; MACE-OFF23 (36 / −36…−41) nails
-the reaction energy and is in the right kinetic regime, though it overestimates the
-barrier by ~9 kcal/mol.
-
-::: {.callout-note}
-## What this tells the correction framework
-MACE and xTB agree on geometry, mechanism, and force *direction* (cosine 0.98) and
-disagree on energy/force *magnitude*, **localized in the bond-forming region.** So a
-global energy shift is ruled out (ΔE is zero at the reactant); the direction-agrees /
-magnitude-differs signature points to a **force-scaling** correction, and the
-localization points to an **environment/coordination-dependent** (or delta) form. The
-NEB pipeline already wraps every potential in a `CorrectedCalculator` with these
-plug-in models — fitting one is the immediate next step.
-:::
-
-[NEB findings — FINDINGS_neb.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_neb.md)
-
-## Jul 31 follow-up (Aug 7) — is the barrier gap a method artifact?
-
-The obvious objection to the ~30 kcal/mol MACE–xTB barrier gap: MACE used NEB,
-xTB used its built-in path search. Maybe the gap is just a **path-method
-mismatch**. To rule that out we ran *both* potentials through the **identical**
-standardized NEB (13 images, k=0.5, FIRE / `NEBOptimizer`, fmax 0.05, climbing
-image, same concerted-scan seed).
-
-- **`xtb-python` stability gate passed** — single-points, forces, and geometry
-  optimization are reproducible (repeat-evaluation energy std ≈ 5e-14 eV), so the
-  backend is trustworthy for the full band.
-- **MACE's barrier is method-invariant: ~36 kcal/mol across the relaxed scan
-  (36.0), the Sella saddle (36.2), and the standardized NEB (36–37).** It is also
-  numerically converged (35.9 ± 1.0 for ≥11 images).
-- **xTB ASE-NEB fails *physically* under the same settings** — the band does not
-  form a sensible path; atoms in the "TS" images fly apart (reported forming C–C
-  of ~7–18 Å) and the apparent barrier balloons to 240–250 kcal/mol under both
-  optimizers.
-
-::: {.callout-important}
-## This is a PES/algorithm compatibility issue, not a backend failure
-The same `xtb-python` that passed the stability gate produces a clean
-single-point everywhere; only the *band optimization* on xTB's flatter,
-low-barrier surface diverges under these settings (a file-based binary xTB would
-hit the identical problem). So the valid xTB reference stays the constrained
-relaxed scan + verified TS (6.7 kcal/mol). **Because MACE's barrier is the same
-~36 kcal/mol no matter how it is computed, the ~30 kcal/mol MACE–xTB gap is a
-genuine difference between the two potential-energy surfaces — it is not
-explained by the original path-method mismatch.**
-:::
-
-![Standardized NEB: MACE gives a consistent ~36 kcal/mol barrier; the xTB band
-does not converge to a physical path under the identical settings (shown as its
-valid relaxed-scan reference instead).](assets/a2_standardized_neb.png){width=720}
-
-### Barrier-region error analysis
-
-Where along the reaction coordinate does the MACE↔xTB disagreement live? We
-partitioned 152 rattled path geometries into five regions by forming C–C distance
-and measured raw MACE-vs-xTB force RMSE, cosine, and energy discrepancy per region.
+152 rattled path geometries partitioned into five regions by forming C–C distance,
+with raw MACE-vs-xTB force RMSE, cosine, and energy discrepancy per region.
 
 | region (forming C–C) | force RMSE (eV/Å) | cosine | ΔE vs reactant (kcal/mol) |
 |---|:---:|:---:|:---:|
@@ -155,87 +100,173 @@ and measured raw MACE-vs-xTB force RMSE, cosine, and energy discrepancy per regi
 | **post-TS (1.7–1.96)** | **0.96** | 0.964 | 31.3 |
 | product basin (<1.7 Å) | 0.33 | 0.997 | 23.1 |
 
-- In the **reactant/product basins** agreement is excellent — cosine ≈ 0.996–0.997
-  and low RMSE.
-- In the **TS/post-TS region the force RMSE rises ~2.5–2.9×** (to 0.83–0.96 eV/Å),
-  the **TS cosine drops to ~0.950**, and the **energy discrepancy peaks in the same
-  reactive window** — the disagreement is concentrated exactly where the forming
-  bonds are half-made and the geometry is most distorted.
-
-![Region-wise MACE↔xTB force RMSE and cosine: near-perfect in the basins,
-degrading sharply through the TS / post-TS region.](assets/neb_regionwise_error.png){width=680}
+![Region-wise MACE↔xTB force RMSE and cosine: near-perfect in the basins, degrading
+sharply through the TS / post-TS region.](assets/neb_regionwise_error.png){width=680}
 
 ::: {.callout-note}
 ## Careful with the "why"
-That the errors *concentrate* in the distorted barrier region is directly
-measured here. The natural explanation — that such highly distorted geometries
-are under-represented in the foundation model's training distribution — is a
-**supported hypothesis, not a demonstrated fact**; this dataset shows *where* the
-error is, not *why*. It motivates, but does not prove, targeted data enrichment.
+That the errors *concentrate* in the distorted barrier region is directly measured
+here. The natural explanation — that such highly distorted geometries are
+under-represented in the foundation model's training distribution — is a **supported
+hypothesis, not a demonstrated fact**; this dataset shows *where* the error is, not
+*why*. It motivates, but does not prove, targeted data enrichment.
+:::
+
+::: {.callout-note}
+## What this tells the correction framework
+MACE and xTB agree on geometry, mechanism, and force *direction* (cosine 0.98) and
+disagree on energy/force *magnitude*, **localized in the bond-forming region.** So a
+global energy shift is ruled out (ΔE is zero at the reactant); the direction-agrees /
+magnitude-differs signature points to a **force-scaling** correction, and the
+localization points to an **environment/coordination-dependent** (or delta) form. The
+NEB pipeline already wraps every potential in a `CorrectedCalculator` with these
+plug-in models — see [Study 08](08-corrections.qmd).
+:::
+
+## 4 · Methodological controls {#sec-controls}
+
+The obvious objection to the ~30 kcal/mol gap: MACE used NEB, xTB used its built-in
+path search, so maybe the gap is a **path-method mismatch**. Three controls close that
+off.
+
+### MACE's barrier is method-invariant
+
+Across the relaxed scan (36.0), the Sella saddle (36.2), and a standardized 13-image
+CI-NEB (36–37), MACE gives the same answer. It is also numerically converged —
+**35.9 ± 1.0 kcal/mol for ≥11 NEB images** (9 images is too few: the barrier collapses
+to ~18 and the TS drifts to 2.5 Å).
+
+![Activation barrier vs NEB image count: converged for ≥11 images; 9 is
+under-resolved.](assets/neb_barrier_convergence.png){width=560}
+
+### The xtb-python stability gate
+
+Before running xTB through the same NEB driver, the backend was gated: single-points,
+forces, and geometry optimization are reproducible, with repeat-evaluation energy
+scatter of **5.08e−14 eV** (machine precision), a converged optimization at fmax 0.021,
+and ~4.4 ms per call. The robust settings (`electronic_temperature=1000`,
+`max_iterations=500`, `accuracy=1.0`) do not perturb path energetics.
+
+### xTB ASE-NEB fails under the standardized settings
+
+Running *both* potentials through the identical 13-image CI-NEB (k = 0.5, FIRE /
+`NEBOptimizer`, fmax 0.05, climbing image, same concerted-scan seed): MACE converges,
+xTB does **not**. The band never forms a sensible path — atoms in the "TS" images fly
+apart (reported forming C–C of ~7–18 Å) and the apparent barrier balloons to
+**240–250 kcal/mol** under both optimizers.
+
+![Standardized NEB: MACE gives a consistent ~36 kcal/mol barrier; the xTB band does not
+converge to a physical path under the identical settings (shown as its valid
+relaxed-scan reference instead).](assets/a2_standardized_neb.png){width=720}
+
+::: {.callout-important}
+## A PES/algorithm compatibility issue, not a backend failure
+The same `xtb-python` that passed the stability gate produces a clean single-point
+everywhere; only the *band optimization* on xTB's flatter, low-barrier surface diverges
+under these settings, and a file-based binary xTB would hit the identical problem. So
+the valid xTB reference stays the constrained relaxed scan + verified TS
+(6.7 kcal/mol). **Because MACE's barrier is the same ~36 kcal/mol no matter how it is
+computed, the ~30 kcal/mol gap is a genuine difference between the two
+potential-energy surfaces — not the original path-method mismatch.**
 :::
 
 [Jul 31 follow-up findings — FINDINGS_jul31.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_jul31.md)
 
-## Aug 7 follow-up — is the xTB TS also a MACE saddle?
+## 5 · Cross-PES transition-state validation {#sec-cross-pes}
 
-The ~30 kcal/mol barrier gap was confirmed as real on identical geometries (Phase Jul 31). But a natural follow-up: does the native xTB transition state (2.32 Å forming C–C) also serve as the MACE transition state? Or does MACE have its own distinct saddle nearby?
+If path search is not the explanation, the sharper question is whether the two
+potentials even share a transition state.
 
-We used the verified xTB TS as a starting point for a **MACE saddle search via Sella**, then tested whether the result is robust to small perturbations.
+### Geometry verification
 
-### Identical-geometry cross-check
+All three structures were confirmed as the exact geometries associated with the
+reported 6.7 kcal/mol result: C₆H₁₀ throughout, matched atom ordering, forming pairs
+(0,5) and (3,4). Reactant `start.xyz` (3.35 Å forming C–C), TS `ts_opt.xyz` (2.315 Å,
+Sella-refined and Hessian-verified), product `end.xyz` (1.54 Å new σ-bonds).
 
-First, frozen-geometry evaluation confirmed the gap is intrinsic:
+### Identical frozen geometries
 
-| Calculation | xTB | MACE @ xTB geoms | Difference |
-|---|---|---|---|
-| **Barrier at frozen xTB TS** | **6.7 kcal/mol** | **27.9 kcal/mol** | **−21.2** |
-| Force residual at xTB TS | 0.00093 eV/Å | **1.84 eV/Å** | — |
+Evaluating both potentials on those exact structures, with no relaxation, removes path
+search as a variable entirely.
 
-The xTB TS is a true saddle on xTB's PES (tiny residual force). On MACE's PES, the same geometry carries **large residual forces (1.84 eV/Å)** — it is NOT a saddle point on MACE.
+| on frozen xTB geometries | GFN2-xTB | MACE-OFF23 | difference |
+|---|:---:|:---:|:---:|
+| barrier | **6.7 kcal/mol** | **27.9 kcal/mol** | 21.2 |
+| reaction energy | −57.6 | −36.2 | 21.4 |
+| max atomic force at the TS | 0.00093 eV/Å | **1.84 eV/Å** | — |
+| force norm at the TS | — | 4.11 eV/Å | — |
 
-### MACE saddle search from xTB TS
+![Both potentials on the same three frozen xTB geometries.](assets/phase1_identical_geoms.png){width=620}
 
-Started Sella at the xTB TS geometry. Result:
+The xTB TS is a true stationary point on xTB's surface but carries **1.84 eV/Å** of
+MACE force — nearly 40× a typical 0.05 eV/Å convergence threshold. **It is not a
+stationary point on the MACE surface.**
 
-| Metric | Value |
-|---|---|
-| **Converged** | YES (66 iterations) |
-| **MACE TS forming C–C** | **2.004 Å** |
-| **xTB TS forming C–C** | 2.315 Å |
-| **Geometric shift** | **0.311 Å** |
-| **MACE barrier at converged TS** | **35.8 kcal/mol** |
-| **Independent NEB barrier (reference)** | 36.0 kcal/mol |
-| **First-order saddle?** | YES — one imaginary mode ✓ |
+### The MACE saddle, found from the xTB TS
 
-The converged MACE TS is **distinct from the xTB TS** in both location and energy, yet it **matches the independently obtained NEB barrier** (35.8 vs 36.0 kcal/mol, RMSD < 0.001 Å). This agreement across two separate methods is strong evidence for a well-defined MACE saddle.
+Using the xTB TS as the initial guess for a Sella saddle search on MACE:
 
-### Robustness: small perturbations along the reaction mode
+| | GFN2-xTB saddle | MACE saddle (Sella from the xTB TS) |
+|---|:---:|:---:|
+| forming C–C | 2.315 Å | **1.976 / 2.031 Å (mean 2.004)** |
+| barrier | 6.7 kcal/mol | **35.8 kcal/mol** |
+| imaginary modes | 1 (−394 cm⁻¹) | 1 |
+| convergence | — | 66 iterations, fmax 8.0e−6 eV/Å |
+| displacement between the two saddles | — | 0.316 Å |
 
-To verify the MACE saddle is not an artifact, we created four small perturbations (±0.02 Å, ±0.05 Å) along the Hessian's imaginary eigenvector and ran Sella from each.
+![Left: the xTB TS is not stationary on MACE. Right: two distinct but nearby saddles,
+and every δx perturbation recovers the same one.](assets/phase1_saddle_comparison.png){width=760}
 
-**Result: perfect recovery to the same saddle.**
+This recovered saddle agrees with the *independently obtained* CI-NEB result
+(35.8 vs 36.0 kcal/mol; 2.004 vs 2.005 Å mean forming C–C) — two different methods from
+two different starting points converging on the same structure.
 
-| Perturbation | Iterations to converge | Barrier (kcal/mol) | RMSD to reference (Å) |
-|---|---|---|---|
-| −0.05 Å | 38 | 35.806 | 5.0e−6 |
-| −0.02 Å | 30 | 35.806 | 1.6e−6 |
-| +0.02 Å | 37 | 35.806 | 1.6e−6 |
-| +0.05 Å | 61 | 35.806 | 1.6e−6 |
-| **Spread** | — | **0.000 kcal/mol** | **< 1e−5 Å** |
+### δx robustness
 
-All four perturbations converge back to **the exact same MACE saddle** (barrier 35.806 ± 0.000 kcal/mol, zero geometry spread). This is characteristic of a well-isolated, robust first-order saddle point — not a numerical artifact or an optimizer quirk.
+Displacing the MACE saddle along its imaginary mode and re-running Sella from each
+perturbed structure:
 
-::: {.callout-important}
-## The barrier disagreement is a genuine PES difference
+| perturbation | iterations | final fmax (eV/Å) | RMSD to reference (Å) | barrier (kcal/mol) |
+|---|:---:|:---:|:---:|:---:|
+| −0.05 Å | 38 | 8.9e−6 | 5.0e−6 | 35.806 |
+| −0.02 Å | 30 | 9.3e−6 | 2.4e−6 | 35.806 |
+| +0.02 Å | 37 | 8.9e−6 | 1.6e−6 | 35.806 |
+| +0.05 Å | 61 | 9.1e−6 | 1.6e−6 | 35.806 |
+| **spread** | — | — | **< 1e−5** | **0.000** |
 
-**The xTB and MACE potential-energy surfaces describe fundamentally different reaction barriers in the same geometric region.**
+All four recover the same saddle. It is well isolated, not an optimizer artifact.
 
-The 29 kcal/mol gap is not explained by:
-- Path-search methodology (identical frozen geometries still show 21 kcal/mol difference)
-- Lack of MACE TS convergence (independent methods consistently recover ~36 kcal/mol)
-- Optimizer artifacts (robustness test shows zero variability under perturbations)
-
-The two models agree on mechanism (concerted, synchronous bond-forming, ~2.0–2.3 Å TS region) but assign very different barrier heights.
+::: {.callout-note}
+## Hessian convention
+The Phase 1 Hessian was mass-*unweighted*, so its eigenvalue→cm⁻¹ conversion produced a
+non-physical magnitude. The *count* of imaginary modes was unaffected (mass weighting is
+a congruence transform and preserves the sign structure by Sylvester's law of inertia),
+and no conclusion depended on the numeric value. Later work uses a properly
+mass-weighted Hessian, validated by reproducing xTB's own `vibspectrum` value at the
+xTB TS: **−394.1 cm⁻¹** against the reference −394, with the six translation/rotation
+modes cleanly separated (next-lowest −13.3 cm⁻¹).
 :::
 
-[Phase 1 complete findings — PHASE1_COMPLETE_FINDINGS.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/PHASE1_COMPLETE_FINDINGS.md)
+## 6 · Final interpretation {#sec-interpretation}
+
+**Directly demonstrated.** On identical frozen geometries the two potentials disagree by
+21.2 kcal/mol on the barrier; the xTB TS is not a MACE stationary point (1.84 eV/Å);
+Sella from that TS converges to a genuine first-order MACE saddle 0.316 Å away at
+35.8 kcal/mol, matching the independent NEB result; and that saddle is robustly
+recovered from ±0.05 Å perturbations with zero barrier spread.
+
+**Supported interpretation.** The two surfaces describe nearby but distinct saddle
+regions. The barrier disagreement is intrinsic to the potentials rather than an
+artifact of methodology or convergence.
+
+**Not demonstrated.** Which method is physically more accurate cannot be settled from
+this experiment — though DFT/experiment (≈22–27 kcal/mol) sits between them, closer to
+MACE. Nothing here establishes that the foundation model's training set lacks these
+geometries, and nothing transfers automatically to other reactions.
+
+Two claims that are easy to conflate stay separate: **nearby TS geometry** and
+**matching TS energy** are different achievements, and this system has the first
+without the second.
+
+[Phase 1 complete findings — PHASE1_COMPLETE_FINDINGS.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/PHASE1_COMPLETE_FINDINGS.md) ·
+[NEB findings — FINDINGS_neb.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_neb.md)

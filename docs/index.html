@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Metadynamics of water: from clusters to a surrogate – xTB Metadynamics of Water</title>
+<title>ML-Accelerated Metadynamics</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -45,7 +45,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-8f53ae70cd472c10746adc2081c82a4c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-908d35bb53390a20ee9612226264221b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -75,9 +75,10 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -85,7 +86,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">xTB Metadynamics of Water</span>
+    <span class="navbar-title">ML-Accelerated Metadynamics</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -99,36 +100,63 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Overview</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./01-sweep.html"> 
-<span class="menu-text">Bias × size</span></a>
+    <a class="nav-link" href="./p1-validation.html"> 
+<span class="menu-text">Validation</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./02-pbc.html"> 
-<span class="menu-text">PBC &amp; temperature</span></a>
+    <a class="nav-link" href="./p2-reactive.html"> 
+<span class="menu-text">Reactive</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./03-droplets.html"> 
-<span class="menu-text">Droplets</span></a>
+    <a class="nav-link" href="./p3-correction.html"> 
+<span class="menu-text">Correction</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./04-diels-alder.html"> 
-<span class="menu-text">Diels–Alder</span></a>
+    <a class="nav-link" href="./p4-iterative.html"> 
+<span class="menu-text">Iterative</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./05-mace.html"> 
-<span class="menu-text">MACE-OFF23</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-studies" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Studies</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-studies">    
+        <li>
+    <a class="dropdown-item" href="./01-sweep.html">
+ <span class="dropdown-text">Study 01 — Bias × size</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./06-kpush.html"> 
-<span class="menu-text">kpush scaling</span></a>
+        <li>
+    <a class="dropdown-item" href="./02-pbc.html">
+ <span class="dropdown-text">Study 02 — Periodicity &amp; temperature</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./07-cv-design.html"> 
-<span class="menu-text">CV design</span></a>
+        <li>
+    <a class="dropdown-item" href="./03-droplets.html">
+ <span class="dropdown-text">Study 03 — Large vacuum droplets</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="./04-diels-alder.html">
+ <span class="dropdown-text">Study 04 — Diels–Alder reaction</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./05-mace.html">
+ <span class="dropdown-text">Study 05 — MACE-OFF23 surrogate</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./06-kpush.html">
+ <span class="dropdown-text">Study 06 — kpush scaling</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./07-cv-design.html">
+ <span class="dropdown-text">Study 07 — Collective-variable scoping</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./08-corrections.html">
+ <span class="dropdown-text">Study 08 — Post-training corrections</span></a>
+  </li>  
+    </ul>
+  </li>
   <li class="nav-item">
-    <a class="nav-link" href="./08-corrections.html"> 
-<span class="menu-text">Corrections</span></a>
+    <a class="nav-link" href="./research-map.html"> 
+<span class="menu-text">Research Map</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
@@ -153,23 +181,14 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul class="collapse">
-  <li><a href="#results-at-a-glance" id="toc-results-at-a-glance" class="nav-link active" data-scroll-target="#results-at-a-glance">Results at a glance</a></li>
-  <li><a href="#methods-in-one-paragraph" id="toc-methods-in-one-paragraph" class="nav-link" data-scroll-target="#methods-in-one-paragraph">Methods in one paragraph</a></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Metadynamics of water: from clusters to a surrogate</h1>
-<p class="subtitle lead">Enhanced-sampling MD of water clusters with GFN2-xTB, and a MACE-OFF23 machine-learned potential as the route to accelerated sampling.</p>
+<h1 class="title">ML-Accelerated Metadynamics</h1>
+<p class="subtitle lead">Can a pretrained machine-learned potential stand in for a quantum-chemical reference — and where it can’t, can we correct it without retraining?</p>
 </div>
 
 
@@ -186,20 +205,53 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This is a running results notebook for the project. We validate <strong>GFN2-xTB</strong> RMSD-metadynamics workflows for water — bias and size sweeps, periodic and free droplets, and a Diels–Alder reaction — then benchmark a <strong>MACE-OFF23</strong> foundation potential against xTB, with the longer-term aim of accelerating enhanced sampling.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
+<p>The long-term goal is a workflow where enhanced sampling runs on a <strong>machine-learned surrogate</strong> at the accuracy of the underlying quantum-chemical reference. Getting there means answering four questions in order: does an off-the-shelf potential agree with the reference at equilibrium, does that agreement survive bond breaking, can a lightweight correction close the gap that appears, and does that correction keep improving when fed more data.</p>
+<p>Each pillar below is a 2–4 minute read. The detailed <strong>Studies</strong> remain the source of truth for methodology, full tables, convergence tests, and troubleshooting.</p>
+<div class="pillar-grid">
+<div class="pillar-card">
+<p><span class="num">PILLAR 1</span></p>
+<section id="mace-xtb-validation" class="level3">
+<h3 class="anchored" data-anchor-id="mace-xtb-validation"><a href="./p1-validation.html">MACE ↔︎ xTB validation</a></h3>
+<p><span class="q">Does off-the-shelf MACE-OFF23 reproduce GFN2-xTB for equilibrium water?</span></p>
+<p><span class="hit"><strong>Yes.</strong> Forces correlate at r ≈ 0.99 and MD reproduces droplet structure.</span></p>
+</section>
 </div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>What the RMSD bias is
+<div class="pillar-card flagship">
+<p><span class="num">PILLAR 2</span></p>
+<section id="reactive-chemistry" class="level3">
+<h3 class="anchored" data-anchor-id="reactive-chemistry"><a href="./p2-reactive.html">Reactive chemistry</a></h3>
+<p><span class="q">Does that agreement survive bond-forming chemistry?</span></p>
+<p><span class="hit"><strong>No.</strong> Barriers differ by ~29 kcal/mol — a genuine difference between the two potential-energy surfaces, not a path-search artifact.</span></p>
+</section>
+</div>
+<div class="pillar-card flagship">
+<p><span class="num">PILLAR 3</span></p>
+<section id="post-training-correction" class="level3">
+<h3 class="anchored" data-anchor-id="post-training-correction"><a href="./p3-correction.html">Post-training correction</a></h3>
+<p><span class="q">Can a lightweight correction close that gap without touching the foundation model?</span></p>
+<p><span class="hit"><strong>Largely, once.</strong> A targeted conservative Delta puts the certified saddle at 6.33 kcal/mol against an xTB target of 6.7.</span></p>
+</section>
+</div>
+<div class="pillar-card">
+<p><span class="num">PILLAR 4</span></p>
+<section id="iterative-calibration" class="level3">
+<h3 class="anchored" data-anchor-id="iterative-calibration"><a href="./p4-iterative.html">Iterative calibration</a></h3>
+<p><span class="q">Does repeating that correction with more targeted data keep improving it?</span></p>
+<p><span class="hit"><strong>No.</strong> 42 further reference calculations did not improve on iteration 0 — a useful negative result.</span></p>
+</section>
 </div>
 </div>
-<div class="callout-body-container callout-body">
-<p>xTB biases along <strong>Cartesian RMSD</strong> to previously visited structures — not along any bond or angle. Every CV computed in analysis is a <em>post-hoc descriptor</em>, and <code>Epot</code> vs a CV is a <strong>sampled potential-energy landscape from a biased run</strong>, not a free-energy surface.</p>
-</div>
-</div>
+<section id="the-scientific-chain" class="level2">
+<h2 class="anchored" data-anchor-id="the-scientific-chain">The scientific chain</h2>
+<p>Each pillar exists because the previous one produced a specific question:</p>
+<ol type="1">
+<li><strong>Equilibrium agreement is strong</strong> — which makes the reactive test meaningful rather than a foregone conclusion.</li>
+<li><strong>Reactive agreement fails, and the failure is localized</strong> to the transition-state region — which motivates correcting <em>there</em> rather than globally.</li>
+<li><strong>Targeted correction works, once</strong> — which raises the obvious follow-up: does it keep working if iterated?</li>
+<li><strong>It does not</strong> — which points at correction capacity, not reference-data quantity, as the next thing to test.</li>
+</ol>
+<p>The <a href="./research-map.html">Research Map</a> shows how the individual studies attach to this chain. It is optional — everything on the main pages stands on its own.</p>
+</section>
 <section id="results-at-a-glance" class="level2">
 <h2 class="anchored" data-anchor-id="results-at-a-glance">Results at a glance</h2>
 <table class="table">
@@ -208,55 +260,67 @@ ul.task-list li input[type="checkbox"] {
 <th>#</th>
 <th>Study</th>
 <th>Headline result</th>
+<th style="text-align: center;">Pillar</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>01</td>
 <td><a href="./01-sweep.html">Bias × size</a></td>
-<td>The bias breaks the <strong>weakest</strong> bond — H-bond for clusters, covalent O–H only for a lone molecule; small clusters evaporate.</td>
+<td>The RMSD bias breaks the <strong>weakest</strong> bond; small clusters evaporate.</td>
+<td style="text-align: center;"><a href="./p1-validation.html">1</a></td>
 </tr>
 <tr class="even">
 <td>02</td>
 <td><a href="./02-pbc.html">PBC &amp; temperature</a></td>
-<td>Periodicity <strong>confines</strong> the system (removes evaporation); a large O–O gap is <em>drift</em>, not dissociation.</td>
+<td>Periodicity confines the system; a large O–O gap is <em>drift</em>, not dissociation.</td>
+<td style="text-align: center;"><a href="./p1-validation.html">1</a></td>
 </tr>
 <tr class="odd">
 <td>03</td>
 <td><a href="./03-droplets.html">Droplets</a></td>
-<td><strong>Size suppresses evaporation</strong> — free n=20–50 droplets stay intact; raising <code>kpush</code> barely perturbs them (a bias-scaling artifact).</td>
+<td><strong>Size suppresses evaporation</strong>; raising <code>kpush</code> barely perturbs n=20–50.</td>
+<td style="text-align: center;"><a href="./p1-validation.html">1</a></td>
 </tr>
 <tr class="even">
 <td>04</td>
 <td><a href="./04-diels-alder.html">Diels–Alder</a></td>
-<td>A real reaction driven and verified: concerted TS, <strong>6.7 kcal/mol</strong> barrier, −394 cm⁻¹ imaginary mode.</td>
+<td>Verified concerted TS at <strong>6.7 kcal/mol</strong>, −394 cm⁻¹; raw MACE gives ~36.</td>
+<td style="text-align: center;"><a href="./p2-reactive.html">2</a></td>
 </tr>
 <tr class="odd">
 <td>05</td>
 <td><a href="./05-mace.html">MACE-OFF23</a></td>
-<td>MACE-OFF23 tracks xTB forces at <strong>r ≈ 0.99</strong>, reproduces droplet MD structure, and scales better (crossover by n≈50).</td>
+<td>Forces track xTB at <strong>r ≈ 0.99</strong>; MD structure reproduced; crossover by n≈50.</td>
+<td style="text-align: center;"><a href="./p1-validation.html">1</a></td>
 </tr>
 <tr class="even">
 <td>06</td>
 <td><a href="./06-kpush.html">kpush scaling</a></td>
-<td>The RMSD-bias per-atom force ∝ <strong>kpush/N</strong> — so <code>kpush</code> must scale <strong>∝ N</strong>; confirmed on the n=30 droplet.</td>
+<td>Bias force ∝ <strong>kpush/N</strong>, so <code>kpush</code> must scale ∝ N.</td>
+<td style="text-align: center;"><a href="./p1-validation.html">1</a></td>
 </tr>
 <tr class="odd">
 <td>07</td>
 <td><a href="./07-cv-design.html">CV design</a></td>
-<td>7 candidate CVs collapse to ~3 axes (network integrity, size, chemistry); a minimal biasing set recommended.</td>
+<td>7 candidate CVs collapse to ~3 independent axes.</td>
+<td style="text-align: center;"><a href="./p1-validation.html">1</a></td>
 </tr>
 <tr class="even">
 <td>08</td>
 <td><a href="./08-corrections.html">Corrections</a></td>
-<td>A conservative <strong>delta</strong> correction removes ~all reaction-energy and ~2/3 barrier error MACE→xTB; scalar/element corrections don’t.</td>
+<td>A conservative pairwise <strong>Delta</strong> removes most of the barrier error; iterating it does not help further.</td>
+<td style="text-align: center;"><a href="./p3-correction.html">3</a> · <a href="./p4-iterative.html">4</a></td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="methods-in-one-paragraph" class="level2">
 <h2 class="anchored" data-anchor-id="methods-in-one-paragraph">Methods in one paragraph</h2>
-<p>Gas-phase and periodic <strong>GFN2/GFN1-xTB</strong> metadynamics (built-in RMSD bias), NVT, 0.5 fs timestep; analysis with ASE / NumPy / pandas. Reactions via <code>xtb --path</code> + relaxed scan + Sella saddle optimization. Surrogate benchmarking with <strong>MACE-OFF23 (small)</strong> as an ASE calculator. All code, data and figures are in the <a href="https://github.com/tiangroup-uofa/xtb_metadynamics">repository</a>; each study page links to its detailed <code>FINDINGS</code> document.</p>
+<p>Gas-phase and periodic <strong>GFN2/GFN1-xTB</strong> metadynamics (built-in Cartesian-RMSD bias), NVT, 0.5 fs timestep; analysis with ASE / NumPy / pandas. Reactions via <code>xtb --path</code>, relaxed concerted scans, and <strong>Sella</strong> saddle optimization with Hessian verification. Surrogate benchmarking with <strong>MACE-OFF23 (small)</strong> as an ASE calculator; corrections applied through a <code>CorrectedCalculator</code> wrapper so the foundation model is never modified. All code, data, and figures are in the <a href="https://github.com/tiangroup-uofa/xtb_metadynamics">repository</a>; each study page links to its detailed <code>FINDINGS</code> document.</p>
+<div class="methodnote">
+<p><span class="lbl">On the RMSD bias</span> xTB biases along <strong>Cartesian RMSD</strong> to previously visited structures — not along any bond or angle. Every collective variable computed in analysis is a <em>post-hoc descriptor</em>, and <code>Epot</code> versus a CV is a <strong>sampled potential-energy landscape from a biased run</strong>, not a free-energy surface.</p>
+</div>
 
 
 </section>

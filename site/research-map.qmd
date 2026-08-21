@@ -1,0 +1,64 @@
+---
+title: "Research map"
+subtitle: "How the individual studies attach to one research programme."
+toc: false
+---
+
+The studies in this project were run one at a time, each answering the question the
+previous one raised. This map makes that chain explicit. **Every box is a link** —
+pillar boxes open the overview page, study boxes open the detailed study, and result
+boxes jump to the relevant section. Hover any box for a one-line summary.
+
+This page is optional. The [overview](index.qmd) and the four pillar pages stand on
+their own without it.
+
+```{=html}
+<p class="map-legend">
+  <span><i style="background:#1f2933"></i>programme</span>
+  <span><i style="background:#2e6f95"></i>pillar</span>
+  <span><i style="background:#fff;border:1.3px solid #2e6f95"></i>detailed study</span>
+  <span><i style="background:#f4f7f9;border:1.3px solid #a9b7c2"></i>major result</span>
+  <span><i style="background:#fff;border:1.3px dashed #b8c3cd"></i>open question</span>
+</p>
+```
+
+::: {.research-map}
+{{< include research-map.svg >}}
+:::
+
+Solid grey links show what belongs to what. Coloured dashed links carry the scientific
+argument: red **motivates** edges are where one result made the next experiment
+necessary, and the green **validates** edge is where an independent method confirmed a
+result.
+
+## The chain in words
+
+1. **Equilibrium validation** ([Pillar 1](p1-validation.qmd)) shows MACE-OFF23
+   reproduces GFN2-xTB for water — which is what makes the reactive test a real test
+   rather than a foregone conclusion. → *motivates*
+2. **Reactive benchmarking** ([Pillar 2](p2-reactive.qmd)) finds a ~29 kcal/mol barrier
+   disagreement, then localizes it to the transition-state region and rules out a
+   path-search artifact by evaluating both potentials on identical frozen geometries.
+   The cross-PES saddle search independently *validates* that the two surfaces have
+   distinct but nearby stationary points. → *motivates*
+3. **Targeted correction** ([Pillar 3](p3-correction.qmd)) puts the correction data
+   where the error is, beating an equal-budget generic control, and reaches a certified
+   saddle barrier of 6.33 kcal/mol against an xTB target of 6.7. → *motivates*
+4. **Iterating that correction** ([Pillar 4](p4-iterative.qmd)) does not keep improving
+   it — iteration 0 remains the best model after 42 further reference calculations,
+   which → *motivates* a controlled **capacity ablation** as the next experiment.
+
+## Maintaining this map
+
+The graph is generated from a single data file, with no runtime dependency and no build
+step beyond one script:
+
+```
+site/research-map.json      →  site/build_research_map.py  →  site/research-map.svg
+```
+
+Node kinds are `core`, `pillar`, `study`, `result`, and `future`; edge kinds are
+`pillar`, `contains`, `motivates`, and `validates`. Layout is a deterministic
+`col`/`row` grid, so the diagram never reflows unpredictably between renders. A
+project-local Claude skill at `.claude/skills/research-map/` documents the conventions
+for adding a node or an edge.
