@@ -1,0 +1,78 @@
+{
+  "title": "Phase 1B: Identical-geometry comparison (xTB R/TS/P frozen)",
+  "purpose": "Eliminate path-search methodology by evaluating both xTB and MACE on the exact same three geometries (native xTB reactant, TS, product). Determine whether the energetic disagreement persists when both see identical structures.",
+  "geometries": {
+    "reactant": {
+      "source": "sweep/diels_alder/start.xyz",
+      "species": "C6H10 (butadiene + ethylene complex)",
+      "forming_CC_distance": "3.35 Å (separated)",
+      "optimized_with": "GFN2-xTB --opt"
+    },
+    "TS": {
+      "source": "sweep/diels_alder/ts_opt.xyz",
+      "species": "C6H10 (transition state)",
+      "forming_CC_distances": [2.315, 2.315],
+      "forming_CC_mean_Angstrom": 2.315,
+      "method": "xTB native --path search + Sella refinement + Hessian verification",
+      "verified_imaginary_mode": "−394 cm⁻¹ (exactly one; genuine first-order TS)"
+    },
+    "product": {
+      "source": "sweep/diels_alder/end.xyz",
+      "species": "C6H10 (cyclohexene)",
+      "new_CC_distance": "1.54 Å (σ-bond)",
+      "optimized_with": "GFN2-xTB --opt"
+    }
+  },
+  "xTB_reference_values": {
+    "comment": "From FINDINGS_diels_alder.md; verified concerted scan + Sella + Hessian",
+    "barrier_kcal_mol": 6.7,
+    "reaction_energy_kcal_mol": -57.6,
+    "TS_forming_CC_Angstrom": 2.32,
+    "TS_verified_by": "Sella saddle optimization from relaxed scan guess; Hessian shows exactly one imaginary mode"
+  },
+  "identical_geometry_evaluation": {
+    "R_energy_eV": {
+      "xTB": -17.822955,
+      "MACE": -6387.313276
+    },
+    "TS_energy_eV": {
+      "xTB": -17.812259,
+      "MACE": -6386.101929
+    },
+    "P_energy_eV": {
+      "xTB": -17.914809,
+      "MACE": -6388.882349
+    },
+    "TS_force_norm_eV_per_Angstrom": {
+      "xTB_comment": "Should be near zero at a true TS",
+      "xTB_fmax": 0.000930,
+      "MACE_fmax_at_xTB_TS_geometry": 1.8370,
+      "MACE_fnorm_at_xTB_TS_geometry": 4.1138
+    }
+  },
+  "barrier_heights_on_identical_geometries": {
+    "xTB_barrier_kcal_mol": 6.7,
+    "MACE_barrier_at_xTB_geometries_kcal_mol": 27.9,
+    "difference_kcal_mol": 21.2,
+    "interpretation": "MACE sees a higher (27.9 vs 6.7) barrier than xTB when both evaluate the same frozen R/TS/P geometries. The disagreement is NOT explained by path methodology; it is a fundamental PES difference."
+  },
+  "reaction_energies_on_identical_geometries": {
+    "xTB_reaction_energy_kcal_mol": -57.6,
+    "MACE_reaction_energy_at_xTB_geometries_kcal_mol": -36.2,
+    "difference_kcal_mol": 21.4,
+    "interpretation": "MACE predicts less exothermic products than xTB on the same geometries."
+  },
+  "critical_finding_TS_stationarity": {
+    "xTB_TS_is_stationary_point": true,
+    "xTB_TS_fmax_eV_per_Angstrom": 0.000930,
+    "MACE_force_norm_at_xTB_TS_geometry": 4.1138,
+    "MACE_fmax_at_xTB_TS_geometry_eV_per_Angstrom": 1.8370,
+    "interpretation": "The xTB TS is a true saddle point on the xTB PES (fmax ~0.0009), but it is NOT a saddle point on the MACE PES. MACE has substantial residual forces (~1.84 eV/Å) at this geometry, indicating it is not even close to a MACE saddle. The xTB TS must be optimized/searched on the MACE PES to find the actual MACE saddle."
+  },
+  "summary": {
+    "question": "Is the MACE-xTB barrier disagreement explained by path-search methodology differences?",
+    "answer": "NO. When both potentials evaluate the exact same frozen R/TS/P geometries, they still show large disagreements: barrier 27.9 (MACE) vs 6.7 (xTB) kcal/mol, and reaction energy -36.2 (MACE) vs -57.6 (xTB) kcal/mol. The disagreement is a genuine PES difference, not a path artifact.",
+    "additional_finding": "The xTB TS is not stationary on the MACE PES (MACE fmax 1.84 eV/Å at this geometry). A MACE-native saddle search must be run to locate the true MACE transition state. The NEB barrier of ~36 kcal/mol may be measuring a different TS location or carrying residual forces from the algorithm's difficulty with xTB's flat surface.",
+    "next_phase": "Phase 1C will use the xTB TS as an initial guess for a MACE saddle-point search (Sella) to find the true MACE TS and answer whether it is nearby the xTB TS or elsewhere on the PES."
+  }
+}

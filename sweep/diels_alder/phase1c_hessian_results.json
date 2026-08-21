@@ -1,0 +1,37 @@
+{
+  "converged_MACE_TS": {
+    "E_eV": -6385.760586418717,
+    "barrier_kcal_mol": 35.805865651499474,
+    "forming_CC_mean_Angstrom": 2.0038219199250804,
+    "forming_CC_Angstrom": [
+      1.9763636465133145,
+      2.031280193336846
+    ]
+  },
+  "Hessian_analysis": {
+    "imaginary_modes": 1,
+    "lowest_10_cm_inv": [
+      -109924.18191172145,
+      -0.33389362289907903,
+      -0.12784147931100426,
+      -0.12239665196042773,
+      -0.03453170663059076,
+      0.09140916440812846,
+      0.2354451752815553,
+      869.8867216394189,
+      3925.1608458662313,
+      5521.220666868802
+    ]
+  },
+  "comparison_to_NEB": {
+    "NEB_barrier_kcal_mol": 36.0,
+    "NEB_TS_forming_CC_mean_Angstrom": 2.03,
+    "Sella_from_xTB_barrier_kcal_mol": 35.805865651499474,
+    "Sella_from_xTB_TS_forming_CC_mean_Angstrom": 2.0038219199250804
+  },
+  "comparison_to_xTB": {
+    "xTB_barrier_kcal_mol": 6.7,
+    "xTB_TS_forming_CC_Angstrom": 2.32,
+    "MACE_TS_displacement_Angstrom": 0.31617808007491943
+  }
+}

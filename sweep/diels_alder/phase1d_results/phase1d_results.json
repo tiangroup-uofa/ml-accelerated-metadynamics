@@ -1,0 +1,58 @@
+{
+  "-1_0.02A": {
+    "converged": true,
+    "iterations": 30,
+    "final_E_eV": -6385.7605864186835,
+    "final_fmax_eV_per_Angstrom": 9.307756258148047e-06,
+    "final_forming_CC_mean_Angstrom": 2.0038219717848165,
+    "final_forming_CC_Angstrom": [
+      1.9763629910289513,
+      2.0312809525406816
+    ],
+    "RMSD_to_ref_TS_Angstrom": 2.4048550262559625e-06,
+    "barrier_kcal_mol": 35.80586565227549,
+    "trajectory_file": "/Users/muhammadzainasad/Documents/Documents - Zain/Projects/Research/xtb_metadynamics/sweep/diels_alder/phase1d_results/sella_-1_0.02A.traj"
+  },
+  "+1_0.02A": {
+    "converged": true,
+    "iterations": 37,
+    "final_E_eV": -6385.760586418732,
+    "final_fmax_eV_per_Angstrom": 8.881850972104808e-06,
+    "final_forming_CC_mean_Angstrom": 2.0038218199392572,
+    "final_forming_CC_Angstrom": [
+      1.9763637391053535,
+      2.0312799007731606
+    ],
+    "RMSD_to_ref_TS_Angstrom": 1.632830970741055e-06,
+    "barrier_kcal_mol": 35.8058656511639,
+    "trajectory_file": "/Users/muhammadzainasad/Documents/Documents - Zain/Projects/Research/xtb_metadynamics/sweep/diels_alder/phase1d_results/sella_+1_0.02A.traj"
+  },
+  "-1_0.05A": {
+    "converged": true,
+    "iterations": 38,
+    "final_E_eV": -6385.760586418607,
+    "final_fmax_eV_per_Angstrom": 8.886275402323862e-06,
+    "final_forming_CC_mean_Angstrom": 2.003821945142101,
+    "final_forming_CC_Angstrom": [
+      1.9763644482389693,
+      2.0312794420452325
+    ],
+    "RMSD_to_ref_TS_Angstrom": 5.002953662634904e-06,
+    "barrier_kcal_mol": 35.80586565403726,
+    "trajectory_file": "/Users/muhammadzainasad/Documents/Documents - Zain/Projects/Research/xtb_metadynamics/sweep/diels_alder/phase1d_results/sella_-1_0.05A.traj"
+  },
+  "+1_0.05A": {
+    "converged": true,
+    "iterations": 61,
+    "final_E_eV": -6385.760586418707,
+    "final_fmax_eV_per_Angstrom": 9.084464808920819e-06,
+    "final_forming_CC_mean_Angstrom": 2.0038218633258364,
+    "final_forming_CC_Angstrom": [
+      1.9763637893507717,
+      2.0312799373009014
+    ],
+    "RMSD_to_ref_TS_Angstrom": 1.6171054402532093e-06,
+    "barrier_kcal_mol": 35.80586565173018,
+    "trajectory_file": "/Users/muhammadzainasad/Documents/Documents - Zain/Projects/Research/xtb_metadynamics/sweep/diels_alder/phase1d_results/sella_+1_0.05A.traj"
+  }
+}
