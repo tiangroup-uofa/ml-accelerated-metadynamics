@@ -1,0 +1,48 @@
+{
+  "case": "handoff_iter01_rep2",
+  "handoff_iteration": 1,
+  "replicate": 2,
+  "start_type": "replicate",
+  "starting_geometry": "phase2/iter01/ts.xyz",
+  "prior_phase2_unique_refs": 7,
+  "phaseC_sunk_refs": 106,
+  "start_forming_CC": [
+    1.995916720175671,
+    1.99591467578592
+  ],
+  "start_forming_CC_mean": 1.9959156979807955,
+  "start_rmsd_to_xtb_ts": 0.14259478172808476,
+  "handoff_xtb_calculate_calls": 44,
+  "baseline_scan_xtb_calls": 0,
+  "verification_xtb_calls": 96,
+  "sella_nsteps": 38,
+  "trajectory_frames": 44,
+  "counter_matches_frames": true,
+  "converged": true,
+  "sella_error": null,
+  "final_fmax": 9.737429059617101e-05,
+  "energy_eV": -484.69626585650053,
+  "barrier_kcal_mol": 6.7121336463578825,
+  "forming_CC": [
+    2.315293176590162,
+    2.3152987692219242
+  ],
+  "forming_CC_mean": 2.315295972906043,
+  "rmsd_to_xtb_ts": 0.001613168148031528,
+  "n_imaginary": 3,
+  "imaginary_frequency": -393.38395374662196,
+  "imag_freqs_cm": [
+    -393.38395374662196,
+    -143.8417707108739,
+    -85.6024162641409
+  ],
+  "reaction_mode_overlap": 0.8021845108731599,
+  "certified_ts": false,
+  "certification_failures": [
+    "n_imaginary=3"
+  ],
+  "reached_reference_saddle": true,
+  "reached_saddle_failures": [],
+  "structure_signature_delta": 0.036447152913090516,
+  "wall_seconds": 0.3
+}

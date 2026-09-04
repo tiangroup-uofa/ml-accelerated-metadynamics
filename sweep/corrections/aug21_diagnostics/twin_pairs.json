@@ -1,0 +1,56 @@
+{
+  "iter01_vs_iter04": {
+    "median_relative_descriptor_diff": 0.09545129077227765,
+    "per_descriptor_relative_diff": {
+      "xtb_fmax": 0.16595771028421222,
+      "xtb_fnorm": 0.18176275386747154,
+      "xtb_force_RC_fraction": 0.039798680617718046,
+      "xtb_E_rel_to_TS_kcal": 0.46624530619516796,
+      "xtb_lowest_mode_cm": 0.005640689811252266,
+      "xtb_n_imaginary": 0.0,
+      "xtb_reaction_mode_overlap": 0.01104409594733952,
+      "forming_CC_mean": 0.024540897997519358,
+      "forming_asymmetry": 0.9999620925530599,
+      "kabsch_rmsd_to_xtb_ts": 0.10785354832594327,
+      "signature_delta_to_xtb_ts": 0.12726102610757098,
+      "disp_proj_fraction": 0.0598804624206432,
+      "mace_xtb_force_rmse": 0.18176369926239172,
+      "mace_corr_rc_overlap": 0.08304903321861205
+    },
+    "outcomes": {
+      "iter01": true,
+      "iter04": false
+    },
+    "calls": {
+      "iter01": 43,
+      "iter04": 506
+    }
+  },
+  "iter05_vs_iter03": {
+    "median_relative_descriptor_diff": 0.025459180703413714,
+    "per_descriptor_relative_diff": {
+      "xtb_fmax": 0.07109670155929285,
+      "xtb_fnorm": 0.019931393467506844,
+      "xtb_force_RC_fraction": 0.08357251825567333,
+      "xtb_E_rel_to_TS_kcal": 0.05194457646214951,
+      "xtb_lowest_mode_cm": 0.03963298972421369,
+      "xtb_n_imaginary": 0.0,
+      "xtb_reaction_mode_overlap": 0.30736088540608825,
+      "forming_CC_mean": 3.3231297850667072e-09,
+      "forming_asymmetry": 0.017363537848208644,
+      "kabsch_rmsd_to_xtb_ts": 0.01265020596141235,
+      "signature_delta_to_xtb_ts": 0.030986967939320584,
+      "disp_proj_fraction": 0.005945347720434077,
+      "mace_xtb_force_rmse": 0.1375261716037075,
+      "mace_corr_rc_overlap": 0.00464228707591123
+    },
+    "outcomes": {
+      "iter05": true,
+      "iter03": false
+    },
+    "calls": {
+      "iter05": 69,
+      "iter03": 431
+    }
+  }
+}

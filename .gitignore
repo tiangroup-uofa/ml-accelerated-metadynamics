@@ -43,3 +43,9 @@ sweep/corrections/phase2_naive_seed/run.log
 # ...but the Aug 21 handoff benchmark's per-case optimizer traces ARE the
 # provenance for its cost measurement, so keep those.
 !sweep/corrections/aug21_handoff/**/sella.log
+
+# Aug 21 diagnostics: replicate trajectories are bulky recordings of an already
+# reproducible phenomenon (iter03 dissociation, ~2000 frames each). Keep the
+# records, logs and final geometries; drop the raw bands.
+sweep/corrections/aug21_diagnostics/replicates/**/sella.traj
+!sweep/corrections/aug21_diagnostics/**/sella.log
