@@ -39,3 +39,7 @@ sweep/corrections/data/*.npz
 sweep/corrections/phase2_run.log
 sweep/corrections/phase2_naive_seed/run.log
 **/sella.log
+
+# ...but the Aug 21 handoff benchmark's per-case optimizer traces ARE the
+# provenance for its cost measurement, so keep those.
+!sweep/corrections/aug21_handoff/**/sella.log

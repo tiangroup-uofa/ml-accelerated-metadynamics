@@ -1,0 +1,46 @@
+{
+  "case": "control_idpp_interp",
+  "handoff_iteration": null,
+  "start_type": "idpp_interpolation",
+  "starting_geometry": "aug21_handoff/control_idpp_start.xyz",
+  "role": "secondary_control",
+  "idpp_image_index": 8,
+  "idpp_n_images": 11,
+  "prior_phase2_unique_refs": 0,
+  "phaseC_sunk_refs": 0,
+  "start_forming_CC": [
+    1.9528363279310796,
+    2.0234580682442886
+  ],
+  "start_forming_CC_mean": 1.9881471980876841,
+  "start_rmsd_to_xtb_ts": 1.1407227525871955,
+  "handoff_xtb_calculate_calls": 75,
+  "baseline_scan_xtb_calls": 0,
+  "verification_xtb_calls": 96,
+  "sella_nsteps": 60,
+  "trajectory_frames": 75,
+  "counter_matches_frames": true,
+  "converged": true,
+  "sella_error": null,
+  "final_fmax": 6.533195732170548e-05,
+  "energy_eV": -484.6962658608862,
+  "barrier_kcal_mol": 6.712133545222614,
+  "forming_CC": [
+    2.3152804842248846,
+    2.31530574725073
+  ],
+  "forming_CC_mean": 2.3152931157378074,
+  "rmsd_to_xtb_ts": 0.9118030983826728,
+  "n_imaginary": 1,
+  "imaginary_frequency": -393.3327424203543,
+  "imag_freqs_cm": [
+    -393.3327424203543
+  ],
+  "reaction_mode_overlap": 0.8021517795825062,
+  "certified_ts": true,
+  "certification_failures": [],
+  "reached_reference_saddle": true,
+  "reached_saddle_failures": [],
+  "structure_signature_delta": 0.037208788435900905,
+  "wall_seconds": 0.4
+}

@@ -1,0 +1,432 @@
+{
+  "config": {
+    "xtb": {
+      "method": "GFN2-xTB",
+      "electronic_temperature": 1000.0,
+      "max_iterations": 500,
+      "accuracy": 1.0
+    },
+    "sella_fmax": 0.0001,
+    "sella_steps": 500,
+    "sella_order": 1,
+    "sella_internal": false,
+    "scan_fmax": 0.03,
+    "hessian_delta": 0.001,
+    "phaseC_sunk_refs": 106,
+    "per_iter_unique_refs": 7
+  },
+  "totals": {
+    "xtb_calculate_calls_all_phases": 3092,
+    "by_phase": {
+      "reference": 1,
+      "baseline:scan": 547,
+      "baseline_scan_sella:sella": 35,
+      "baseline_scan_sella:verify": 96,
+      "handoff_iter00:sella": 97,
+      "handoff_iter00:verify": 96,
+      "handoff_iter01:sella": 43,
+      "handoff_iter01:verify": 96,
+      "handoff_iter02:sella": 520,
+      "handoff_iter02:verify": 96,
+      "handoff_iter03:sella": 431,
+      "handoff_iter03:verify": 96,
+      "handoff_iter04:sella": 506,
+      "handoff_iter04:verify": 96,
+      "handoff_iter05:sella": 69,
+      "handoff_iter05:verify": 96,
+      "control_idpp_interp:sella": 75,
+      "control_idpp_interp:verify": 96
+    }
+  },
+  "records": [
+    {
+      "case": "baseline_scan_sella",
+      "handoff_iteration": null,
+      "start_type": "xtb_scan_maximum",
+      "starting_geometry": "aug21_handoff/baseline_scan_max.xyz",
+      "role": "primary_baseline",
+      "prior_phase2_unique_refs": 0,
+      "phaseC_sunk_refs": 0,
+      "start_forming_CC": [
+        2.3221029193102987,
+        2.322102919310299
+      ],
+      "start_forming_CC_mean": 2.322102919310299,
+      "start_rmsd_to_xtb_ts": 0.0038752807661999564,
+      "handoff_xtb_calculate_calls": 35,
+      "baseline_scan_xtb_calls": 547,
+      "verification_xtb_calls": 96,
+      "sella_nsteps": 26,
+      "trajectory_frames": 35,
+      "counter_matches_frames": true,
+      "converged": true,
+      "sella_error": null,
+      "final_fmax": 8.3539064851252e-05,
+      "energy_eV": -484.6962658599754,
+      "barrier_kcal_mol": 6.712133566224899,
+      "forming_CC": [
+        2.3152802620260684,
+        2.31530741706555
+      ],
+      "forming_CC_mean": 2.3152938395458094,
+      "rmsd_to_xtb_ts": 0.001610173159911046,
+      "n_imaginary": 3,
+      "imaginary_frequency": -393.3942124928021,
+      "imag_freqs_cm": [
+        -393.3942124928021,
+        -124.11043793116202,
+        -91.97548716953314
+      ],
+      "reaction_mode_overlap": 0.802182841789747,
+      "certified_ts": false,
+      "certification_failures": [
+        "n_imaginary=3"
+      ],
+      "reached_reference_saddle": true,
+      "reached_saddle_failures": [],
+      "structure_signature_delta": 0.036822081934868627,
+      "wall_seconds": 0.2,
+      "total_marginal_xtb_calls": 582
+    },
+    {
+      "case": "handoff_iter00",
+      "handoff_iteration": 0,
+      "start_type": "corrected_MACE_sella_saddle",
+      "starting_geometry": "sweep/corrections/phase2/iter00/ts.xyz",
+      "role": "handoff",
+      "prior_phase2_unique_refs": 0,
+      "phaseC_sunk_refs": 106,
+      "start_forming_CC": [
+        2.2643874537245594,
+        2.5910070552347753
+      ],
+      "start_forming_CC_mean": 2.4276972544796673,
+      "start_rmsd_to_xtb_ts": 0.1733423518447325,
+      "handoff_xtb_calculate_calls": 97,
+      "baseline_scan_xtb_calls": 0,
+      "verification_xtb_calls": 96,
+      "sella_nsteps": 72,
+      "trajectory_frames": 97,
+      "counter_matches_frames": true,
+      "converged": true,
+      "sella_error": null,
+      "final_fmax": 6.2107255245876e-05,
+      "energy_eV": -484.6962658557346,
+      "barrier_kcal_mol": 6.712133664020146,
+      "forming_CC": [
+        2.315283988237734,
+        2.315316095806703
+      ],
+      "forming_CC_mean": 2.3153000420222183,
+      "rmsd_to_xtb_ts": 0.0016198793394830231,
+      "n_imaginary": 1,
+      "imaginary_frequency": -393.38364503038224,
+      "imag_freqs_cm": [
+        -393.38364503038224
+      ],
+      "reaction_mode_overlap": 0.8021842371006567,
+      "certified_ts": true,
+      "certification_failures": [],
+      "reached_reference_saddle": true,
+      "reached_saddle_failures": [],
+      "structure_signature_delta": 0.037084538966557085,
+      "wall_seconds": 0.6,
+      "total_marginal_xtb_calls": 97
+    },
+    {
+      "case": "handoff_iter01",
+      "handoff_iteration": 1,
+      "start_type": "corrected_MACE_sella_saddle",
+      "starting_geometry": "sweep/corrections/phase2/iter01/ts.xyz",
+      "role": "handoff",
+      "prior_phase2_unique_refs": 7,
+      "phaseC_sunk_refs": 106,
+      "start_forming_CC": [
+        1.995916720175671,
+        1.99591467578592
+      ],
+      "start_forming_CC_mean": 1.9959156979807955,
+      "start_rmsd_to_xtb_ts": 0.14259478172808476,
+      "handoff_xtb_calculate_calls": 43,
+      "baseline_scan_xtb_calls": 0,
+      "verification_xtb_calls": 96,
+      "sella_nsteps": 37,
+      "trajectory_frames": 43,
+      "counter_matches_frames": true,
+      "converged": true,
+      "sella_error": null,
+      "final_fmax": 8.529906002138382e-05,
+      "energy_eV": -484.6962658319969,
+      "barrier_kcal_mol": 6.712134211424471,
+      "forming_CC": [
+        2.3153924353398065,
+        2.315195617652766
+      ],
+      "forming_CC_mean": 2.3152940264962862,
+      "rmsd_to_xtb_ts": 0.0016083939357445134,
+      "n_imaginary": 2,
+      "imaginary_frequency": -393.3874700216427,
+      "imag_freqs_cm": [
+        -393.3874700216427,
+        -61.46024298306002
+      ],
+      "reaction_mode_overlap": 0.8021860336602677,
+      "certified_ts": false,
+      "certification_failures": [
+        "n_imaginary=2"
+      ],
+      "reached_reference_saddle": true,
+      "reached_saddle_failures": [],
+      "structure_signature_delta": 0.03647744861302973,
+      "wall_seconds": 0.2,
+      "total_marginal_xtb_calls": 50
+    },
+    {
+      "case": "handoff_iter02",
+      "handoff_iteration": 2,
+      "start_type": "corrected_MACE_sella_saddle",
+      "starting_geometry": "sweep/corrections/phase2/iter02/ts.xyz",
+      "role": "handoff",
+      "prior_phase2_unique_refs": 14,
+      "phaseC_sunk_refs": 106,
+      "start_forming_CC": [
+        2.2659364301770104,
+        2.564407582709781
+      ],
+      "start_forming_CC_mean": 2.4151720064433957,
+      "start_rmsd_to_xtb_ts": 0.10791975609834897,
+      "handoff_xtb_calculate_calls": 520,
+      "baseline_scan_xtb_calls": 0,
+      "verification_xtb_calls": 96,
+      "sella_nsteps": 500,
+      "trajectory_frames": 520,
+      "counter_matches_frames": true,
+      "converged": false,
+      "sella_error": null,
+      "final_fmax": 0.0012713686446995892,
+      "energy_eV": -484.6962658346018,
+      "barrier_kcal_mol": 6.71213415135521,
+      "forming_CC": [
+        2.3153150958935074,
+        2.3152701467845618
+      ],
+      "forming_CC_mean": 2.315292621339035,
+      "rmsd_to_xtb_ts": 0.0016182706700344,
+      "n_imaginary": 1,
+      "imaginary_frequency": -393.392743569643,
+      "imag_freqs_cm": [
+        -393.392743569643
+      ],
+      "reaction_mode_overlap": 0.8021886891668247,
+      "certified_ts": false,
+      "certification_failures": [
+        "not_converged"
+      ],
+      "reached_reference_saddle": false,
+      "reached_saddle_failures": [
+        "not_converged"
+      ],
+      "structure_signature_delta": 0.03698775941122891,
+      "wall_seconds": 3.2,
+      "total_marginal_xtb_calls": 534
+    },
+    {
+      "case": "handoff_iter03",
+      "handoff_iteration": 3,
+      "start_type": "scan_max_fallback",
+      "starting_geometry": "sweep/corrections/phase2/iter03/ts.xyz",
+      "role": "handoff",
+      "prior_phase2_unique_refs": 21,
+      "phaseC_sunk_refs": 106,
+      "start_forming_CC": [
+        2.518762567093415,
+        2.5187624704793476
+      ],
+      "start_forming_CC_mean": 2.5187625187863816,
+      "start_rmsd_to_xtb_ts": 0.06754425843618084,
+      "handoff_xtb_calculate_calls": 431,
+      "baseline_scan_xtb_calls": 0,
+      "verification_xtb_calls": 96,
+      "sella_nsteps": 224,
+      "trajectory_frames": 421,
+      "counter_matches_frames": true,
+      "converged": true,
+      "sella_error": null,
+      "final_fmax": 6.965323439581824e-05,
+      "energy_eV": -484.9959856596288,
+      "barrier_kcal_mol": -0.19956926023179383,
+      "forming_CC": [
+        3.737754102961655,
+        3.7377493155684975
+      ],
+      "forming_CC_mean": 3.7377517092650763,
+      "rmsd_to_xtb_ts": 0.8115918843362963,
+      "n_imaginary": 1,
+      "imaginary_frequency": -142.04403470578345,
+      "imag_freqs_cm": [
+        -142.04403470578345
+      ],
+      "reaction_mode_overlap": 5.150179623210349e-05,
+      "certified_ts": false,
+      "certification_failures": [
+        "reaction_mode_overlap=5.150179623210349e-05",
+        "forming_CC=3.738_out_of_range"
+      ],
+      "reached_reference_saddle": false,
+      "reached_saddle_failures": [
+        "principal_mode=-142.04403470578345",
+        "reaction_mode_overlap=5.150179623210349e-05",
+        "forming_CC=3.738_out_of_range",
+        "structure_signature_delta=31.7751"
+      ],
+      "structure_signature_delta": 31.775093047805143,
+      "wall_seconds": 2.9,
+      "total_marginal_xtb_calls": 452
+    },
+    {
+      "case": "handoff_iter04",
+      "handoff_iteration": 4,
+      "start_type": "corrected_MACE_sella_saddle",
+      "starting_geometry": "sweep/corrections/phase2/iter04/ts.xyz",
+      "role": "handoff",
+      "prior_phase2_unique_refs": 28,
+      "phaseC_sunk_refs": 106,
+      "start_forming_CC": [
+        2.073095110463578,
+        2.019163998879879
+      ],
+      "start_forming_CC_mean": 2.0461295546717286,
+      "start_rmsd_to_xtb_ts": 0.1272154285458396,
+      "handoff_xtb_calculate_calls": 506,
+      "baseline_scan_xtb_calls": 0,
+      "verification_xtb_calls": 96,
+      "sella_nsteps": 500,
+      "trajectory_frames": 506,
+      "counter_matches_frames": true,
+      "converged": false,
+      "sella_error": null,
+      "final_fmax": 0.0004916685092528868,
+      "energy_eV": -484.6962658328628,
+      "barrier_kcal_mol": 6.712134191456439,
+      "forming_CC": [
+        2.315393314907767,
+        2.3152313314927078
+      ],
+      "forming_CC_mean": 2.3153123232002373,
+      "rmsd_to_xtb_ts": 0.0016184927645207063,
+      "n_imaginary": 1,
+      "imaginary_frequency": -393.3537972763453,
+      "imag_freqs_cm": [
+        -393.3537972763453
+      ],
+      "reaction_mode_overlap": 0.8021788474588207,
+      "certified_ts": false,
+      "certification_failures": [
+        "not_converged"
+      ],
+      "reached_reference_saddle": false,
+      "reached_saddle_failures": [
+        "not_converged"
+      ],
+      "structure_signature_delta": 0.036853480343213174,
+      "wall_seconds": 3.0,
+      "total_marginal_xtb_calls": 534
+    },
+    {
+      "case": "handoff_iter05",
+      "handoff_iteration": 5,
+      "start_type": "scan_max_fallback",
+      "starting_geometry": "sweep/corrections/phase2/iter05/ts.xyz",
+      "role": "handoff",
+      "prior_phase2_unique_refs": 35,
+      "phaseC_sunk_refs": 106,
+      "start_forming_CC": [
+        2.5187625763172012,
+        2.518762477995911
+      ],
+      "start_forming_CC_mean": 2.5187625271565564,
+      "start_rmsd_to_xtb_ts": 0.06668980965543964,
+      "handoff_xtb_calculate_calls": 69,
+      "baseline_scan_xtb_calls": 0,
+      "verification_xtb_calls": 96,
+      "sella_nsteps": 35,
+      "trajectory_frames": 69,
+      "counter_matches_frames": true,
+      "converged": true,
+      "sella_error": null,
+      "final_fmax": 8.177610920267504e-05,
+      "energy_eV": -484.696265859384,
+      "barrier_kcal_mol": 6.712133579862883,
+      "forming_CC": [
+        2.3152806819606875,
+        2.315294437611332
+      ],
+      "forming_CC_mean": 2.3152875597860096,
+      "rmsd_to_xtb_ts": 0.0016261995467346739,
+      "n_imaginary": 3,
+      "imaginary_frequency": -393.39411894452024,
+      "imag_freqs_cm": [
+        -393.39411894452024,
+        -129.15668466164877,
+        -90.59219207838709
+      ],
+      "reaction_mode_overlap": 0.8021750652484334,
+      "certified_ts": false,
+      "certification_failures": [
+        "n_imaginary=3"
+      ],
+      "reached_reference_saddle": true,
+      "reached_saddle_failures": [],
+      "structure_signature_delta": 0.03721454907426528,
+      "wall_seconds": 0.4,
+      "total_marginal_xtb_calls": 104
+    },
+    {
+      "case": "control_idpp_interp",
+      "handoff_iteration": null,
+      "start_type": "idpp_interpolation",
+      "starting_geometry": "aug21_handoff/control_idpp_start.xyz",
+      "role": "secondary_control",
+      "idpp_image_index": 8,
+      "idpp_n_images": 11,
+      "prior_phase2_unique_refs": 0,
+      "phaseC_sunk_refs": 0,
+      "start_forming_CC": [
+        1.9528363279310796,
+        2.0234580682442886
+      ],
+      "start_forming_CC_mean": 1.9881471980876841,
+      "start_rmsd_to_xtb_ts": 1.1407227525871955,
+      "handoff_xtb_calculate_calls": 75,
+      "baseline_scan_xtb_calls": 0,
+      "verification_xtb_calls": 96,
+      "sella_nsteps": 60,
+      "trajectory_frames": 75,
+      "counter_matches_frames": true,
+      "converged": true,
+      "sella_error": null,
+      "final_fmax": 6.533195732170548e-05,
+      "energy_eV": -484.6962658608862,
+      "barrier_kcal_mol": 6.712133545222614,
+      "forming_CC": [
+        2.3152804842248846,
+        2.31530574725073
+      ],
+      "forming_CC_mean": 2.3152931157378074,
+      "rmsd_to_xtb_ts": 0.9118030983826728,
+      "n_imaginary": 1,
+      "imaginary_frequency": -393.3327424203543,
+      "imag_freqs_cm": [
+        -393.3327424203543
+      ],
+      "reaction_mode_overlap": 0.8021517795825062,
+      "certified_ts": true,
+      "certification_failures": [],
+      "reached_reference_saddle": true,
+      "reached_saddle_failures": [],
+      "structure_signature_delta": 0.037208788435900905,
+      "wall_seconds": 0.4,
+      "total_marginal_xtb_calls": 75
+    }
+  ]
+}

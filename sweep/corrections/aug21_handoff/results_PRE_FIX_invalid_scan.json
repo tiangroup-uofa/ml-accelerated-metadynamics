@@ -1,0 +1,398 @@
+{
+  "config": {
+    "xtb": {
+      "method": "GFN2-xTB",
+      "electronic_temperature": 1000.0,
+      "max_iterations": 500,
+      "accuracy": 1.0
+    },
+    "sella_fmax": 0.0001,
+    "sella_steps": 500,
+    "sella_order": 1,
+    "sella_internal": false,
+    "scan_fmax": 0.03,
+    "hessian_delta": 0.001,
+    "phaseC_sunk_refs": 106,
+    "per_iter_unique_refs": 7
+  },
+  "totals": {
+    "xtb_calculate_calls_all_phases": 2439,
+    "by_phase": {
+      "reference": 1,
+      "baseline:scan": 19,
+      "baseline_scan_sella:sella": 32,
+      "baseline_scan_sella:verify": 96,
+      "handoff_iter00:sella": 97,
+      "handoff_iter00:verify": 96,
+      "handoff_iter01:sella": 43,
+      "handoff_iter01:verify": 96,
+      "handoff_iter02:sella": 520,
+      "handoff_iter02:verify": 96,
+      "handoff_iter03:sella": 311,
+      "handoff_iter03:verify": 96,
+      "handoff_iter04:sella": 506,
+      "handoff_iter04:verify": 96,
+      "handoff_iter05:sella": 67,
+      "handoff_iter05:verify": 96,
+      "control_idpp_interp:sella": 75,
+      "control_idpp_interp:verify": 96
+    }
+  },
+  "records": [
+    {
+      "case": "baseline_scan_sella",
+      "handoff_iteration": null,
+      "start_type": "xtb_scan_maximum",
+      "starting_geometry": "aug21_handoff/baseline_scan_max.xyz",
+      "role": "primary_baseline",
+      "prior_phase2_unique_refs": 0,
+      "phaseC_sunk_refs": 0,
+      "start_forming_CC": [
+        2.3221029392766526,
+        2.3221028993439323
+      ],
+      "start_forming_CC_mean": 2.3221029193102924,
+      "start_rmsd_to_xtb_ts": 0.004097891998347951,
+      "handoff_xtb_calculate_calls": 32,
+      "baseline_scan_xtb_calls": 19,
+      "verification_xtb_calls": 96,
+      "sella_nsteps": 23,
+      "trajectory_frames": 32,
+      "counter_matches_frames": true,
+      "converged": true,
+      "sella_error": null,
+      "final_fmax": 9.487127083975088e-05,
+      "energy_eV": -484.69626586036924,
+      "barrier_kcal_mol": 6.712133557147329,
+      "forming_CC": [
+        2.31529676763181,
+        2.315290367416386
+      ],
+      "forming_CC_mean": 2.315293567524098,
+      "rmsd_to_xtb_ts": 0.001616172003732499,
+      "n_imaginary": 3,
+      "imaginary_frequency": -393.38616311606427,
+      "imag_freqs_cm": [
+        -393.38616311606427,
+        -128.33414251061404,
+        -90.83354608485106
+      ],
+      "reaction_mode_overlap": 0.8021803005385115,
+      "certified_ts": false,
+      "certification_failures": [
+        "n_imaginary=3"
+      ],
+      "wall_seconds": 0.1,
+      "total_marginal_xtb_calls": 51
+    },
+    {
+      "case": "handoff_iter00",
+      "handoff_iteration": 0,
+      "start_type": "corrected_MACE_sella_saddle",
+      "starting_geometry": "sweep/corrections/phase2/iter00/ts.xyz",
+      "role": "handoff",
+      "prior_phase2_unique_refs": 0,
+      "phaseC_sunk_refs": 106,
+      "start_forming_CC": [
+        2.2643874537245594,
+        2.5910070552347753
+      ],
+      "start_forming_CC_mean": 2.4276972544796673,
+      "start_rmsd_to_xtb_ts": 0.1733423518447325,
+      "handoff_xtb_calculate_calls": 97,
+      "baseline_scan_xtb_calls": 0,
+      "verification_xtb_calls": 96,
+      "sella_nsteps": 72,
+      "trajectory_frames": 97,
+      "counter_matches_frames": true,
+      "converged": true,
+      "sella_error": null,
+      "final_fmax": 6.240155670440233e-05,
+      "energy_eV": -484.69626585572155,
+      "barrier_kcal_mol": 6.712133664325572,
+      "forming_CC": [
+        2.315284017897565,
+        2.315316097199286
+      ],
+      "forming_CC_mean": 2.3153000575484253,
+      "rmsd_to_xtb_ts": 0.0016197880389580116,
+      "n_imaginary": 1,
+      "imaginary_frequency": -393.3836800476871,
+      "imag_freqs_cm": [
+        -393.3836800476871
+      ],
+      "reaction_mode_overlap": 0.8021841576899424,
+      "certified_ts": true,
+      "certification_failures": [],
+      "wall_seconds": 0.6,
+      "total_marginal_xtb_calls": 97
+    },
+    {
+      "case": "handoff_iter01",
+      "handoff_iteration": 1,
+      "start_type": "corrected_MACE_sella_saddle",
+      "starting_geometry": "sweep/corrections/phase2/iter01/ts.xyz",
+      "role": "handoff",
+      "prior_phase2_unique_refs": 7,
+      "phaseC_sunk_refs": 106,
+      "start_forming_CC": [
+        1.995916720175671,
+        1.99591467578592
+      ],
+      "start_forming_CC_mean": 1.9959156979807955,
+      "start_rmsd_to_xtb_ts": 0.14259478172808476,
+      "handoff_xtb_calculate_calls": 43,
+      "baseline_scan_xtb_calls": 0,
+      "verification_xtb_calls": 96,
+      "sella_nsteps": 37,
+      "trajectory_frames": 43,
+      "counter_matches_frames": true,
+      "converged": true,
+      "sella_error": null,
+      "final_fmax": 8.532125465974174e-05,
+      "energy_eV": -484.6962658319714,
+      "barrier_kcal_mol": 6.712134212016971,
+      "forming_CC": [
+        2.3153924272785193,
+        2.3151956309893165
+      ],
+      "forming_CC_mean": 2.315294029133918,
+      "rmsd_to_xtb_ts": 0.0016083810332914717,
+      "n_imaginary": 2,
+      "imaginary_frequency": -393.3874706516533,
+      "imag_freqs_cm": [
+        -393.3874706516533,
+        -61.46021778164471
+      ],
+      "reaction_mode_overlap": 0.8021860338913052,
+      "certified_ts": false,
+      "certification_failures": [
+        "n_imaginary=2"
+      ],
+      "wall_seconds": 0.2,
+      "total_marginal_xtb_calls": 50
+    },
+    {
+      "case": "handoff_iter02",
+      "handoff_iteration": 2,
+      "start_type": "corrected_MACE_sella_saddle",
+      "starting_geometry": "sweep/corrections/phase2/iter02/ts.xyz",
+      "role": "handoff",
+      "prior_phase2_unique_refs": 14,
+      "phaseC_sunk_refs": 106,
+      "start_forming_CC": [
+        2.2659364301770104,
+        2.564407582709781
+      ],
+      "start_forming_CC_mean": 2.4151720064433957,
+      "start_rmsd_to_xtb_ts": 0.10791975609834897,
+      "handoff_xtb_calculate_calls": 520,
+      "baseline_scan_xtb_calls": 0,
+      "verification_xtb_calls": 96,
+      "sella_nsteps": 500,
+      "trajectory_frames": 520,
+      "counter_matches_frames": true,
+      "converged": false,
+      "sella_error": null,
+      "final_fmax": 0.0012713686621289577,
+      "energy_eV": -484.69626583460143,
+      "barrier_kcal_mol": 6.712134151367008,
+      "forming_CC": [
+        2.315315095883191,
+        2.315270146773756
+      ],
+      "forming_CC_mean": 2.3152926213284735,
+      "rmsd_to_xtb_ts": 0.001618270670142506,
+      "n_imaginary": 1,
+      "imaginary_frequency": -393.3927435878359,
+      "imag_freqs_cm": [
+        -393.3927435878359
+      ],
+      "reaction_mode_overlap": 0.8021886891723636,
+      "certified_ts": false,
+      "certification_failures": [
+        "not_converged"
+      ],
+      "wall_seconds": 3.2,
+      "total_marginal_xtb_calls": 534
+    },
+    {
+      "case": "handoff_iter03",
+      "handoff_iteration": 3,
+      "start_type": "scan_max_fallback",
+      "starting_geometry": "sweep/corrections/phase2/iter03/ts.xyz",
+      "role": "handoff",
+      "prior_phase2_unique_refs": 21,
+      "phaseC_sunk_refs": 106,
+      "start_forming_CC": [
+        2.518762567093415,
+        2.5187624704793476
+      ],
+      "start_forming_CC_mean": 2.5187625187863816,
+      "start_rmsd_to_xtb_ts": 0.06754425843618084,
+      "handoff_xtb_calculate_calls": 311,
+      "baseline_scan_xtb_calls": 0,
+      "verification_xtb_calls": 96,
+      "sella_nsteps": 174,
+      "trajectory_frames": 306,
+      "counter_matches_frames": false,
+      "converged": true,
+      "sella_error": null,
+      "final_fmax": 3.165509826469836e-05,
+      "energy_eV": -484.9959856758336,
+      "barrier_kcal_mol": -0.19956963391961777,
+      "forming_CC": [
+        3.7375639421398015,
+        3.7377989993371656
+      ],
+      "forming_CC_mean": 3.7376814707384836,
+      "rmsd_to_xtb_ts": 0.8115336027236221,
+      "n_imaginary": 1,
+      "imaginary_frequency": -51.254083748844,
+      "imag_freqs_cm": [
+        -51.254083748844
+      ],
+      "reaction_mode_overlap": 4.737624891089365e-05,
+      "certified_ts": false,
+      "certification_failures": [
+        "reaction_mode_overlap=4.737624891089365e-05",
+        "forming_CC=3.738_out_of_range"
+      ],
+      "wall_seconds": 2.2,
+      "total_marginal_xtb_calls": 332
+    },
+    {
+      "case": "handoff_iter04",
+      "handoff_iteration": 4,
+      "start_type": "corrected_MACE_sella_saddle",
+      "starting_geometry": "sweep/corrections/phase2/iter04/ts.xyz",
+      "role": "handoff",
+      "prior_phase2_unique_refs": 28,
+      "phaseC_sunk_refs": 106,
+      "start_forming_CC": [
+        2.073095110463578,
+        2.019163998879879
+      ],
+      "start_forming_CC_mean": 2.0461295546717286,
+      "start_rmsd_to_xtb_ts": 0.1272154285458396,
+      "handoff_xtb_calculate_calls": 506,
+      "baseline_scan_xtb_calls": 0,
+      "verification_xtb_calls": 96,
+      "sella_nsteps": 500,
+      "trajectory_frames": 506,
+      "counter_matches_frames": true,
+      "converged": false,
+      "sella_error": null,
+      "final_fmax": 0.00044576254323419194,
+      "energy_eV": -484.6962658242064,
+      "barrier_kcal_mol": 6.7121343910817,
+      "forming_CC": [
+        2.3154067223484516,
+        2.3151942163659234
+      ],
+      "forming_CC_mean": 2.3153004693571875,
+      "rmsd_to_xtb_ts": 0.001618375041062656,
+      "n_imaginary": 1,
+      "imaginary_frequency": -393.3739985721498,
+      "imag_freqs_cm": [
+        -393.3739985721498
+      ],
+      "reaction_mode_overlap": 0.8021838889955288,
+      "certified_ts": false,
+      "certification_failures": [
+        "not_converged"
+      ],
+      "wall_seconds": 3.1,
+      "total_marginal_xtb_calls": 534
+    },
+    {
+      "case": "handoff_iter05",
+      "handoff_iteration": 5,
+      "start_type": "scan_max_fallback",
+      "starting_geometry": "sweep/corrections/phase2/iter05/ts.xyz",
+      "role": "handoff",
+      "prior_phase2_unique_refs": 35,
+      "phaseC_sunk_refs": 106,
+      "start_forming_CC": [
+        2.5187625763172012,
+        2.518762477995911
+      ],
+      "start_forming_CC_mean": 2.5187625271565564,
+      "start_rmsd_to_xtb_ts": 0.06668980965543964,
+      "handoff_xtb_calculate_calls": 67,
+      "baseline_scan_xtb_calls": 0,
+      "verification_xtb_calls": 96,
+      "sella_nsteps": 33,
+      "trajectory_frames": 67,
+      "counter_matches_frames": true,
+      "converged": true,
+      "sella_error": null,
+      "final_fmax": 0.0001066633965019784,
+      "energy_eV": -484.69626579170676,
+      "barrier_kcal_mol": 6.7121351405415846,
+      "forming_CC": [
+        2.3151495549652155,
+        2.3154177524845254
+      ],
+      "forming_CC_mean": 2.3152836537248707,
+      "rmsd_to_xtb_ts": 0.001647987647865255,
+      "n_imaginary": 2,
+      "imaginary_frequency": -393.39862822631983,
+      "imag_freqs_cm": [
+        -393.39862822631983,
+        -63.86782326707839
+      ],
+      "reaction_mode_overlap": 0.8021761964532155,
+      "certified_ts": false,
+      "certification_failures": [
+        "n_imaginary=2"
+      ],
+      "wall_seconds": 0.3,
+      "total_marginal_xtb_calls": 102
+    },
+    {
+      "case": "control_idpp_interp",
+      "handoff_iteration": null,
+      "start_type": "idpp_interpolation",
+      "starting_geometry": "aug21_handoff/control_idpp_start.xyz",
+      "role": "secondary_control",
+      "idpp_image_index": 8,
+      "idpp_n_images": 11,
+      "prior_phase2_unique_refs": 0,
+      "phaseC_sunk_refs": 0,
+      "start_forming_CC": [
+        1.9528363279310796,
+        2.0234580682442886
+      ],
+      "start_forming_CC_mean": 1.9881471980876841,
+      "start_rmsd_to_xtb_ts": 1.1407227525871955,
+      "handoff_xtb_calculate_calls": 75,
+      "baseline_scan_xtb_calls": 0,
+      "verification_xtb_calls": 96,
+      "sella_nsteps": 60,
+      "trajectory_frames": 75,
+      "counter_matches_frames": true,
+      "converged": true,
+      "sella_error": null,
+      "final_fmax": 6.568983838474757e-05,
+      "energy_eV": -484.6962658608877,
+      "barrier_kcal_mol": 6.712133545191154,
+      "forming_CC": [
+        2.3152803788114995,
+        2.3153058240532904
+      ],
+      "forming_CC_mean": 2.315293101432395,
+      "rmsd_to_xtb_ts": 0.9118031099777084,
+      "n_imaginary": 1,
+      "imaginary_frequency": -393.33278416449866,
+      "imag_freqs_cm": [
+        -393.33278416449866
+      ],
+      "reaction_mode_overlap": 0.8021518017839571,
+      "certified_ts": true,
+      "certification_failures": [],
+      "wall_seconds": 0.5,
+      "total_marginal_xtb_calls": 75
+    }
+  ]
+}
