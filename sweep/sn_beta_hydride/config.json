@@ -1,0 +1,110 @@
+{
+  "_comment": "Sn-beta glucose C2->C1 intramolecular hydride transfer (Mushrif, Varghese, Krishnamurthy, PCCP 2015, DOI 10.1039/C4CP05063K). Keys starting with '_' are comments. Every null below MUST be filled from the authoritative structures before any stage will run; nothing here is inferred from a real Sn-beta geometry. Atom indices are ZERO-BASED (ASE order of input/reactant.xyz).",
+
+  "system": {
+    "label": "Sn-beta / glucose C2->C1 hydride transfer",
+    "test_only": false,
+    "charge": null,
+    "spin_multiplicity": null,
+    "_charge_comment": "Total charge and spin multiplicity (2S+1) of the full model system. Must be set explicitly: MACE-OMOL/POLAR silently assume 0 / 1 when absent.",
+    "expected_n_atoms": null,
+    "require_elements": ["Sn", "C", "H", "O"]
+  },
+
+  "structures": {
+    "reactant": "input/reactant.xyz",
+    "product": "input/product.xyz",
+    "_provenance_comment": "Record where the files came from (Tian / original CPMD trajectory frame, cell, any cluster cut) in input/README.md."
+  },
+
+  "atom_map": {
+    "C1": null,
+    "C2": null,
+    "H_transfer": null,
+    "H_C1": null,
+    "Sn": null
+  },
+  "_atom_map_comment": "C1 = aldehyde carbon (hydride acceptor); C2 = carbon losing the hydride; H_transfer = migrating H on C2 in the reactant; H_C1 = the H already on C1; Sn = active-site Sn.",
+
+  "expected_elements": {
+    "C1": "C",
+    "C2": "C",
+    "H_transfer": "H",
+    "H_C1": "H",
+    "Sn": "Sn"
+  },
+
+  "fixed_atoms": [],
+  "_fixed_atoms_comment": "Indices (or atom_map names) held fixed in optimization/NEB/Sella, e.g. cluster-termination atoms. Leave empty for a free or fully periodic model.",
+
+  "endpoint_bonds": {
+    "reactant": {"bonded": [["C2", "H_transfer"]], "not_bonded": [["C1", "H_transfer"]]},
+    "product":  {"bonded": [["C1", "H_transfer"]], "not_bonded": [["C2", "H_transfer"]]}
+  },
+
+  "expected_bond_changes": {
+    "break": [["C2", "H_transfer"]],
+    "form":  [["C1", "H_transfer"]]
+  },
+
+  "cvs": {
+    "d_C1_H":  {"type": "distance", "atoms": ["C1", "H_transfer"]},
+    "d_C2_H":  {"type": "distance", "atoms": ["C2", "H_transfer"]},
+    "delta_H": {"type": "distance_difference", "plus": ["C2", "H_transfer"], "minus": ["C1", "H_transfer"]},
+    "CV1": {
+      "type": "coordination", "center": ["C1"], "group": ["H_C1", "H_transfer"],
+      "r0": 1.5, "n": 6, "m": 12, "d0": 0.0,
+      "status": "UNCONFIRMED: inferred form (CN of C1 with H) consistent with the quoted CPMD basins; replace group and switching parameters with the original definitions before comparing to (0.9,0.9)/(1.8,0.1)"
+    },
+    "CV2": {
+      "type": "coordination", "center": ["C2"], "group": ["H_transfer"],
+      "r0": 1.5, "n": 6, "m": 12, "d0": 0.0,
+      "status": "UNCONFIRMED: inferred form (CN of C2 with the transferring H); replace with the original definition"
+    }
+  },
+
+  "reference_basins": {
+    "source": "approximate CPMD basins quoted for Mushrif et al. 2015 — DIAGNOSTIC ONLY, never a correctness test",
+    "tolerance": 0.3,
+    "basins": {
+      "reactant": {"CV1": 0.9, "CV2": 0.9},
+      "product":  {"CV1": 1.8, "CV2": 0.1}
+    }
+  },
+
+  "ts_mode_reference": "delta_H",
+
+  "validation": {
+    "duplicate_A": 0.10,
+    "min_distance_A": 0.50,
+    "short_contact_scale": 0.70,
+    "bond_scale": 1.20,
+    "isolated_scale": 1.60,
+    "allowed_isolated": [],
+    "sn_shell_A": 2.80,
+    "endpoint_bond_severity": "error",
+    "max_nonreactive_displacement_A": 2.0,
+    "fixed_atom_tolerance_A": 0.001
+  },
+
+  "calculator": {
+    "model": "mace-omol",
+    "device": "cpu",
+    "dtype": "float64",
+    "threads": 4,
+    "models": {
+      "mace-omol":  {"variant": "extra_large", "options": {}},
+      "mace-polar": {"variant": "polar-1-s", "options": {}}
+    }
+  },
+
+  "optimize": {"optimizer": "BFGS", "fmax": 0.03, "steps": 800},
+  "path": {"n_images": 13, "k": 0.5, "climb": true, "method": "improvedtangent",
+           "interpolation": "idpp", "optimizer": "FIRE", "fmax": 0.05, "steps": 800,
+           "align_product": true},
+  "sella": {"order": 1, "internal": false, "fmax": 0.0001, "steps": 500},
+  "hessian": {"delta": 0.001, "imag_cutoff_cm": 50.0, "atoms": "free",
+              "min_reaction_overlap": 0.30, "stationary_fmax": 0.01},
+
+  "output_dir": "outputs"
+}

@@ -1,0 +1,6 @@
+# TEST-ONLY smoke-test output (synthetic toy; never commit, never cite)
+smoke_output/
+
+# per-model run outputs: keep the structured results once real structures exist,
+# but the raw Hessian matrix is regenerable and can be large (3N x 3N)
+outputs/**/hessian.npy
