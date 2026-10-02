@@ -297,7 +297,34 @@ def _sn_environment(atoms, cfg, v, rep):
         if n_o == 0:
             rep.warn(f"Sn{i} has no O neighbour within {v['sn_shell_A']} Å "
                      f"(framework Sn should be O-coordinated)")
+        _check_sn_site(cfg, i, n_o, shell, v, rep)
     rep.info["Sn_environment"] = env
+
+
+def _check_sn_site(cfg, sn_index, n_o, shell, v, rep):
+    """Sn-site expectations (``config["sn_site"]``) — diagnostic WARNINGS only,
+    never acceptance criteria. Their basis is our reading of a literature
+    figure (6 O around Sn, including glucose O1/O2 and the water formed at the
+    site; see config sn_site.source), not a verified structure. Applied to the
+    mapped Sn atom (or to every Sn when no Sn is mapped)."""
+    site = cfg.get("sn_site") or {}
+    if not site:
+        return
+    mapped = (cfg.get("atom_map") or {}).get("Sn")
+    if isinstance(mapped, int) and not isinstance(mapped, bool) and mapped != sn_index:
+        return
+    exp_o = site.get("expected_n_O")
+    if exp_o is not None and n_o != exp_o:
+        rep.warn(f"Sn{sn_index} has {n_o} O within {v['sn_shell_A']} Å; expected {exp_o} "
+                 f"from the literature drawing (diagnostic only; see config sn_site.source)")
+    for ref in site.get("expected_neighbours", []):
+        try:
+            j = index_of(cfg, ref, None)
+        except ConfigError:
+            continue                              # unmapped names are reported elsewhere
+        if j not in shell:
+            rep.warn(f"Sn{sn_index}: expected neighbour {ref} (index {j}) is not within "
+                     f"{v['sn_shell_A']} Å")
 
 
 def _endpoint_rules(cfg, role):
@@ -345,7 +372,8 @@ def _cv_diagnostics(atoms, cfg, role, rep):
     bd = basin_diagnostics(vals, cfg)
     if bd:
         rep.info["reference_basins"] = bd
-        if role in ("reactant", "product") and bd.get("nearest") and bd["nearest"] != role:
+        if (role in ("reactant", "product") and bd.get("comparable")
+                and bd.get("nearest") and bd["nearest"] != role):
             rep.warn(f"{role}: CVs are nearer the '{bd['nearest']}' reference basin "
                      f"(diagnostic only; check the CV definitions and the structure)")
 

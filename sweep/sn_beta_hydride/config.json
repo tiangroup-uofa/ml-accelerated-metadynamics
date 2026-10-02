@@ -6,9 +6,10 @@
     "test_only": false,
     "charge": null,
     "spin_multiplicity": null,
-    "_charge_comment": "Total charge and spin multiplicity (2S+1) of the full model system. Must be set explicitly: MACE-OMOL/POLAR silently assume 0 / 1 when absent.",
+    "_charge_comment": "Total charge and spin multiplicity (2S+1) of the full model system. Must be set explicitly: MACE-OMOL/POLAR silently assume 0 / 1 when absent. Not stated in any source read so far (Oct 2026 audit); a neutral closed-shell Sn(OSiH3)3 cluster is plausible but UNCONFIRMED — take it from Tian's files.",
     "expected_n_atoms": null,
-    "require_elements": ["Sn", "C", "H", "O"]
+    "require_elements": ["Sn", "Si", "C", "H", "O"],
+    "_require_comment": "Si: the Sn model is drawn as a SiH3-capped cluster, Sn(-O-SiH3)3, in Ali 2025 thesis Fig. 4.1 (captioned as adapted from the paper's Fig. 1); the thesis text describes three framework O. Remove Si here if Tian's files use a different termination."
   },
 
   "structures": {
@@ -22,20 +23,33 @@
     "C2": null,
     "H_transfer": null,
     "H_C1": null,
-    "Sn": null
+    "Sn": null,
+    "O1": null,
+    "O2": null,
+    "O_water": null
   },
-  "_atom_map_comment": "C1 = aldehyde carbon (hydride acceptor); C2 = carbon losing the hydride; H_transfer = migrating H on C2 in the reactant; H_C1 = the H already on C1; Sn = active-site Sn.",
+  "_atom_map_comment": "C1 = aldehyde carbon (hydride acceptor); C2 = carbon losing the hydride; H_transfer = migrating H on C2 in the reactant (H2 in the paper's Fig. 1c); H_C1 = the H already on C1 (H1 in Fig. 1c); Sn = active-site Sn; O1 = C1 oxygen; O2 = C2 oxygen (deprotonated, bonded to Sn in the reactant); O_water = O of the water formed at the Sn site from Sn-OH + the C2-OH proton, which stays coordinated to Sn.",
 
   "expected_elements": {
     "C1": "C",
     "C2": "C",
     "H_transfer": "H",
     "H_C1": "H",
-    "Sn": "Sn"
+    "Sn": "Sn",
+    "O1": "O",
+    "O2": "O",
+    "O_water": "O"
   },
 
   "fixed_atoms": [],
-  "_fixed_atoms_comment": "Indices (or atom_map names) held fixed in optimization/NEB/Sella, e.g. cluster-termination atoms. Leave empty for a free or fully periodic model.",
+  "_fixed_atoms_comment": "Indices (or atom_map names) held fixed in optimization/NEB/Sella. The reference model is a SiH3-capped cluster, so freezing the cap atoms is likely needed — but which atoms (and whether) is Tian's call; leave empty until confirmed.",
+
+  "sn_site": {
+    "expected_n_O": 6,
+    "expected_neighbours": ["O1", "O2", "O_water"],
+    "source": "Ali 2025 MSc thesis, Fig. 4.1 (captioned as adapted from Mushrif et al. 2015 Fig. 1). '6 O, octahedral' is stated only for the pre-deprotonation complex (Fig. 4.1a caption); for the hydride-step reactant/product, 3 O-SiH3 + O1 + O2 + H2O is OUR READING of the drawing (Fig. 4.1b/c). The water 'remains coupled to Sn' is stated (Sec. 4.2).",
+    "_comment": "Diagnostic WARNINGS only (validate_structure._check_sn_site), never acceptance criteria; counted within validation.sn_shell_A."
+  },
 
   "endpoint_bonds": {
     "reactant": {"bonded": [["C2", "H_transfer"]], "not_bonded": [["C1", "H_transfer"]]},
@@ -54,17 +68,19 @@
     "CV1": {
       "type": "coordination", "center": ["C1"], "group": ["H_C1", "H_transfer"],
       "r0": 1.5, "n": 6, "m": 12, "d0": 0.0,
-      "status": "UNCONFIRMED: inferred form (CN of C1 with H) consistent with the quoted CPMD basins; replace group and switching parameters with the original definitions before comparing to (0.9,0.9)/(1.8,0.1)"
+      "parameters_confirmed": false,
+      "status": "ATOMS CONFIRMED (secondary): CN of C1 with H1 and H2 (thesis Fig. 4.1c, adapted from the paper's Fig. 1c). FORM: CPMD rational CN, [1-(d/d0)^p]/[1-(d/d0)^(p+q)] (thesis eq. 4.1) = our r0=d0, n=p, m=p+q. PARAMETERS r0/n/m ARE PLACEHOLDERS — the original d0, p, q are unknown."
     },
     "CV2": {
-      "type": "coordination", "center": ["C2"], "group": ["H_transfer"],
+      "type": "coordination", "center": ["C2"], "group": ["H_C1", "H_transfer"],
       "r0": 1.5, "n": 6, "m": 12, "d0": 0.0,
-      "status": "UNCONFIRMED: inferred form (CN of C2 with the transferring H); replace with the original definition"
+      "parameters_confirmed": false,
+      "status": "ATOMS CONFIRMED (secondary): CN of C2 with H1 and H2 — the SAME two hydrogens as CV1 (thesis Fig. 4.1c, adapted from the paper's Fig. 1c). Same CPMD rational form; PARAMETERS ARE PLACEHOLDERS (original d0, p, q unknown)."
     }
   },
 
   "reference_basins": {
-    "source": "approximate CPMD basins quoted for Mushrif et al. 2015 — DIAGNOSTIC ONLY, never a correctness test",
+    "source": "Approximate basin values as stated in Ali 2025 MSc thesis Sec. 4.2 (referring to Mushrif et al. 2015 Fig. 1c); not checked against the paper. DIAGNOSTIC ONLY, never a correctness test; not interpretable while CV1/CV2 parameters are unconfirmed. The data tips on the thesis's gas-phase FES plot (Fig. 7.3) put the minima at (1.04, 0.90) and (1.68, 0.25) instead — see README.",
     "tolerance": 0.3,
     "basins": {
       "reactant": {"CV1": 0.9, "CV2": 0.9},

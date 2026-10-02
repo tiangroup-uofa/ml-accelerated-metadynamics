@@ -24,11 +24,23 @@ CV types (all distances are minimum-image when the structure is periodic)
                          singularity). Dimensionless; ~1 per bonded partner,
                          -> 0 for distant partners. Not normalized by |center|.
 
+                         CPMD's rational coordination function (as given in
+                         Ali 2025 MSc thesis eq. 4.1; d0, p, q values unknown),
+                             CN_i = sum_j [1 - (d_ij/d0)^p] / [1 - (d_ij/d0)^(p+q)],
+                         is this form with r0 = CPMD d0, n = p, m = p + q and our
+                         offset d0 = 0.
+
 ``group`` / ``center`` may be a list of atom names / integer indices, or an
 element selector ``{"element": "H"}`` (optionally ``"exclude": [...]``).
 
+A coordination CV may carry ``"parameters_confirmed": false``. Its value is then
+still computed (useful for monitoring a path), but ``basin_diagnostics`` refuses
+to interpret distances to the reference basins, because those basins were
+measured with the original (unknown) r0/p/q.
+
 Reference basins (``config["reference_basins"]``) are the approximate CPMD
-values quoted for Mushrif et al. (2015). They are DIAGNOSTIC ONLY: being close
+basin values stated in Ali's 2025 MSc thesis (Sec. 4.2) for Mushrif et al.
+(2015), not checked against the paper. They are DIAGNOSTIC ONLY: being close
 to them does not prove a structure is correct, and the CV definitions they refer
 to must be confirmed against the original work before they are compared.
 
@@ -208,6 +220,8 @@ def _resolve(cfg, name, spec, natoms, symbols):
             raise ConfigError(f"CV '{name}': need integers m > n > 0 (got n={out['n']}, m={out['m']})")
     if spec.get("status"):
         out["status"] = spec["status"]
+    if "parameters_confirmed" in spec:
+        out["parameters_confirmed"] = bool(spec["parameters_confirmed"])
     return out
 
 
@@ -216,21 +230,35 @@ def _resolve(cfg, name, spec, natoms, symbols):
 # --------------------------------------------------------------------------- #
 def basin_diagnostics(values: dict, cfg: dict) -> dict | None:
     """Euclidean distance (in the CVs listed by each basin) from ``values`` to
-    each configured reference basin. DIAGNOSTIC ONLY — never a pass/fail."""
+    each configured reference basin. DIAGNOSTIC ONLY — never a pass/fail.
+
+    If any CV a basin refers to is marked ``"parameters_confirmed": false``, the
+    result has ``comparable = False``: distances are still listed but
+    ``within_tolerance`` and ``nearest`` are withheld, since our CV values are
+    not on the same scale as the reference ones."""
     rb = cfg.get("reference_basins")
     if not rb:
         return None
     tol = rb.get("tolerance")
+    cvs = cfg.get("cvs") or {}
     out = {"note": "diagnostic only; CV definitions must match the reference work",
-           "source": rb.get("source"), "basins": {}}
+           "source": rb.get("source"), "basins": {}, "comparable": True}
+    unconfirmed = set()
     for bname, target in (rb.get("basins") or {}).items():
         keys = [k for k in target if k in values]
         if not keys:
             continue
+        unconfirmed |= {k for k in keys if (cvs.get(k) or {}).get("parameters_confirmed") is False}
         dist = math.sqrt(sum((values[k] - target[k]) ** 2 for k in keys))
         out["basins"][bname] = {"target": target, "distance": dist,
                                 "within_tolerance": (dist <= tol) if tol is not None else None}
-    if out["basins"]:
+    if unconfirmed:
+        out["comparable"] = False
+        out["note"] += (f"; NOT comparable: CV parameters of {sorted(unconfirmed)} are "
+                        "unconfirmed, so distances to the reference basins are not interpretable")
+        for b in out["basins"].values():
+            b["within_tolerance"] = None
+    elif out["basins"]:
         out["nearest"] = min(out["basins"], key=lambda b: out["basins"][b]["distance"])
     return out
 

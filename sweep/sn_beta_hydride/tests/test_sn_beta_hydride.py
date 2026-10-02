@@ -460,3 +460,54 @@ def test_ts_verdict_requires_stationarity_and_one_aligned_mode():
     assert "NOT the configured hydride" in V.verdict(misaligned, opts, 8, fmax=1e-4)
     assert V.verdict(dict(one, n_imaginary=0), opts, 8).startswith("NOT A SADDLE")
     assert V.verdict(dict(one, n_imaginary=2), opts, 8).startswith("HIGHER-ORDER")
+
+
+# --------------------------------------------------------------------------- #
+#  literature-derived settings (Oct 2026 audit; see README "Literature evidence")
+# --------------------------------------------------------------------------- #
+def test_shipped_cvs_use_both_hydrogens_and_stay_unconfirmed():
+    cfg = load_config(PKG / "config.json")
+    for name, center in (("CV1", ["C1"]), ("CV2", ["C2"])):
+        cv = cfg["cvs"][name]
+        assert cv["type"] == "coordination" and cv["center"] == center
+        assert sorted(cv["group"]) == ["H_C1", "H_transfer"]      # H1 and H2 of Fig. 1c
+        assert cv["parameters_confirmed"] is False
+    assert cfg["system"]["charge"] is None and cfg["system"]["spin_multiplicity"] is None
+    assert "Si" in cfg["system"]["require_elements"]
+
+
+def test_cv2_counts_both_hydrogens(toy):
+    cfg = copy.deepcopy(toy)
+    cfg["cvs"] = {"CV2": {"type": "coordination", "center": ["C2"],
+                          "group": ["H_C1", "H_transfer"], "r0": 1.5, "n": 6, "m": 12}}
+    a = reactant()
+    v = ReactionCoordinates.from_config(cfg, 9).compute(a)["CV2"]
+    d = lambda i, j: np.linalg.norm(a.positions[i] - a.positions[j])
+    expected = switching(np.array([d(4, 2), d(4, 8)]), 1.5).sum()
+    assert v == pytest.approx(expected, abs=1e-12)
+
+
+def test_basins_not_interpreted_with_unconfirmed_parameters():
+    cfg = {"cvs": {"CV1": {"parameters_confirmed": False}, "CV2": {}},
+           "reference_basins": {"tolerance": 0.3, "basins": {
+               "reactant": {"CV1": 0.9, "CV2": 0.9}, "product": {"CV1": 1.8, "CV2": 0.1}}}}
+    d = basin_diagnostics({"CV1": 1.8, "CV2": 0.1}, cfg)
+    assert d["comparable"] is False and "nearest" not in d
+    assert d["basins"]["product"]["within_tolerance"] is None
+    assert d["basins"]["product"]["distance"] == pytest.approx(0.0)
+
+
+def test_sn_site_expectations_are_warnings_only():
+    d = 1.95 / np.sqrt(3)
+    o = np.array([[d, d, d], [-d, -d, d], [-d, d, -d], [d, -d, -d]])
+    h = o * (1 + 0.97 / 1.95)
+    # Sn(OH)4 plus a water 4 Å away that is (wrongly) mapped as the Sn-bound water
+    w = np.array([[4.0, 0, 0], [4.6, 0.75, 0], [4.6, -0.75, 0]])
+    at = Atoms("SnO4H4OH2", positions=np.vstack([[0, 0, 0], o, h, w]))
+    cfg = {"system": {"charge": 0, "spin_multiplicity": 1}, "atom_map": {"Sn": 0, "O_water": 9},
+           "expected_elements": {"Sn": "Sn", "O_water": "O"},
+           "sn_site": {"expected_n_O": 6, "expected_neighbours": ["O_water"]}}
+    rep = validate_single(at, cfg, "sn")
+    assert rep["status"] == "WARN", rep["errors"]
+    assert any("has 4 O" in w and "expected 6" in w and "diagnostic only" in w for w in rep["warnings"])
+    assert any("expected neighbour O_water" in w for w in rep["warnings"])

@@ -22,6 +22,123 @@ and energetics of intramolecular hydride transfer reactions in biomass
 conversion*, PCCP **17**, 4961 (2015), DOI
 [10.1039/C4CP05063K](https://doi.org/10.1039/C4CP05063K).
 
+## Literature evidence (audit of Oct 2026)
+
+**What could be read.** The PCCP paper is closed access: RSC refused scripted
+access, and Unpaywall/OpenAlex list no open copy. **Neither the paper text nor
+its Supporting Information has been read.** Two sources were used:
+
+- **[P]** the PubMed abstract (PMID 25591500)
+- **[T]** M. A. Y. Ali, MSc thesis, University of Alberta (2025). It cites the
+  paper as ref. [54]. Its Fig. 4.1 is captioned as adapted from the paper's
+  Fig. 1. Its Ch. 4–7 describe Ali's own **gas-phase** CPMD-metadynamics dataset.
+
+Labels: **stated [P]/[T]** = written in that source; **as drawn** = our reading
+of a figure; **inferred** = our interpretation; **unknown** = not found. Nothing
+below has been checked against the paper's full text.
+
+**Calculations** — kept separate, and each attribute is cited on its own:
+
+| calculation | catalyst model | solvent | method | source |
+|---|---|---|---|---|
+| paper, main study | **unknown from [P]**. [T] Fig. 4.1a/b (adapted from the paper) draws a SiH₃-capped Sn cluster with solvent markers. | explicit water or methanol, quantum-mechanical — [P]. [T] says only "solvent molecules". | CPMD-metadynamics, finite T — [P] | [P] + [T] figure |
+| paper, no-solvent run | unknown | none ("in the absence of any solvent") — [P] | CPMD-metadynamics — [P] | [P] |
+| paper, implicit-solvent comparison | unknown | implicit continuum — [P] | DFT — [P] | [P] |
+| **Ali's dataset** (20,000 timesteps) | Sn defect site, three framework O + –OH (§4.2), drawn as Sn(–O–SiH₃)₃ (Fig. 4.1) | **gas phase** (Ch. 4, 5, 7 titles) | CPMD-metadynamics | [T] |
+
+Two things are **unknown**:
+
+- Whether Ali's gas-phase dataset *is* the paper's no-solvent run, or a separate
+  run.
+- Whether the paper's solvated runs use the same cluster and cell.
+
+The setup of Ali's dataset must not be generalized to the paper's solvated
+calculations.
+
+**System of the hydride step:**
+
+- **Catalyst** — stated [T] §4.2: a partially hydrolyzed Sn defect site, Sn
+  tetrahedrally bonded to three framework O plus an –OH. It is drawn as
+  Sn(–O–SiH₃)₃(OH) (Fig. 4.1; caption: "Sn-beta cluster model").
+- **Glucose binding** — stated [T] §4.2: glucose binds Sn through the C1
+  carbonyl and the C2 hydroxyl, forming an octahedral complex. The Fig. 4.1a
+  caption says Sn is octahedrally coordinated by 6 O. That statement is for
+  this *pre-deprotonation* complex.
+- **Reactant of the hydride step** — stated [T] §4.2: C2–OH is deprotonated
+  and the proton goes to Sn–OH. The water formed "remains coupled to Sn", and
+  C2–O–Sn is covalent. Glucose is drawn open-chain (Fig. 4.1).
+- **Sn coordination in the hydride-step reactant and product** — **as drawn**
+  (Fig. 4.1b/c): 3 O–SiH₃ + O1 + O2 + H₂O, i.e. 6 O. This count is our reading
+  of the drawing, not a statement in the text.
+- **After the transfer** — **as drawn** (Fig. 4.1c): C1 carries H₁ and H₂, C1–O
+  is drawn bonded to Sn, and C2=O is drawn coordinated (dashed) to Sn.
+- **Cell** — stated [T] §4.2, for Ali's dataset: 18 × 14.5 × 16 Å, with the
+  reactant and catalyst "positioned isolated". Whether the paper's solvated
+  cells match is unknown.
+- **Periodic zeolite framework** — none appears in either source read. That
+  the paper used no periodic framework is **inferred**, not verified.
+
+**Electronic state — unknown.** Neither source states charge or multiplicity. A
+neutral closed-shell cluster is plausible (inferred) but is **not** set in the
+config.
+
+**Reference quantities:**
+
+- **Paper, [P] abstract only:**
+  - methanol's activation free-energy barrier is 50 kJ/mol higher than water's
+  - the step is exergonic in water and endergonic in methanol
+  - implicit-solvent DFT barriers are "almost identical"
+
+  The paper's numerical barriers and reaction free energies were **not
+  available**.
+- **Values from Ali's gas-phase FES — not verified as published PCCP values.**
+  [T] Fig. 7.3 is captioned as the ground-truth FES for the gas-phase reaction,
+  "adapted from Mushrif et al.". As reproduced in the thesis it is a MATLAB plot
+  ("Free energy from metadynamics"). Its data tips:
+
+  | data tip | CV1 | CV2 | level (kJ/mol) |
+  |---|---|---|---|
+  | reactant | 1.042 | 0.901 | −99.52 |
+  | point between basins | 1.425 | 0.642 | −17.91 |
+  | product | 1.677 | 0.25 | −110.61 |
+
+  From these data tips:
+  - barrier ΔF‡ ≈ **81.6 kJ/mol** (the thesis text says ≈ 82)
+  - reaction ΔF ≈ **−11.1 kJ/mol**. The thesis text says −10.6, using −110.1;
+    that does not match the −110.61 data tip.
+
+  These are differences on a metadynamics free-energy surface for the
+  **gas-phase** run only. Absolute levels are offsets of the reconstructed
+  bias (inferred). The middle data tip is not shown to be the true saddle
+  point. Convergence is unknown. These values are not electronic energies and
+  not the paper's solvated results.
+
+**Metadynamics settings** — stated [T], for Ali's dataset only:
+
+- 20,000 timesteps (§4.2)
+- the `colvar_mtd`/`parvar_mtd` excerpts shown (Figs. 7.1–7.2): hills every 100
+  steps, width 0.1, height 0.001 Ha. The thesis reads the constant height as
+  suggesting non-well-tempered metadynamics.
+
+**Unknown:**
+
+- functional, pseudopotentials, cutoff, timestep, temperature, thermostat
+- the number of solvent molecules, total atom counts
+- the CV parameters d⁰, p, q
+
+**Unresolved:** the **~44,000-step** figure. It appears in neither source; its
+origin needs to be clarified with Tian.
+
+**Coordinates:** none in either source read.
+
+**What this suggests here (our recommendation, not a literature result).**
+Tian's immediate experiment is an endpoint-to-endpoint path with OMOL/POLAR,
+initially without the full solvent environment. For that, a cluster in vacuum
+is the natural setup, and it lies within OMOL's molecular (non-periodic)
+training domain; PBC are only needed if the received files are periodic.
+NEB/Sella give potential-energy barriers, which are **not** comparable
+one-to-one with a metadynamics free-energy surface.
+
 ## Why OMOL and POLAR (and not MACE-OFF23)
 
 MACE-OFF23 was trained on organic chemistry (H, C, N, O, F, P, S, Cl, Br, I) and
@@ -134,17 +251,23 @@ All CVs are defined by atom-map names. No atom index is hard-coded in the code.
 |---|---|---|
 | `d_C1_H`, `d_C2_H` | distance from C1 or C2 to H\* (minimum image if periodic) | Å |
 | `delta_H` | d(C2–H\*) − d(C1–H\*) | < 0 reactant, ≈ 0 near a symmetric TS, > 0 product |
-| `CV1`, `CV2` | coordination number CN = Σ<sub>i∈center</sub> Σ<sub>j∈group</sub> s(r<sub>ij</sub>), with s = (1−x<sup>n</sup>)/(1−x<sup>m</sup>) and x = (r−d0)/r0 | **UNCONFIRMED** template |
+| `CV1` | CN(C1; H_C1, H\*) = coordination number of **C1 with H₁ and H₂** | atoms confirmed (secondary), parameters **placeholders** |
+| `CV2` | CN(C2; H_C1, H\*) = coordination number of **C2 with the same H₁ and H₂** | atoms confirmed (secondary), parameters **placeholders** |
 
-The CPMD basins quoted for this work, reactant (CV1, CV2) ≈ (0.9, 0.9) and
-product ≈ (1.8, 0.1), are stored under `reference_basins`. They are used **only
-as a diagnostic**: the code reports the distance to each basin and never passes
-or fails a structure on it.
+Here CN = Σ<sub>j</sub> (1−x<sup>n</sup>)/(1−x<sup>m</sup>) with x = r/r0. This is
+the CPMD rational coordination function of [T] eq. 4.1 (exponents p and p+q),
+written with r0 = d⁰, n = p and m = p + q.
 
-The shipped `CV1` = CN(C1; H_C1, H\*) and `CV2` = CN(C2; H\*) (r0 = 1.5 Å, n = 6,
-m = 12) are my inference from those basin values. I could not access the paper's
-CV definitions. **Replace them with the original definitions before comparing
-against the basins.**
+- **Atoms:** taken from [T] Fig. 4.1c, adapted from the paper's Fig. 1c.
+  An earlier version used only H\* for CV2, which was wrong.
+- **Parameters:** the values r0 = 1.5 Å, n = 6, m = 12 are **placeholders**,
+  because d⁰, p and q are unknown. Both CVs carry
+  `"parameters_confirmed": false`.
+- **Effect on the reference basins:** `basin_diagnostics` still lists the
+  distances to the stored basins — reactant (0.9, 0.9) and product (1.8, 0.1)
+  as quoted in [T] §4.2 — but marks them **not comparable**. It withholds both
+  "within tolerance" and "nearest basin" until the original parameters are
+  entered and the flag is set to `true`.
 
 ## Validation layer (`validate_structure.py`)
 
@@ -155,7 +278,8 @@ against the basins.**
 - a periodic structure with a degenerate cell
 - duplicate atoms (< 0.1 Å) or impossible contacts (< 0.5 Å)
 - isolated atoms
-- a required element (Sn) missing, or the atom count ≠ `expected_n_atoms`
+- a required element (Sn, Si, C, H, O) missing, or the atom count ≠
+  `expected_n_atoms`
 - an atom map that is unset, out of range, duplicated, or points to the wrong
   element
 - charge or multiplicity unset, or an electron count inconsistent with the
@@ -174,7 +298,11 @@ against the basins.**
   permutation)
 - fixed atoms that are not identical in both endpoints
 - Sn without an O neighbour
-- CVs closer to the other endpoint's reference basin
+- `sn_site` expectations: the mapped Sn should have 6 O within `sn_shell_A`,
+  including O1, O2 and O_water. These come from our reading of thesis Fig. 4.1
+  (see above). They are **warnings only**, never acceptance criteria.
+- CVs closer to the other endpoint's reference basin (only once the CV
+  parameters are confirmed)
 
 **Diagnostics only:**
 
@@ -201,7 +329,7 @@ are not chemistry and must never be reported.** The scientific config
 unconfigured.
 
 ```bash
-/usr/bin/python3 -m pytest tests -q            # 36 unit tests, no model weights needed
+/usr/bin/python3 -m pytest tests -q            # 40 unit tests, no model weights needed
 /usr/bin/python3 run_smoke_test.py             # imports, config, validation, CVs, Hessian, both models
 /usr/bin/python3 run_smoke_test.py --pipeline  # + all four stages end to end on the toy
 ```
@@ -213,10 +341,13 @@ The following need the real structures:
 - `input/reactant.xyz`, `input/product.xyz` and their provenance
 - the `config.json` fields `system.charge`, `spin_multiplicity`,
   `expected_n_atoms`, `atom_map` and `fixed_atoms`
-- the confirmed CV definitions
-- whether the original model was periodic or a cluster. OMOL was trained on
-  molecular (non-periodic) data, so a periodic zeolite would be outside its
-  training domain. That has to be reported with any result.
+- the CV parameters d⁰, p, q (the atoms are known; see above), ideally from the
+  original CPMD input
+- the solvent content of the received files. Tian's immediate experiment is
+  initially without the full solvent environment; if the files contain
+  solvent, decide with Tian whether to strip it.
+- which cap atoms to freeze, if any (`fixed_atoms`)
+- the paper's own reaction-energy and barrier values, which need the full text
 - the real choices about cost: the Hessian scope and the number of NEB images.
   OMOL extra-large took about 0.2 s per call on a 9-atom CPU test, and the
   Hessian alone needs 6N force calls.

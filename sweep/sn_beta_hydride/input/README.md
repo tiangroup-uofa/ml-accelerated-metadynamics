@@ -9,7 +9,7 @@ here. Every stage reads these files and treats them as ground truth.
 
 | file | content |
 |---|---|
-| `reactant.xyz` | glucose coordinated to the partially hydrolyzed Sn-beta site, hydride (H\*) on **C2** |
+| `reactant.xyz` | the state just before C2 → C1 hydride transfer, hydride (H\*) on **C2**. Expected from the literature description (Ali 2025 thesis §4.2 / Fig. 4.1, not verified against the paper): open-chain glucose deprotonated at C2–O and bound to Sn, with the water formed at the site still on Sn, on a Sn(–O–SiH₃)₃ cluster. Confirm against the received file. |
 | `product.xyz` | the same system after C2 → C1 hydride transfer, H\* on **C1** |
 
 Both files must:
@@ -21,9 +21,11 @@ Both files must:
 ## After adding the files, fill in `../config.json`
 
 1. `system.charge`, `system.spin_multiplicity` (2S+1) and `system.expected_n_atoms`.
-2. `atom_map` (**zero-based** ASE indices): `C1`, `C2`, `H_transfer`, `H_C1`, `Sn`.
+2. `atom_map` (**zero-based** ASE indices): `C1`, `C2`, `H_transfer` (H₂ in the
+   paper's Fig. 1c), `H_C1` (H₁), `Sn`, `O1` (C1 oxygen), `O2` (C2 oxygen) and
+   `O_water` (the water formed at Sn).
 3. `fixed_atoms`, if the model is a cluster with frozen termination atoms.
-4. The `CV1`/`CV2` definitions (`group`, `r0`, `n`, `m`) taken from the original work. The shipped values are an **unconfirmed** inference.
+4. The CV parameters `r0`, `n`, `m` (= CPMD d⁰, p, p+q) taken from the original CPMD input, then set `parameters_confirmed: true`. The atoms (C1/C2 with H₁ + H₂) are already set from a secondary source (Ali 2025 thesis Fig. 4.1c).
 
 Then run the validation, which also gives you the CV values:
 
