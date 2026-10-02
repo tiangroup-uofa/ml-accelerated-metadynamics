@@ -473,7 +473,9 @@ def test_shipped_cvs_use_both_hydrogens_and_stay_unconfirmed():
         assert sorted(cv["group"]) == ["H_C1", "H_transfer"]      # H1 and H2 of Fig. 1c
         assert cv["parameters_confirmed"] is False
     assert cfg["system"]["charge"] is None and cfg["system"]["spin_multiplicity"] is None
-    assert "Si" in cfg["system"]["require_elements"]
+    assert "Si" not in cfg["system"]["require_elements"]       # Si: warning only
+    assert "Si" in cfg["system"]["expect_elements"]
+    assert {"Sn", "C", "H", "O"} <= set(cfg["system"]["require_elements"])
 
 
 def test_cv2_counts_both_hydrogens(toy):
@@ -511,3 +513,18 @@ def test_sn_site_expectations_are_warnings_only():
     assert rep["status"] == "WARN", rep["errors"]
     assert any("has 4 O" in w and "expected 6" in w and "diagnostic only" in w for w in rep["warnings"])
     assert any("expected neighbour O_water" in w for w in rep["warnings"])
+
+
+def test_missing_expected_element_warns_but_missing_required_element_fails(toy):
+    """Si is expected (SiH3-capped cluster in the literature drawing) but not
+    required: its absence must warn, never fail validation."""
+    cfg = copy.deepcopy(toy)
+    cfg["system"]["expect_elements"] = ["Si"]           # the toy has no Si
+    rep = validate_pair(reactant(), product(), cfg)
+    assert rep["status"] == "WARN", errors(rep)
+    assert rep["n_errors"] == 0
+    assert any("expected element Si is absent" in w for w in warnings_(rep))
+    cfg["system"]["require_elements"] = ["Si"]          # contrast: required -> hard error
+    rep = validate_pair(reactant(), product(), cfg)
+    assert rep["status"] == "FAIL"
+    assert any("required element Si is absent" in e for e in errors(rep))

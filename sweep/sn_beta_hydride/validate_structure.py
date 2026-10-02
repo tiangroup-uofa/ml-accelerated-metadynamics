@@ -12,7 +12,8 @@ ERRORS (hard fail)
   * duplicate atoms (d < duplicate_A) or impossible contacts (d < min_distance_A)
   * isolated atoms (no neighbour within isolated_scale x covalent sum),
     unless listed in validation.allowed_isolated
-  * required elements (e.g. Sn) absent; atom count != system.expected_n_atoms
+  * required elements (system.require_elements, e.g. Sn) absent;
+    atom count != system.expected_n_atoms
   * reactive-atom mapping unset / out of range / duplicated / wrong element
   * charge or multiplicity unset, or electron-count parity inconsistent with
     the multiplicity
@@ -28,6 +29,7 @@ WARNINGS (reported, do not block)
     permutation or a different conformer)
   * fixed atoms that differ between endpoints
   * no O around Sn within the shell; CV values far from the reference basins
+  * expected-but-not-required elements absent (system.expect_elements, e.g. Si)
 
 DIAGNOSTICS (info only): formula, element counts, cell/PBC, fragments, Sn
 coordination shell (neighbours, distances), reactive-atom distances, CVs.
@@ -62,6 +64,7 @@ DEFAULTS = {
     "isolated_scale": 1.60,
     "allowed_isolated": [],
     "require_elements": [],
+    "expect_elements": [],
     "sn_shell_A": 2.80,
     "endpoint_bond_severity": "error",
     "max_nonreactive_displacement_A": 2.0,
@@ -97,8 +100,9 @@ def vcfg(cfg: dict) -> dict:
     out = dict(DEFAULTS)
     out.update(cfg.get("validation") or {})
     sysc = cfg.get("system") or {}
-    if sysc.get("require_elements") is not None:
-        out["require_elements"] = sysc["require_elements"]
+    for key in ("require_elements", "expect_elements"):
+        if sysc.get(key) is not None:
+            out[key] = sysc[key]
     return out
 
 
@@ -165,6 +169,10 @@ def validate_atoms(atoms, cfg: dict, label="structure", role=None, rep=None) -> 
     for el in v["require_elements"]:
         if el not in syms:
             rep.error(f"required element {el} is absent (formula {rep.info['formula']})")
+    for el in v["expect_elements"]:           # diagnostic only (system.expect_elements)
+        if el not in syms:
+            rep.warn(f"expected element {el} is absent (formula {rep.info['formula']}); "
+                     f"diagnostic only — see config system.expect_elements")
 
     pos = atoms.get_positions()
     if not np.all(np.isfinite(pos)):

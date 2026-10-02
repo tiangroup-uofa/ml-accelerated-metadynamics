@@ -278,8 +278,8 @@ written with r0 = d⁰, n = p and m = p + q.
 - a periodic structure with a degenerate cell
 - duplicate atoms (< 0.1 Å) or impossible contacts (< 0.5 Å)
 - isolated atoms
-- a required element (Sn, Si, C, H, O) missing, or the atom count ≠
-  `expected_n_atoms`
+- a required element (`system.require_elements`: Sn, C, H, O) missing, or the
+  atom count ≠ `expected_n_atoms`
 - an atom map that is unset, out of range, duplicated, or points to the wrong
   element
 - charge or multiplicity unset, or an electron count inconsistent with the
@@ -298,6 +298,9 @@ written with r0 = d⁰, n = p and m = p + q.
   permutation)
 - fixed atoms that are not identical in both endpoints
 - Sn without an O neighbour
+- an *expected* element missing (`system.expect_elements`: Si). The SiH₃ caps
+  come from the thesis drawing (Fig. 4.1). Tian's endpoints may terminate the
+  cluster differently, so this is a warning, not an error.
 - `sn_site` expectations: the mapped Sn should have 6 O within `sn_shell_A`,
   including O1, O2 and O_water. These come from our reading of thesis Fig. 4.1
   (see above). They are **warnings only**, never acceptance criteria.
