@@ -38,10 +38,19 @@ independent methods converging, not a fit.
 Static forces are necessary but not sufficient — the real test is whether the
 surrogate produces the same *ensemble*.
 
-| | O–O first peak | radius of gyration | mean coordination | condensed? |
+| n = 20 droplet, unbiased NVT ([Study 05](05-mace.qmd)) | O–O first peak | radius of gyration | mean coordination | condensed? |
 |---|:---:|:---:|:---:|:---:|
 | GFN2-xTB | 2.83 Å | 3.78 ± 0.07 Å | 4.01 | yes |
 | MACE-OFF23 | 2.83 Å | 3.85 ± 0.05 Å | 3.72 | yes |
+
+::: {.methodnote}
+[Which R_g?]{.lbl}
+The xTB droplet R_g appears as **3.78 Å** here, **3.89 Å** in the first correction
+benchmark and **3.77 Å** in the Phase C / iterative experiments. These are three
+separate short unbiased NVT runs of the same n = 20 droplet (σ ≈ 0.06 Å each), so a
+~0.1 Å spread is run-to-run variability. Each comparison on this site uses the xTB run
+from its own experiment; the values are not reconciled into one number.
+:::
 
 ![O–O pair distribution (left) is essentially identical — same hydrogen-bond peak at
 2.83 Å; droplet-size distributions (right) overlap.](assets/md_structure_n20.png){width=680}
@@ -71,9 +80,11 @@ original misleading number is retained in [Study 05](05-mace.qmd) rather than de
 
 ## Related studies
 
-The metadynamics-methodology work below supports this pillar but is not part of the
-MACE-vs-xTB comparison itself. It establishes that the *reference* workflow behaves
-sensibly before a surrogate is introduced.
+The early metadynamics studies below **established the reference workflow** — how the
+xTB RMSD bias behaves, how to keep clusters intact, how bias strength must scale with
+size, and which collective variables are independent. They are infrastructure for the
+main result, not part of the MACE-versus-xTB comparison itself, and are listed under
+*Reference-workflow infrastructure* in the Studies menu.
 
 ::: {.studylinks}
 [Study 05 — MACE-OFF23 validation (full study)](05-mace.qmd){.primary}

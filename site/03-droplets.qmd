@@ -32,4 +32,4 @@ A single `kpush` number does not transfer across system sizes. This is the
 empirical case for a **size-normalized** (per-molecule / per-atom) bias.
 :::
 
-[Full findings — FINDINGS_large.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/large/FINDINGS_large.md)
+[Full findings — FINDINGS_large.md →](https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/large/FINDINGS_large.md)

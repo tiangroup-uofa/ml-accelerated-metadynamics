@@ -6,7 +6,9 @@ project:
 
 website:
   title: "ML-Accelerated Metadynamics"
-  description: "Validating MACE-OFF23 against GFN2-xTB, from equilibrium water to reactive chemistry, and correcting it without retraining."
+  description: "Can pretrained machine-learned potentials stand in for a quantum-chemical reference in reactive enhanced sampling? A Diels–Alder benchmark, targeted post-training correction, and a Sn-β hydride-transfer benchmark in preparation."
+  site-url: https://tiangroup-uofa.github.io/ml-accelerated-metadynamics/
+  repo-url: https://github.com/tiangroup-uofa/ml-accelerated-metadynamics
   reader-mode: true
   navbar:
     background: light
@@ -14,40 +16,52 @@ website:
     left:
       - text: "Overview"
         href: index.qmd
-      - text: "Validation"
-        href: p1-validation.qmd
-      - text: "Reactive"
-        href: p2-reactive.qmd
-      - text: "Correction"
-        href: p3-correction.qmd
-      - text: "Iterative"
-        href: p4-iterative.qmd
+      - text: "Findings"
+        menu:
+          - text: "1 · Validation — equilibrium water"
+            href: p1-validation.qmd
+          - text: "2 · Reactive benchmark — Diels–Alder"
+            href: p2-reactive.qmd
+          - text: "3 · Correction — targeted Delta"
+            href: p3-correction.qmd
+          - text: "4 · Iterative correction and handoff"
+            href: p4-iterative.qmd
+      - text: "Current work"
+        href: current-work.qmd
+      - text: "Methods"
+        href: methods.qmd
       - text: "Studies"
         menu:
-          - text: "Study 01 — Bias × size"
-            href: 01-sweep.qmd
-          - text: "Study 02 — Periodicity & temperature"
-            href: 02-pbc.qmd
-          - text: "Study 03 — Large vacuum droplets"
-            href: 03-droplets.qmd
-          - text: "Study 04 — Diels–Alder reaction"
+          - text: "Core studies"
+          - text: "04 — Diels–Alder reaction"
             href: 04-diels-alder.qmd
-          - text: "Study 05 — MACE-OFF23 surrogate"
+          - text: "05 — MACE-OFF23 surrogate"
             href: 05-mace.qmd
-          - text: "Study 06 — kpush scaling"
-            href: 06-kpush.qmd
-          - text: "Study 07 — Collective-variable scoping"
-            href: 07-cv-design.qmd
-          - text: "Study 08 — Post-training corrections"
+          - text: "08 — Post-training corrections"
             href: 08-corrections.qmd
-      - text: "Research Map"
+          - text: "09 — Reference handoff"
+            href: 09-handoff.qmd
+          - text: "---"
+          - text: "Reference-workflow infrastructure"
+          - text: "01 — Bias × size"
+            href: 01-sweep.qmd
+          - text: "02 — Periodicity & temperature"
+            href: 02-pbc.qmd
+          - text: "03 — Large vacuum droplets"
+            href: 03-droplets.qmd
+          - text: "06 — kpush scaling"
+            href: 06-kpush.qmd
+          - text: "07 — Collective-variable scoping"
+            href: 07-cv-design.qmd
+      - text: "Map"
         href: research-map.qmd
     right:
       - icon: github
-        text: Repo
-        href: https://github.com/tiangroup-uofa/xtb_metadynamics
+        text: Repository
+        href: https://github.com/tiangroup-uofa/ml-accelerated-metadynamics
   page-footer:
-    center: "xTB metadynamics of water · Tian group · [github](https://github.com/tiangroup-uofa/xtb_metadynamics)"
+    left: "ML-Accelerated Metadynamics · Tian group, University of Alberta"
+    right: "[Repository](https://github.com/tiangroup-uofa/ml-accelerated-metadynamics) · [Methods & evidence standards](methods.qmd)"
 
 format:
   html:

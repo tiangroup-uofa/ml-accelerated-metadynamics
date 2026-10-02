@@ -24,6 +24,8 @@ STYLE = {
     "study":  dict(fill="#ffffff", stroke="#2e6f95", text="#1f2933", weight="500", dash=None),
     "result": dict(fill="#f4f7f9", stroke="#a9b7c2", text="#1f2933", weight="400", dash=None),
     "future": dict(fill="#ffffff", stroke="#b8c3cd", text="#66727e", weight="400", dash="4 3"),
+    # work in progress: infrastructure built, no scientific result yet (linked page)
+    "wip":    dict(fill="#fdf8ec", stroke="#a86b00", text="#5c3b00", weight="550", dash="4 3"),
 }
 EDGE = {
     "pillar":    dict(stroke="#8fa3b3", width=1.6, dash=None),

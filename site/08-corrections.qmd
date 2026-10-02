@@ -32,13 +32,15 @@ analytically, it is conservative and therefore MD- and metadynamics-safe.
 
 ## 3 · Initial benchmark {#sec-benchmark}
 
-| model | val force RMSE ↓ | DA barrier | DA ΔE | droplet Rg (Å) | conservative |
+| model | val force RMSE ↓ | DA barrier (scan max) | DA ΔE | droplet Rg (Å) | conservative |
 |---|:---:|:---:|:---:|:---:|:---:|
 | baseline (MACE) | ref | 36.0 | −40.6 | 3.94 | yes |
 | global / affine | 8% | 32.3 | −36.5 | 3.9–4.0 | yes |
 | element | 9% | 36.0 (inert) | −40.6 | 4.02 | **no** |
 | **delta** | **16%** | **11.7** | **−57.1** | 3.71 | yes |
-| **xTB (target)** | — | **6.7** | **−57.6** | **3.89** | — |
+| **xTB (target)** | — | **6.7** | **−57.6** | **3.89**\* | — |
+
+[\* xTB R_g from this benchmark's own short NVT run of the n = 20 droplet; the Phase C and iterative experiments use a separate xTB run (3.77 Å). The ~0.1 Å spread between runs is run-to-run variability ([why](p1-validation.qmd)).]{.table-note}
 
 ### Forces: corrections fix magnitude, not direction
 
@@ -65,7 +67,7 @@ Section 5 shows how targeted enrichment avoids this.
 
 ![Droplet O–O distribution and size vs the xTB reference.](assets/corr_water_structure.png){width=760}
 
-[Full findings — FINDINGS_corrections.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/corrections/FINDINGS_corrections.md)
+[Full findings — FINDINGS_corrections.md →](https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/corrections/FINDINGS_corrections.md)
 
 ## 4 · Barrier-region error localization {#sec-localization}
 
@@ -113,7 +115,7 @@ than how much of it there is.**
 | raw MACE | 2.84 Å | 3.90 Å |
 | baseline Delta | 2.74 Å | 3.82 Å |
 | **barrier-enriched Delta** | 2.74 Å | **3.82 Å** |
-| xTB | 2.84 Å | 3.77 Å |
+| xTB (Phase C reference run) | 2.84 Å | 3.77 Å |
 
 ![Droplet O–O distribution and size.](assets/phaseC_water.png){width=760}
 
@@ -122,7 +124,7 @@ has separate channels per element pair, so added C–C/C–H data touches only t
 channels and leaves the O–O/O–H channels that govern water untouched — clean
 selectivity.
 
-[Jul 31 follow-up findings — FINDINGS_jul31.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_jul31.md)
+[Jul 31 follow-up findings — FINDINGS_jul31.md →](https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/diels_alder/FINDINGS_jul31.md)
 
 ## 6 · Scan versus saddle: a methodological refinement {#sec-scan-vs-saddle}
 
@@ -137,7 +139,8 @@ certifying it with a mass-weighted Hessian gives a different, better-founded num
 | estimator, same corrected model | barrier | forming C–C | certification |
 |---|:---:|:---:|:---:|
 | constrained scan | 9.9 kcal/mol | 2.617 Å | not a stationary point |
-| **certified first-order saddle** | **6.33 kcal/mol** | **2.428 Å** | 1 imaginary mode, −358.3 cm⁻¹ |
+| **certified first-order saddle**, vs frozen xTB reactant | **6.33 kcal/mol** | **2.428 Å** | 1 imaginary mode, −358.3 cm⁻¹ |
+| same saddle, vs reactant relaxed on the corrected model | **8.23 kcal/mol** | 2.428 Å | same |
 | **xTB reference** | **6.7 kcal/mol** | 2.315 Å | 1 imaginary mode, −394 cm⁻¹ |
 
 The certified saddle also sits 0.173 Å (RMSD) from the xTB TS, and its reaction-mode
@@ -169,15 +172,17 @@ perturbations = **7 new xTB calculations** → refit on the cumulative dataset.
 Held fixed: architecture and every hyperparameter; a 48-configuration held-out reactive
 split never trained on.
 
-| iter | cum. xTB calls | certified saddle barrier | scan barrier | forming C–C | certified? | imaginary mode | xTB \|F\|max at TS | held-out TS+post | water Rg |
+::: {.table-scroll .column-page}
+| iter | cum. xTB calls | Sella stationary-point barrier (frozen xTB R; bracketed = uncertified) | scan barrier | forming C–C | certified? | imaginary mode | xTB \|F\|max at TS | held-out TS+post | water Rg |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **0** | 7 | **6.33** | 9.87 | 2.428 Å | yes | −358.3 cm⁻¹ | 0.770 | 0.6879 | 3.738 |
 | 1 | 14 | 9.72 | 10.51 | 1.996 Å | yes | −758.1 | 2.805 | 0.6880 | 3.690 |
 | 2 | 21 | 7.11 | 12.50 | 2.415 Å | yes | −333.4 | 0.686 | 0.6973 | 3.841 |
-| 3 | 28 | 8.62 | 12.75 | 2.519 Å | **no** (2 modes) | −309.6 | 0.461 | 0.6966 | 3.796 |
+| 3 | 28 | (8.62) | 12.75 | 2.519 Å | **no** (2 modes) | −309.6 | 0.461 | 0.6966 | 3.796 |
 | 4 | 35 | 9.46 | 13.54 | 2.046 Å | yes | −461.3 | 2.340 | 0.6987 | 3.803 |
-| 5 | 42 | 9.25 | 13.91 | 2.519 Å | **no** (2 modes) | −312.8 | 0.428 | 0.7113 | 3.834 |
+| 5 | 42 | (9.25) | 13.91 | 2.519 Å | **no** (2 modes) | −312.8 | 0.428 | 0.7113 | 3.834 |
 | **xTB target** | — | **6.7** | **6.7** | 2.315 Å | 1 mode | 0 | — | **3.77** |
+:::
 
 ![Barrier vs iteration.](assets/phase2_barrier.png){width=680}
 
@@ -188,8 +193,10 @@ split never trained on.
 ![Held-out reactive error and water stability.](assets/phase2_generalization.png){width=760}
 
 **Iteration 0 was the best model of the run.** Across 5 iterations and 42 additional xTB
-reference calculations, the certified saddle barrier oscillated away from target (error
-0.37 → 2.55 kcal/mol) and the scan barrier degraded monotonically (9.87 → 13.91).
+reference calculations, the certified saddle barrier oscillated away from target
+(6.33 → 9.46 kcal/mol at the last certified iteration, error 0.37 → 2.76; against the
+model-relaxed reactant 8.23 → 13.98; earlier versions quoted 0.37 → 2.55, whose endpoint
+is the uncertified iteration 5) and the scan barrier degraded monotonically (9.87 → 13.91).
 Held-out TS+post-TS error rose 0.6879 → 0.7113 (+3.4%); overall rose 0.4556 → 0.4704
 (+3.3%). Water stayed within MD noise throughout (Rg 3.690–3.841, per-iteration σ
 0.037–0.086, no condensation).
@@ -222,9 +229,9 @@ above, which oscillates over 0.43–2.81 eV/Å with no systematic decrease.
 ## 8 · Limitations and next question {#sec-limitations}
 
 **Reference, not truth.** xTB is the chosen proof-of-concept target, not ground truth.
-For this reaction it *under*-estimates the barrier relative to DFT and experiment
-(≈22–27 kcal/mol), so matching it demonstrates **reference-matching, not improved
-physical accuracy**.
+No higher-level (DFT or experimental) barrier has been established for this reaction in
+the project, so matching xTB demonstrates **reference-matching, not improved physical
+accuracy**.
 
 **Energetic before geometric.** Even the best corrected saddle sits 0.173 Å from the xTB
 TS. Energy agreement outran geometry agreement.
@@ -248,4 +255,4 @@ larger cutoff, more radial channels. That behaviour is **consistent with a
 correction-capacity limitation**, which is a supported hypothesis, not a demonstrated
 result.
 
-[Phase 2 findings — PHASE2_ITERATIVE_CORRECTION_FINDINGS.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/corrections/PHASE2_ITERATIVE_CORRECTION_FINDINGS.md)
+[Phase 2 findings — PHASE2_ITERATIVE_CORRECTION_FINDINGS.md →](https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/corrections/PHASE2_ITERATIVE_CORRECTION_FINDINGS.md)

@@ -24,4 +24,4 @@ molecules escape faster (max O–O 81 → 143 Å over 200 → 350 K).
 ![Gas trimer: three intact waters drift to the corners, each keeping its two
 O–H bonds — drift, not dissociation.](assets/movie_n3_low.gif){width=360}
 
-[Full findings — FINDINGS_phase2.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/FINDINGS_phase2.md)
+[Full findings — FINDINGS_phase2.md →](https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/FINDINGS_phase2.md)

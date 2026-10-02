@@ -1,0 +1,114 @@
+---
+title: "Current work — Sn-β glucose hydride transfer"
+subtitle: "The next benchmark: does a newer foundation model give a useful starting surface for a catalytic reaction?"
+---
+
+::: {.wip-banner}
+[Work in progress]{.lbl}
+**No Sn-β scientific result exists yet.** The pipeline below is built and tested on
+software checks only; the authoritative reactant and product structures have not been
+received. Nothing on this page is a barrier, energy, or frequency for this system.
+:::
+
+## The question {#sec-question}
+
+::: {.question}
+[Scientific question]{.pillar-section-label}
+Can **MACE-OMOL** or **MACE-POLAR** provide a useful starting potential-energy surface
+for the **Sn-β-catalysed glucose C2→C1 hydride-transfer** step — the rate-limiting step
+of glucose-to-fructose isomerization?
+:::
+
+**Reference.** S. H. Mushrif, J. J. Varghese, C. B. Krishnamurthy, *Solvation dynamics
+and energetics of intramolecular hydride transfer reactions in biomass conversion*,
+Phys. Chem. Chem. Phys. **17**, 4961–4969 (2015),
+DOI [10.1039/C4CP05063K](https://doi.org/10.1039/C4CP05063K).
+
+The immediate experiment is narrower than the original study: whether these models give
+a physically meaningful transition pathway between known initial and final states,
+initially *without* reproducing the full explicit-solvent metadynamics.
+
+## Why new foundation models {#sec-why}
+
+MACE-OFF23, used for the Diels–Alder benchmark, was trained on organic chemistry and
+has no tin. MACE-OMOL-0 and MACE-POLAR-1 cover elements up to Z = 83, Sn included, and
+both take the system's total charge and spin multiplicity as inputs. MACE-POLAR adds
+long-range electrostatics. This is the first test of the project's pipeline on a
+catalytic, metal-containing system.
+
+## Infrastructure status {#sec-status}
+
+[Implemented and tested]{.tag .demo} on software checks — not on the scientific system:
+
+::: {.checklist .done}
+- MACE-OMOL wrapper validated (energy and forces through the project's calculator layer)
+- MACE-POLAR wrapper validated (with the pinned `graph_longrange` 0.4.0 dependency)
+- Sn element support confirmed for both models
+- Total charge and multiplicity always set explicitly — the models otherwise default
+  silently to a neutral singlet
+- Strict structure validation that refuses to start a calculation on invalid input
+- Endpoint optimizer
+- Generic CI-NEB path stage (no hard-coded atom indices)
+- Sella saddle refinement
+- Mass-weighted Hessian validation of the saddle ([standard](methods.qmd#sec-ts))
+:::
+
+## Blocked on authoritative information {#sec-blockers}
+
+[Work in progress]{.tag .wip} Every production stage currently stops before loading a
+model, by design, until these are supplied:
+
+::: {.checklist .blocked}
+- Authoritative reactant coordinates
+- Authoritative product coordinates
+- Total charge
+- Spin multiplicity
+- Atom mapping (which atoms are C1, C2, the transferring hydride, Sn, and the
+  coordinating oxygens)
+- The original CPMD collective-variable parameters d₀, p, q
+- Fixed / capped-atom policy for the cluster model
+- The intended solvent / cluster representation for this experiment
+:::
+
+## What the literature does and does not establish {#sec-literature}
+
+The paper itself is closed access and has not been read in full; the points below come
+from its abstract and from a thesis that reproduces its Fig. 1 (M. A. Y. Ali, MSc thesis,
+University of Alberta, 2025). Nothing here has been checked against the paper's full
+text.
+
+- [Literature]{.tag .lit} **Protocols.** The paper uses CPMD-metadynamics with explicit water
+  or methanol, a CPMD-metadynamics run without solvent, and implicit-solvent DFT
+  (abstract). The thesis's own dataset is a 20,000-timestep **gas-phase** run; whether it
+  is the paper's solvent-free run is not established.
+- [Literature, as drawn]{.tag .lit} **Model.** The thesis figure adapted from the paper draws the
+  site as a SiH₃-capped Sn cluster, Sn(–O–SiH₃)₃, with open-chain glucose bound through
+  its C1 and C2 oxygens and the water formed at the site remaining on Sn.
+- [Literature, secondary]{.tag .lit} **Collective variables.** CV1 is the coordination
+  number of C1 with the two hydrogens H1 and H2; CV2 is the coordination number of C2
+  with the same two hydrogens, using CPMD's rational coordination function.
+- [Unknown]{.tag .open} **CV parameters d₀, p, q.** The project's code computes these CVs
+  with **placeholder** parameters that are explicitly flagged as unconfirmed, and refuses
+  to compare against the reference basin values until the originals are supplied.
+- [Unknown]{.tag .open} **Charge and multiplicity** — not stated in either source.
+
+::: {.methodnote}
+[Not a reference value]{.lbl}
+The "≈82 kJ/mol barrier" sometimes quoted for this reaction comes from data tips on the
+thesis's **gas-phase metadynamics free-energy plot**, not from a verified published value.
+It is a free-energy difference from a biased-sampling run; an endpoint-to-endpoint NEB or
+Sella calculation gives a potential-energy barrier, and the two are not directly
+comparable.
+:::
+
+## Next experiments {#sec-next}
+
+1. Receive and validate the authoritative endpoints; record their provenance.
+2. Optimize endpoints with MACE-OMOL and MACE-POLAR, and check that both basins survive.
+3. CI-NEB between them; refine the highest image with Sella.
+4. Certify the saddle with the mass-weighted Hessian, and check that its imaginary mode is
+   the hydride moving from C2 to C1.
+
+The code and its tests are in
+[`sweep/sn_beta_hydride/`](https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/tree/main/sweep/sn_beta_hydride),
+with the full literature audit in its README.

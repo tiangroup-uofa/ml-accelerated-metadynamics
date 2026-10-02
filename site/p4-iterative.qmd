@@ -1,6 +1,6 @@
 ---
-title: "Pillar 4 — Iterative calibration"
-subtitle: "If targeted correction works once, does repeating it keep working? A negative result."
+title: "Pillar 4 — Iterative correction and reference handoff"
+subtitle: "If targeted correction works once, does repeating it keep working — and can the corrected model hand off to the reference? Two negative results."
 ---
 
 ::: {.question}
@@ -39,18 +39,32 @@ Held fixed throughout: the correction architecture and every hyperparameter, and
 
 ## Key evidence
 
-| iter | cumulative new xTB calls | certified saddle barrier | scan barrier | forming C–C | certified? | held-out TS+post RMSE | water R_g |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **0** | 7 | **6.33** | 9.87 | 2.428 Å | yes | 0.6879 | 3.738 Å |
-| 1 | 14 | 9.72 | 10.51 | 1.996 Å | yes | 0.6880 | 3.690 Å |
-| 2 | 21 | 7.11 | 12.50 | 2.415 Å | yes | 0.6973 | 3.841 Å |
-| 3 | 28 | 8.62 | 12.75 | 2.519 Å | **no** | 0.6966 | 3.796 Å |
-| 4 | 35 | 9.46 | 13.54 | 2.046 Å | yes | 0.6987 | 3.803 Å |
-| 5 | 42 | 9.25 | 13.91 | 2.519 Å | **no** | 0.7113 | 3.834 Å |
-| **xTB target** | — | **6.7** | **6.7** | 2.315 Å | — | — | **3.77** |
+Barriers in kcal/mol. "Sella stationary point" is the converged saddle search; it is a
+**certified** saddle only when it passes the gate above. Iterations 3 and 5 converged
+but had **two** imaginary modes, so their barriers are shown in brackets and are *not*
+certified saddle barriers.
 
-![Barrier against iteration. Iteration 0 is the closest to the xTB target; the
-constrained-scan barrier degrades monotonically.](assets/phase2_barrier.png){width=680}
+::: {.table-scroll .column-page}
+| iter | cum. new xTB calls | Sella stationary point vs frozen xTB R | same, vs model-relaxed R | scan max | forming C–C | certified? | held-out TS+post RMSE | water R_g |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **0** | 7 | **6.33** | **8.23** | 9.87 | 2.428 Å | yes (1 imag.) | 0.6879 | 3.738 Å |
+| 1 | 14 | 9.72 | 11.32 | 10.51 | 1.996 Å | yes (1 imag.) | 0.6880 | 3.690 Å |
+| 2 | 21 | 7.11 | 8.50 | 12.50 | 2.415 Å | yes (1 imag.) | 0.6973 | 3.841 Å |
+| 3 | 28 | (8.62) | (9.65) | 12.75 | 2.519 Å | **no — 2 imag.** | 0.6966 | 3.796 Å |
+| 4 | 35 | 9.46 | 13.98 | 13.54 | 2.046 Å | yes (1 imag.) | 0.6987 | 3.803 Å |
+| 5 | 42 | (9.25) | (14.45) | 13.91 | 2.519 Å | **no — 2 imag.** | 0.7113 | 3.834 Å |
+| **xTB reference** | — | **6.7** | **6.7** | **6.7** | 2.315 Å | 1 imag. (−394 cm⁻¹) | — | **3.77**\* |
+:::
+
+[\* xTB R_g from the Phase C reference run used throughout this experiment.]{.table-note}
+
+![Barrier against iteration (frozen-xTB-reactant reference). Iteration 0 is the
+closest to the xTB target; the constrained-scan barrier degrades monotonically; circled
+points are uncertified.](assets/phase2_barrier.png){width=680}
+
+The [barrier ladder](index.qmd#sec-numbers) shows the same series with the
+model-relaxed-reactant reference alongside: it degrades further, from 8.23 to 13.98 at
+the last certified iteration.
 
 ![TS position oscillates by ±0.5 Å; open circles mark iterations that failed the
 saddle-certification gate.](assets/phase2_geometry.png){width=760}
@@ -63,14 +77,19 @@ noise.](assets/phase2_generalization.png){width=760}
 **A strong one-shot correction does not continue improving under repeated local TS
 queries with the fixed pairwise Delta architecture.** Iteration 0 was the best model of
 the run. Across 5 iterations and **42 additional xTB reference calculations**, the
-certified saddle barrier oscillated *away* from target (error 0.37 → 2.55 kcal/mol) and
-the constrained-scan barrier degraded monotonically from 9.87 to 13.91 kcal/mol.
+certified saddle barrier oscillated *away* from the reference — from 6.33 (iteration 0)
+to 9.46 kcal/mol at the last certified iteration (4), against the frozen xTB reactant;
+8.23 → 13.98 against the model-relaxed reactant — and the constrained-scan barrier
+degraded monotonically from 9.87 to 13.91 kcal/mol.
 :::
 
 Supporting observations:
 
 - **2 of 6 iterations produced no certifiable first-order saddle** (two imaginary modes),
-  and fell back to the scan maximum as the query centre.
+  and fell back to the scan maximum as the query centre. Their Sella stationary points
+  (8.62 and 9.25 kcal/mol) are not counted as certified barriers. (Earlier write-ups
+  quoted the error trend as 0.37 → 2.55 kcal/mol; the 2.55 endpoint is iteration 5,
+  which is uncertified. The last certified error is 2.76.)
 - **Held-out reactive error worsens slightly**: TS+post-TS RMSE 0.6879 → 0.7113 (+3.4%).
   The added data is not generalizing.
 - **Water remains stable** — R_g spans 3.690–3.841 Å around the xTB reference of 3.77,
@@ -101,7 +120,9 @@ which oscillates over 0.43–2.81 eV/Å with no systematic decrease.
 ## What we learned
 
 More targeted reference data is **not automatically better** for a fixed correction
-architecture. The result is specific and bounded: this correction form, this acquisition
+architecture — and the corrected model's saddles are not a reliably better handoff
+point than a cheap geometric guess. For this system the expensive step is generating a
+starting guess, and an IDPP interpolation already does that well. The result is specific and bounded: this correction form, this acquisition
 rule, this system, this budget.
 
 Two mechanistic observations point the same direction. The Delta is a sum of *radial*
@@ -121,6 +142,68 @@ fails: no acquisition metric, uncertainty estimate, or autonomous sampling was
 implemented here.
 :::
 
+## Handing off to the reference {#sec-handoff}
+
+If the corrected model cannot be iterated into agreement, can it at least supply a good
+*starting point* for the reference's own saddle search — and is there an optimal moment
+to hand off? Each corrected-model saddle from the loop above was given to Sella on the
+GFN2-xTB surface, and the number of genuine xTB evaluations (`calculate()` calls) needed
+to reach the verified xTB TS was counted ([Study 09](09-handoff.qmd)).
+
+| start | xTB calls (total) | reached the xTB TS? |
+|---|:---:|:---:|
+| xTB-only baseline: relaxed scan → Sella | **582** (547 scan + 35 Sella) | yes |
+| handoff from iteration 0 / 1 / 5 | 97 / **50** / 104 | yes |
+| handoff from iteration 2 / 3 / 4 | 534 / 452 / 534 | **no** |
+| IDPP interpolation, zero prior reference cost | **75** | yes |
+
+[Iterations 2 and 4 reach the right structure but miss the pre-registered
+`fmax = 1e−4`; iteration 3 is the only wrong-basin failure ([details](09-handoff.qmd#sec-cost)).]{.table-note}
+
+![Total marginal xTB cost to reach the verified xTB TS, by handoff iteration. Failed
+handoffs are crosses; the xTB-only baseline and the IDPP control are horizontal
+lines.](assets/aug21_total_cost.png){width=680}
+
+::: {.keyresult .caution}
+[Key result — negative]{.lbl}
+**Only 3 of 6 handoffs reached the reference TS, with no trend across iterations.** The
+best handoff (50 calls) is 11.6× cheaper than the xTB-only baseline, but that baseline
+spends 547 of its 582 calls on a relaxed scan that turns out to be unnecessary: a
+zero-cost IDPP interpolation guess reaches the same TS in **75** calls. Against that
+cheapest working alternative, only one of six handoffs is cheaper — and nothing
+identified it in advance. Fewer reference calls in the successful cases do not make the
+route reliable.
+:::
+
+Every successful run converges to the same structure: forming C–C 2.3153 Å,
+6.71 kcal/mol, principal imaginary mode −393.4 cm⁻¹ — the verified xTB TS.
+
+## Is there a handoff signal? {#sec-handoff-diagnostics}
+
+The follow-up asked whether any property of the starting geometry predicts success.
+Replicates were run, 14 descriptors were measured for every start, and near-identical
+starting points were compared.
+
+![Left: xTB residual force at the handoff geometry does not separate successes from
+failures. Right: two near-twin pairs of starting geometries, indistinguishable across
+the descriptors, with opposite outcomes.](assets/aug21_descriptor_diagnosis.png){width=760}
+
+::: {.keyresult .caution}
+[Key result — negative]{.lbl}
+**No tested pre-handoff descriptor reliably predicts success.** Two pairs of starting
+geometries separated by only **0.007 Å and 0.022 Å RMSD** produce opposite outcomes,
+with 6–12× cost differences. The intuitive rule fails: the start with the *largest* xTB
+residual force (IDPP, 4.99 eV/Å) succeeds, while starts with small residual forces
+(0.46, 0.69 eV/Å) fail.
+:::
+
+- [Demonstrated]{.tag .demo} The qualitative outcome reproduces across replicates;
+  successful and stalled cases are deterministic, while one failing case dissociates by
+  different routes in each replicate (a flat, dissociative surface amplifying bit-level
+  SCF differences).
+- [Interpretation]{.tag .interp} At the resolution that separates these candidates, the
+  handoff outcome does not behave as a smooth function of the starting state.
+
 ## Next question
 
 **Is correction-model capacity the bottleneck?** The discriminating experiment holds the
@@ -133,6 +216,7 @@ If it does not, no acquisition function would rescue the loop.
 
 ::: {.studylinks}
 [Study 08 — full iterative-correction record](08-corrections.qmd#sec-iterative){.primary}
+[Study 09 — reference handoff: cost and diagnostics](09-handoff.qmd){.primary}
 [Pillar 3 — the one-shot correction](p3-correction.qmd)
 [Scan vs saddle estimators](p3-correction.qmd#sec-scan-vs-saddle)
 :::

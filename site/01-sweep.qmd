@@ -22,4 +22,4 @@ maximizes structural novelty, and the cheapest way to do that is to snap the
 weakest bond — which for clusters means evaporation, not rearrangement.
 :::
 
-[Full findings — FINDINGS.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/FINDINGS.md)
+[Full findings — FINDINGS.md →](https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/FINDINGS.md)

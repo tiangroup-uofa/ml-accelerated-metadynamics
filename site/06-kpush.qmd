@@ -39,4 +39,4 @@ a big droplet still resists a bit more than bare force-scaling predicts.
 **Practical rule:** set `kpush` per atom, `kpush_eff = kpush_ref · N / N_ref`, so
 bias strength is comparable across cluster sizes.
 
-[Full findings — FINDINGS_kpush_scaling.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/kpush_scaling/FINDINGS_kpush_scaling.md)
+[Full findings — FINDINGS_kpush_scaling.md →](https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/kpush_scaling/FINDINGS_kpush_scaling.md)

@@ -56,4 +56,4 @@ needs a **time-lagged analysis (TICA / VAMP)** or a **learned CV** on one system
 trajectory. That's the next step, on top of this physically-motivated shortlist.
 :::
 
-[Full findings — FINDINGS_cv_design.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/cv_design/FINDINGS_cv_design.md)
+[Full findings — FINDINGS_cv_design.md →](https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/cv_design/FINDINGS_cv_design.md)

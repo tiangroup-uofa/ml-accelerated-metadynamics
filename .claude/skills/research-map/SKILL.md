@@ -40,7 +40,8 @@ JavaScript, and no build step beyond that one script. **Never hand-edit
 
 Node `kind`: `core` (one), `pillar` (four), `study` (a detailed study page), `result`
 (a major finding, usually deep-linked to a pillar anchor), `future` (an open question,
-drawn dashed, no `href`).
+drawn dashed, no `href`), `wip` (work in progress with its own page but **no results
+yet**, drawn amber and dashed, linked; attached to `core` with a `pillar` edge).
 
 Edge `rel`: `pillar` (core → pillar), `contains` (pillar → node), `motivates` (red
 dashed — one result made the next experiment necessary), `validates` (green dashed — an

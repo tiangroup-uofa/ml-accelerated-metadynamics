@@ -1,0 +1,152 @@
+---
+title: "Methods & reproducibility"
+subtitle: "What each number on this site measures, how transition states are certified, and where every result comes from."
+---
+
+This page exists so that numbers on this site are never compared across estimators or
+reference states by accident. Every barrier quoted elsewhere names one of the estimators
+below and the reactant it is measured from.
+
+## Estimator glossary {#sec-glossary}
+
+::: {.glossary}
+Relaxed-scan maximum (constrained scan)
+:   The highest point along a scan in which the two forming C–C distances are held equal
+    at a sequence of values while every other coordinate relaxes; the barrier is measured
+    from the first scan point. Cheap and robust, but the constrained path need not pass
+    through the true saddle.
+    [Used for: raw and corrected Diels–Alder profiles (e.g. 36.05, 11.66, 9.87 kcal/mol).]{.use}
+
+CI-NEB highest image
+:   The highest-energy physical image of a climbing-image nudged elastic band. An
+    approximation to the saddle: it can carry a second imaginary mode, depends on the
+    image count, and is only as good as the band's convergence — which must be stated.
+    [Used for: raw MACE-OFF23, 37.20 kcal/mol (13 images; band convergence not recorded;
+    one collapsed image excluded); 35.9 ± 1.0 over 11–21 images. A later standardized
+    control recorded non-convergence, so NEB values here are diagnostics only.]{.use}
+
+Sella-refined saddle
+:   A first-order saddle search (Sella, `order = 1`) started from a guess — an NEB image,
+    a scan maximum, or another surface's TS. Converged means the force criterion was met;
+    it is not yet *certified*.
+    [Used for: raw MACE 36.2 (from the NEB image) and 35.81 (from the xTB TS).]{.use}
+
+Certified first-order saddle
+:   A Sella-refined saddle that also passes every step of the
+    [transition-state standard](#sec-ts) below. Only these are called transition states on
+    this site.
+    [Used for: corrected-model saddle 6.33 / 8.23 kcal/mol; iterations 0, 1, 2, 4.]{.use}
+
+Frozen-reactant reference
+:   The barrier is measured from the model's energy at the **xTB-optimized reactant
+    geometry**, without relaxing it on the model being tested.
+    [Used for: 6.33 kcal/mol (corrected saddle); 35.81 kcal/mol (raw MACE saddle from the xTB TS).]{.use}
+
+Model-relaxed reactant reference
+:   The reactant is first relaxed on the model being tested, so both ends of the barrier
+    are stationary points of that model — the stricter internal-consistency check.
+    [Used for: 8.23 kcal/mol (same corrected saddle). A related variant relaxes the
+    reactant with the forming bonds pinned, so the weakly bound complex cannot drift
+    apart; used for the raw-MACE CI-NEB and its refined saddle.]{.use}
+
+Potential-energy barrier
+:   A difference of potential energies between two structures on one surface (no
+    entropy, no temperature). Every Diels–Alder barrier on this site is one.
+
+Metadynamics free-energy surface
+:   The negative of the accumulated bias from a metadynamics run, as a function of the
+    biased collective variables. Its differences are free-energy differences at the
+    simulation temperature, and its absolute levels are arbitrary offsets. **Not
+    comparable one-to-one with a potential-energy barrier.** (The xTB RMSD-metadynamics
+    runs in Studies 01–03 produce *sampled potential-energy landscapes from a biased run*,
+    which are neither.)
+:::
+
+## What counts as a transition state {#sec-ts}
+
+A structure is a **certified first-order saddle** only if all of the following hold:
+
+1. **Sella** saddle search with `order = 1` converged to a maximum atomic force below
+   1e−4 eV/Å (Cartesian coordinates).
+2. **Finite-difference Hessian** at the converged structure: central differences with a
+   1e−3 Å displacement, symmetrized.
+3. **Mass-weighted vibrational analysis**: frequencies are the eigenvalues of
+   M^−½ H M^−½ converted to wavenumbers (ν = 521.47·√λ cm⁻¹ for λ in eV Å⁻² amu⁻¹).
+   Raw Hessian eigenvalues are never converted to frequencies.
+4. **Exactly one significant imaginary mode**: one frequency below −50 cm⁻¹.
+5. **The imaginary mode is the reaction**: forming C–C within 1.5–3.0 Å and an overlap of
+   at least 0.30 between the mode's Cartesian displacement and the forming-bond
+   coordinate.
+
+Matching a barrier number satisfies none of these. A scan maximum, NEB image, or
+uncertified stationary point is always labelled as such.
+
+::: {.methodnote}
+[Known limitations of the standard]{.lbl}
+On the xTB surface, identical structures intermittently show 1–3 imaginary modes because
+soft van der Waals modes of the reactant complex sit near the −50 cm⁻¹ cutoff; the
+handoff benchmark therefore reports reaching the reference saddle separately from strict
+Hessian cleanliness ([Study 09](09-handoff.qmd#sec-caveats)). An early MACE saddle check
+(Study 04, Phase 1) counted imaginary modes without mass weighting; the count is valid,
+but its frequency value is not quoted anywhere.
+:::
+
+## Calculations {#sec-calculations}
+
+**Reference — GFN2-xTB.** xtb 6.7.1 for metadynamics, built-in path search and Hessians
+(frequencies read from the `vibspectrum` file, never parsed from standard output);
+`xtb-python` as an ASE calculator for scans, Sella, and force evaluations. Periodic runs
+use GFN1-xTB, which is a different level of theory.
+
+**Surrogates — MACE foundation models** as ASE calculators:
+
+- **MACE-OFF23 (small)** for every Diels–Alder and water result; float64 for saddle
+  searches and Hessians, float32 for MD.
+- **MACE-OMOL-0** and **MACE-POLAR-1** for the Sn-β work in progress, through a wrapper
+  that always sets total charge and spin multiplicity explicitly.
+
+**Correction layer.** Every correction is applied through a `CorrectedCalculator` that
+wraps the unmodified foundation model. The conservative pairwise Delta is a sum of
+Gaussian radial basis functions per element pair (8 functions × 6 pair channels = 48
+coefficients, 3.6 Å cutoff), fit by ridge least squares (λ = 1e−3) on force residuals
+F_xTB − F_MACE; its forces are the analytic gradient of its energy, so it is conservative.
+
+**Data splits.** Correction training and evaluation sets are split by parent path
+geometry (no leakage between rattled copies of one structure); the iterative loop keeps a
+fixed 48-configuration held-out reactive set that is never trained on.
+
+## Evidence standards {#sec-evidence}
+
+Statements on this site carry one of five labels:
+
+- [Demonstrated]{.tag .demo} directly measured in a result file of this repository.
+- [Interpretation]{.tag .interp} a supported explanation of a measured result — not itself
+  demonstrated.
+- [Open question]{.tag .open} not tested.
+- [Work in progress]{.tag .wip} infrastructure built; no scientific result yet.
+- [Literature]{.tag .lit} stated in, or read from a figure of, an external source — not
+  measured here.
+
+And four rules:
+
+1. Every number traces to a result file or a `FINDINGS_*.md` in the repository.
+2. xTB is the chosen reference, not ground truth; matching it is reference-matching.
+3. A superseded estimate is shown next to its replacement, never silently replaced.
+4. Negative results are reported plainly.
+
+## Provenance and reproducibility {#sec-provenance}
+
+| what | where |
+|---|---|
+| Diels–Alder reference, NEB, saddles | `sweep/diels_alder/` (`neb/results/*.json`, `phase1*_results`) |
+| corrections, Phase C, iterative loop | `sweep/corrections/` (`results/`, `phaseC/`, `phase2/`) |
+| handoff benchmark and diagnostics | `sweep/corrections/aug21_handoff/`, `aug21_diagnostics/` |
+| MACE-OFF23 water validation | `sweep/mace_validation/`, `sweep/mace_md/` |
+| Sn-β infrastructure (no results) | `sweep/sn_beta_hydride/` |
+| barrier-ladder figure | `site/build_barrier_ladder.py` — reads the result files above, writes `site/assets/barrier_ladder.png` |
+| research map | `site/research-map.json` → `site/build_research_map.py` → `site/research-map.svg` |
+
+The site is a [Quarto](https://quarto.org) project in `site/`, rendered with Quarto
+1.10.18 into `docs/` and served by GitHub Pages. Each study page links to its full
+`FINDINGS` document in the
+[repository](https://github.com/tiangroup-uofa/ml-accelerated-metadynamics).

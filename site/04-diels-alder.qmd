@@ -34,7 +34,7 @@ no TS optimizer — `--optts` is not a flag; use Sella. And read the `vibspectru
 for frequencies, not the `--hess` stdout.)
 :::
 
-[Full findings — FINDINGS_diels_alder.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_diels_alder.md)
+[Full findings — FINDINGS_diels_alder.md →](https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/diels_alder/FINDINGS_diels_alder.md)
 
 ## 2 · Mechanism and energetics {#sec-mechanism}
 
@@ -42,19 +42,23 @@ Does the MACE-OFF23 surrogate get reaction *energetics* right with **no fine-tun
 xTB has a built-in path search; MACE doesn't, so we build the profile with a
 climbing-image **NEB** (ASE) and compare.
 
-| quantity | GFN2-xTB (built-in path) | MACE-OFF23 (NEB) |
+| quantity | GFN2-xTB (built-in path) | MACE-OFF23 |
 |----------|:------------------------:|:----------------:|
-| activation barrier | 6.7 kcal/mol | **36.2 kcal/mol** |
+| activation barrier — CI-NEB highest image (13 images; band convergence not recorded) | — | **37.20 kcal/mol** |
+| activation barrier — Sella saddle refined from that image | 6.7 kcal/mol (verified saddle) | **36.2 kcal/mol** |
 | reaction energy | −57.6 kcal/mol | **−36.1 kcal/mol** |
-| TS forming C–C | 2.32 Å | 2.03 / 1.98 Å (slightly asynchronous) |
+| TS forming C–C (refined saddle) | 2.32 Å | 2.03 / 1.98 Å (slightly asynchronous) |
+
+[Both MACE barriers are measured from the MACE reactant relaxed with the forming bonds
+pinned. See the [estimator glossary](methods.qmd#sec-glossary).]{.table-note}
 
 ![Minimum energy path and energetics: MACE-OFF23 (CI-NEB) vs GFN2-xTB (built-in
 path).](assets/neb_da_mace_vs_xtb.png){width=760}
 
 **Outcome (2): same TS location (~2.0–2.3 Å), very different energetics.**
-Experiment/DFT give a barrier ≈ 22–27 kcal/mol and ΔH ≈ −40. GFN2-xTB badly
-underestimates the barrier (6.7) and overbinds the product (−57.6); MACE-OFF23
-(DFT-trained) is closer on both, off the shelf. The refined MACE TS is a genuine
+Which surface is physically closer is not assessed here: the project has not
+established a higher-level (DFT or experimental) reference for this reaction. The
+refined MACE TS is a genuine
 first-order saddle (one imaginary mode, −740 cm⁻¹) and slightly **asynchronous** —
 MACE makes the perfectly synchronous geometry a second-order saddle.
 
@@ -65,10 +69,9 @@ marginally asynchronous (2.03 / 1.98 Å). They differ in energetics, not mechani
 ![Forming-bond evolution: b1 and b2 contract synchronously for both methods; MACE's TS
 carries a small 0.05 Å asynchrony.](assets/neb_bond_evolution.png){width=680}
 
-**Literature context:** experiment gives a barrier ≈ 27.5 and ΔH ≈ −40 kcal/mol. xTB
-(6.7 / −57.6) is qualitatively wrong on both; MACE-OFF23 (36 / −36…−41) nails the
-reaction energy and is in the right kinetic regime, though it overestimates the barrier
-by ~9 kcal/mol.
+**Reference, not ground truth:** xTB (6.7 / −57.6 kcal/mol) is the alignment target for
+every later experiment, and MACE-OFF23 (35.8–37.2 / −36.1) differs from it by ~30 and
+~21 kcal/mol. Neither is compared here against an established higher-level reference.
 
 ## 3 · Where the potentials diverge {#sec-divergence}
 
@@ -131,13 +134,18 @@ off.
 
 ### MACE's barrier is method-invariant
 
-Across the relaxed scan (36.0), the Sella saddle (36.2), and a standardized 13-image
-CI-NEB (36–37), MACE gives the same answer. It is also numerically converged —
+Across the constrained relaxed scan (36.05), the CI-NEB highest image (37.20), and the
+Sella saddle refined from it (36.2), MACE gives the same answer to within 1.2 kcal/mol.
+The CI-NEB highest image is also stable with respect to image count —
 **35.9 ± 1.0 kcal/mol for ≥11 NEB images** (9 images is too few: the barrier collapses
-to ~18 and the TS drifts to 2.5 Å).
+to ~18 and the TS drifts to 2.5 Å) — although none of these runs recorded whether the
+band optimization itself converged, and the 13-image band contains one collapsed image
+that the analysis excluded. The converged estimators are the relaxed scan and the Sella
+saddles.
 
-![Activation barrier vs NEB image count: converged for ≥11 images; 9 is
-under-resolved.](assets/neb_barrier_convergence.png){width=560}
+![Highest-image barrier vs NEB image count: stable for ≥11 images; 9 is
+under-resolved. Band-optimization convergence was not recorded for these
+runs.](assets/neb_barrier_convergence.png){width=560}
 
 ### The xtb-python stability gate
 
@@ -147,30 +155,40 @@ scatter of **5.08e−14 eV** (machine precision), a converged optimization at fm
 and ~4.4 ms per call. The robust settings (`electronic_temperature=1000`,
 `max_iterations=500`, `accuracy=1.0`) do not perturb path energetics.
 
-### xTB ASE-NEB fails under the standardized settings
+### The standardized NEB control did not meet its criteria
 
-Running *both* potentials through the identical 13-image CI-NEB (k = 0.5, FIRE /
-`NEBOptimizer`, fmax 0.05, climbing image, same concerted-scan seed): MACE converges,
-xTB does **not**. The band never forms a sensible path — atoms in the "TS" images fly
-apart (reported forming C–C of ~7–18 Å) and the apparent barrier balloons to
-**240–250 kcal/mol** under both optimizers.
+Both potentials were run through the identical 13-image CI-NEB (k = 0.5, FIRE or
+`NEBOptimizer`, fmax 0.05, climbing image, same concerted-scan seed), with recorded
+convergence and physical-band checks.
 
-![Standardized NEB: MACE gives a consistent ~36 kcal/mol barrier; the xTB band does not
-converge to a physical path under the identical settings (shown as its valid
-relaxed-scan reference instead).](assets/a2_standardized_neb.png){width=720}
+| standardized run | barrier (highest physical image) | band optimization | physical band? |
+|---|:---:|---|---|
+| MACE, `NEBOptimizer` | 36.5 kcal/mol | **not converged** (47 steps, final NEB force 25.5 eV/Å) | **no** — collapsed image 11, one ordering inversion |
+| MACE, FIRE | 37.2 kcal/mol | **not converged** (800-step cap, final NEB force 1312 eV/Å) | **no** — collapsed and scrambled image 11 |
+| xTB, `NEBOptimizer` / FIRE | 251.6 / 241.2 kcal/mol | — | **no** — no physical path |
+
+So the control is **not** a converged MACE band. It is used only diagnostically: its
+MACE highest physical images (36.5, 37.2) agree with the converged estimators — the
+relaxed scan (36.05) and the Sella saddles (36.2, 35.81) — to within 1.4 kcal/mol, and
+nothing more is claimed for it. Why the MACE bands did not converge is not established.
+For xTB the band never forms a physical path, and the apparent barrier is meaningless.
+
+![Standardized NEB control: the MACE highest physical image (~36–37 kcal/mol, from an
+unconverged band) and the xTB relaxed-scan reference, shown because the xTB band forms
+no physical path under the identical settings.](assets/a2_standardized_neb.png){width=720}
 
 ::: {.callout-important}
-## A PES/algorithm compatibility issue, not a backend failure
-The same `xtb-python` that passed the stability gate produces a clean single-point
-everywhere; only the *band optimization* on xTB's flatter, low-barrier surface diverges
-under these settings, and a file-based binary xTB would hit the identical problem. So
-the valid xTB reference stays the constrained relaxed scan + verified TS
-(6.7 kcal/mol). **Because MACE's barrier is the same ~36 kcal/mol no matter how it is
-computed, the ~30 kcal/mol gap is a genuine difference between the two
+## The xTB failure is not a backend failure
+The same `xtb-python` that passed the stability gate produces clean single points; the
+repository attributes the failure to the *band optimization* on xTB's surface under
+these settings rather than to the backend. The valid xTB reference therefore stays the
+constrained relaxed scan + verified TS (6.7 kcal/mol). **Because MACE's converged
+estimators (relaxed scan 36.05; Sella saddles 36.2 and 35.81) agree to within
+0.4 kcal/mol, the ~29 kcal/mol gap is a genuine difference between the two
 potential-energy surfaces — not the original path-method mismatch.**
 :::
 
-[Jul 31 follow-up findings — FINDINGS_jul31.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_jul31.md)
+[Jul 31 follow-up findings — FINDINGS_jul31.md →](https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/diels_alder/FINDINGS_jul31.md)
 
 ## 5 · Cross-PES transition-state validation {#sec-cross-pes}
 
@@ -217,9 +235,11 @@ Using the xTB TS as the initial guess for a Sella saddle search on MACE:
 ![Left: the xTB TS is not stationary on MACE. Right: two distinct but nearby saddles,
 and every δx perturbation recovers the same one.](assets/phase1_saddle_comparison.png){width=760}
 
-This recovered saddle agrees with the *independently obtained* CI-NEB result
-(35.8 vs 36.0 kcal/mol; 2.004 vs 2.005 Å mean forming C–C) — two different methods from
-two different starting points converging on the same structure.
+This recovered saddle agrees with the saddle refined *independently* from the CI-NEB
+image (35.81 vs 36.2 kcal/mol, each measured from its own reactant reference; 2.004 vs
+2.005 Å mean forming C–C) — two different starting points converging on the same
+structure. (Earlier versions of this page called the 36.0 value a CI-NEB result; 36.0 is
+the relaxed-scan maximum, and the CI-NEB highest image is 37.20.)
 
 ### δx robustness
 
@@ -260,13 +280,13 @@ regions. The barrier disagreement is intrinsic to the potentials rather than an
 artifact of methodology or convergence.
 
 **Not demonstrated.** Which method is physically more accurate cannot be settled from
-this experiment — though DFT/experiment (≈22–27 kcal/mol) sits between them, closer to
-MACE. Nothing here establishes that the foundation model's training set lacks these
+this experiment: no higher-level (DFT or experimental) reference has been established
+for this reaction in the project. Nothing here establishes that the foundation model's training set lacks these
 geometries, and nothing transfers automatically to other reactions.
 
 Two claims that are easy to conflate stay separate: **nearby TS geometry** and
 **matching TS energy** are different achievements, and this system has the first
 without the second.
 
-[Phase 1 complete findings — PHASE1_COMPLETE_FINDINGS.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/PHASE1_COMPLETE_FINDINGS.md) ·
-[NEB findings — FINDINGS_neb.md →](https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_neb.md)
+[Phase 1 complete findings — PHASE1_COMPLETE_FINDINGS.md →](https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/diels_alder/PHASE1_COMPLETE_FINDINGS.md) ·
+[NEB findings — FINDINGS_neb.md →](https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/diels_alder/FINDINGS_neb.md)

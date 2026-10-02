@@ -1,110 +1,249 @@
 ---
 title: "ML-Accelerated Metadynamics"
-subtitle: "Can a pretrained machine-learned potential stand in for a quantum-chemical reference — and where it can't, can we correct it without retraining?"
+subtitle: "Can a pretrained machine-learned potential stand in for a quantum-chemical reference in reactive enhanced sampling — and where it cannot, can a lightweight correction close the gap?"
 toc: false
 ---
 
-The long-term goal is a workflow where enhanced sampling runs on a **machine-learned
-surrogate** at the accuracy of the underlying quantum-chemical reference. Getting
-there means answering four questions in order: does an off-the-shelf potential agree
-with the reference at equilibrium, does that agreement survive bond breaking, can a
-lightweight correction close the gap that appears, and does that correction keep
-improving when fed more data.
+::: {.hero-status}
+<span>[Demonstrated]{.tag .demo} Diels–Alder benchmark complete</span>
+<span>[Negative result]{.tag .neg} iterative correction and reference handoff</span>
+<span>[Work in progress]{.tag .wip} Sn-β hydride-transfer benchmark in preparation</span>
+:::
 
-Each pillar below is a 2–4 minute read. The detailed **Studies** remain the source of
-truth for methodology, full tables, convergence tests, and troubleshooting.
+## The project in six answers {#sec-answers}
+
+::: {.answers}
+
+::: {}
+[What are we trying to do?]{.q}
+Run enhanced sampling (metadynamics) on a machine-learned surrogate while keeping the
+accuracy of the quantum-chemical reference it replaces — and know, with evidence,
+where that substitution holds and where it does not.
+:::
+
+::: {}
+[Why pretrained MACE with enhanced sampling?]{.q}
+Metadynamics needs long trajectories of force evaluations. A pretrained MACE model
+(MACE-OFF23 here) is cheap per step and scales roughly linearly, while the reference
+(GFN2-xTB) does not: MACE's measured cost relative to xTB falls from 2.5× to 1.0× between
+60 and 150 atoms. On equilibrium water it already reproduces the reference.
+[Pillar 1](p1-validation.qmd)
+:::
+
+::: {}
+[What did the Diels–Alder benchmark reveal?]{.q}
+Force *directions* agree closely along the reaction path (mean cosine 0.982) and the
+two potentials place the transition state in the same region — but they describe a
+materially different reactive surface: MACE's barrier is 35.8–37.2 kcal/mol depending on
+the estimator, against 6.7 for xTB. The difference is concentrated at the transition
+state and survives every methodological control. [Pillar 2](p2-reactive.qmd)
+:::
+
+::: {}
+[What did targeted correction accomplish?]{.q}
+A conservative pairwise correction, trained mostly on barrier-region data and applied
+without touching the foundation model, brings the certified saddle to 6.33 kcal/mol
+against the frozen xTB reactant geometry, or 8.23 kcal/mol against the reactant relaxed
+on the corrected model — versus 6.7 for xTB. [Pillar 3](p3-correction.qmd)
+:::
+
+::: {}
+[What failed or remains unresolved?]{.q}
+Repeating the correction with more targeted reference data did not keep improving it:
+the scan barrier degraded from 9.87 to 13.91 kcal/mol over 42 extra reference
+calculations. Handing corrected-model saddles to the reference optimizer reached the
+reference transition state in only 3 of 6 cases, and no tested descriptor predicted
+which. [Pillar 4](p4-iterative.qmd)
+:::
+
+::: {}
+[What are we testing next?]{.q}
+Whether the newer MACE-OMOL and MACE-POLAR foundation models give a useful starting
+surface for a catalytic reaction — the Sn-β-catalysed glucose C2→C1 hydride transfer.
+The pipeline is built and tested; the authoritative structures are not yet in hand, so
+there are **no results** yet. [Current work](current-work.qmd)
+:::
+
+:::
+
+## The pipeline being tested {#sec-pipeline}
+
+::: {.pipeline}
+::: {.step .ref}
+**Reference**
+GFN2-xTB scan, Sella saddle, Hessian — a chosen alignment target, not ground truth
+:::
+
+[→]{.arrow}
+
+::: {.step}
+**Pretrained MACE**
+foundation model, used off the shelf
+:::
+
+[→]{.arrow}
+
+::: {.step}
+**Reactive-path comparison**
+energetics, forces, saddles on both surfaces
+:::
+
+[→]{.arrow}
+
+::: {.step}
+**Targeted correction**
+conservative Delta fit on force residuals
+:::
+
+[→]{.arrow}
+
+::: {.step}
+**Certified saddle**
+one significant imaginary mode, aligned with the reaction
+:::
+:::
+
+## Findings {#sec-findings}
+
+Each pillar is a 2–4 minute read. The detailed [Studies](04-diels-alder.qmd) remain the
+source of truth for methodology, full tables, and controls; the
+[Methods](methods.qmd) page defines every estimator used below.
 
 ::: {.pillar-grid}
 
 ::: {.pillar-card}
 [PILLAR 1]{.num}
 
-### [MACE ↔ xTB validation](p1-validation.qmd)
+### [Equilibrium validation](p1-validation.qmd)
 
 [Does off-the-shelf MACE-OFF23 reproduce GFN2-xTB for equilibrium water?]{.q}
 
-[**Yes.** Forces correlate at r ≈ 0.99 and MD reproduces droplet structure.]{.hit}
+[[Demonstrated]{.tag .demo} **Yes.** Forces correlate at r = 0.991–0.992 and MD
+reproduces the O–O structure.]{.hit}
 :::
 
 ::: {.pillar-card .flagship}
 [PILLAR 2]{.num}
 
-### [Reactive chemistry](p2-reactive.qmd)
+### [Reactive benchmark](p2-reactive.qmd)
 
 [Does that agreement survive bond-forming chemistry?]{.q}
 
-[**No.** Barriers differ by ~29 kcal/mol — a genuine difference between the two
-potential-energy surfaces, not a path-search artifact.]{.hit}
+[[Demonstrated]{.tag .demo} **Only partly.** Force directions and TS region agree;
+barriers differ by 29–31 kcal/mol, a genuine difference between the two surfaces.]{.hit}
 :::
 
 ::: {.pillar-card .flagship}
 [PILLAR 3]{.num}
 
-### [Post-training correction](p3-correction.qmd)
+### [Targeted correction](p3-correction.qmd)
 
-[Can a lightweight correction close that gap without touching the foundation model?]{.q}
+[Can a lightweight correction close the gap without retraining?]{.q}
 
-[**Largely, once.** A targeted conservative Delta puts the certified saddle at
-6.33 kcal/mol against an xTB target of 6.7.]{.hit}
+[[Demonstrated]{.tag .demo} **Largely, once.** Certified saddle 6.33 (frozen xTB
+reactant) / 8.23 (model-relaxed reactant) vs xTB 6.7 kcal/mol.]{.hit}
 :::
 
 ::: {.pillar-card}
 [PILLAR 4]{.num}
 
-### [Iterative calibration](p4-iterative.qmd)
+### [Iteration and handoff](p4-iterative.qmd)
 
-[Does repeating that correction with more targeted data keep improving it?]{.q}
+[Does more targeted data, or handing off to the reference, keep improving it?]{.q}
 
-[**No.** 42 further reference calculations did not improve on iteration 0 — a
-useful negative result.]{.hit}
+[[Negative result]{.tag .neg} **No.** Iteration 0 stayed the best model; only 3 of 6
+handoffs reached the reference TS.]{.hit}
+:::
+
+::: {.pillar-card .wip}
+[CURRENT WORK]{.num}
+
+### [Sn-β glucose hydride transfer](current-work.qmd)
+
+[Can MACE-OMOL / MACE-POLAR give a useful starting surface for a catalytic reaction?]{.q}
+
+[[Work in progress]{.tag .wip} Pipeline built and tested; waiting on authoritative
+endpoint structures. No results yet.]{.hit}
 :::
 
 :::
 
-## The scientific chain
+## Key numbers {#sec-numbers}
 
-Each pillar exists because the previous one produced a specific question:
+All energies are Diels–Alder activation barriers in kcal/mol. Each card names the
+estimator and the reactant reference; they are not interchangeable
+([estimator glossary](methods.qmd#sec-glossary)).
 
-1. **Equilibrium agreement is strong** — which makes the reactive test meaningful
-   rather than a foregone conclusion.
+::: {.numgrid}
+
+::: {.numcard}
+[6.7]{.v}
+[xTB reference]{.est}
+[relaxed scan; Sella saddle verified by Hessian, one imaginary mode −394 cm⁻¹]{.ref}
+:::
+
+::: {.numcard}
+[35.8–37.2]{.v}
+[raw MACE-OFF23]{.est}
+[35.81 Sella saddle (frozen xTB reactant) · 36.2 NEB-refined saddle · 37.20 CI-NEB highest image (diagnostic; band convergence not recorded)]{.ref}
+:::
+
+::: {.numcard}
+[6.33]{.v}
+[certified corrected saddle]{.est}
+[reference: frozen xTB reactant geometry]{.ref}
+[**8.23** — same saddle, reactant relaxed on the corrected model (stricter internal check)]{.alt}
+:::
+
+::: {.numcard .neg}
+[9.87 → 13.91]{.v}
+[iterative loop, scan maximum]{.est}
+[five refits, 42 extra xTB calls; no convergence toward 6.7]{.ref}
+:::
+
+:::
+
+::: {.column-page}
+![Barrier by model, estimator, and reactant reference (left), and across the iterative
+correction loop (right). Marker shape is the estimator; open markers use the
+model-relaxed reactant; grey crosses are uncertified stationary points. Every value is
+read from the repository's result files by
+`site/build_barrier_ladder.py`.](assets/barrier_ladder.png){width=100%}
+:::
+
+## The scientific chain {#sec-chain}
+
+Each step exists because the previous one raised a specific question:
+
+1. **Equilibrium agreement is strong** — which makes the reactive test meaningful rather
+   than a foregone conclusion.
 2. **Reactive agreement fails, and the failure is localized** to the transition-state
    region — which motivates correcting *there* rather than globally.
-3. **Targeted correction works, once** — which raises the obvious follow-up: does it
-   keep working if iterated?
-4. **It does not** — which points at correction capacity, not reference-data quantity,
-   as the next thing to test.
+3. **Targeted correction works, once** — which raises the follow-up: does it keep working
+   if iterated, and can the corrected model hand off to the reference?
+4. **It does not, and no handoff signal was found** — which points at correction capacity,
+   rather than reference-data quantity, as the next thing to test.
 
 The [Research Map](research-map.qmd) shows how the individual studies attach to this
-chain. It is optional — everything on the main pages stands on its own.
+chain.
 
-## Results at a glance
+## What we learned {#sec-learned}
 
-| # | Study | Headline result | Pillar |
-|---|-------|-----------------|:---:|
-| 01 | [Bias × size](01-sweep.qmd) | The RMSD bias breaks the **weakest** bond; small clusters evaporate. | [1](p1-validation.qmd) |
-| 02 | [PBC & temperature](02-pbc.qmd) | Periodicity confines the system; a large O–O gap is *drift*, not dissociation. | [1](p1-validation.qmd) |
-| 03 | [Droplets](03-droplets.qmd) | **Size suppresses evaporation**; raising `kpush` barely perturbs n=20–50. | [1](p1-validation.qmd) |
-| 04 | [Diels–Alder](04-diels-alder.qmd) | Verified concerted TS at **6.7 kcal/mol**, −394 cm⁻¹; raw MACE gives ~36. | [2](p2-reactive.qmd) |
-| 05 | [MACE-OFF23](05-mace.qmd) | Forces track xTB at **r ≈ 0.99**; MD structure reproduced; crossover by n≈50. | [1](p1-validation.qmd) |
-| 06 | [kpush scaling](06-kpush.qmd) | Bias force ∝ **kpush/N**, so `kpush` must scale ∝ N. | [1](p1-validation.qmd) |
-| 07 | [CV design](07-cv-design.qmd) | 7 candidate CVs collapse to ~3 independent axes. | [1](p1-validation.qmd) |
-| 08 | [Corrections](08-corrections.qmd) | A conservative pairwise **Delta** removes most of the barrier error; iterating it does not help further. | [3](p3-correction.qmd) · [4](p4-iterative.qmd) |
-
-## Methods in one paragraph
-
-Gas-phase and periodic **GFN2/GFN1-xTB** metadynamics (built-in Cartesian-RMSD bias),
-NVT, 0.5 fs timestep; analysis with ASE / NumPy / pandas. Reactions via `xtb --path`,
-relaxed concerted scans, and **Sella** saddle optimization with Hessian verification.
-Surrogate benchmarking with **MACE-OFF23 (small)** as an ASE calculator; corrections
-applied through a `CorrectedCalculator` wrapper so the foundation model is never
-modified. All code, data, and figures are in the
-[repository](https://github.com/tiangroup-uofa/xtb_metadynamics); each study page links
-to its detailed `FINDINGS` document.
+- [Demonstrated]{.tag .demo} A pretrained MACE model can agree closely with a reference at
+  equilibrium and still represent a materially different reactive surface. Equilibrium
+  validation does not license reactive use.
+- [Demonstrated]{.tag .demo} Matching a barrier is not the same as matching a saddle: scan
+  maxima, NEB images, and certified saddles on the *same* model differ by up to
+  3.5 kcal/mol, and the reactant reference moves the result by another 1.9 kcal/mol.
+- [Demonstrated]{.tag .demo} Where the correction data goes matters more than how much
+  there is — at equal budget, barrier-region data moved the barrier; generic data did not.
+- [Interpretation]{.tag .interp} The failure of iteration is consistent with a capacity
+  limit of a radial pairwise correction. This is a hypothesis, not a result.
+- [Open question]{.tag .open} Whether a richer correction converges on the same budget —
+  and whether the newer MACE-OMOL / MACE-POLAR models start closer for catalytic
+  chemistry.
 
 ::: {.methodnote}
-[On the RMSD bias]{.lbl}
-xTB biases along **Cartesian RMSD** to previously visited structures — not along any
-bond or angle. Every collective variable computed in analysis is a *post-hoc
-descriptor*, and `Epot` versus a CV is a **sampled potential-energy landscape from a
-biased run**, not a free-energy surface.
+[Reference, not ground truth]{.lbl}
+GFN2-xTB is the chosen alignment target, not ground truth. This project has not established a higher-level (DFT or experimental) barrier for this reaction, so which surface is physically closer is not assessed here. Matching xTB is reference-matching, never "improved accuracy".
 :::
