@@ -99,71 +99,93 @@ ul.task-list li input[type="checkbox"] {
     <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Overview</span></a>
   </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-findings" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Findings</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-findings">    
+        <li>
+    <a class="dropdown-item" href="./p1-validation.html">
+ <span class="dropdown-text">1 · Validation — equilibrium water</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./p2-reactive.html">
+ <span class="dropdown-text">2 · Reactive benchmark — Diels–Alder</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./p3-correction.html">
+ <span class="dropdown-text">3 · Correction — targeted Delta</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./p4-iterative.html">
+ <span class="dropdown-text">4 · Iterative correction and handoff</span></a>
+  </li>  
+    </ul>
+  </li>
   <li class="nav-item">
-    <a class="nav-link" href="./p1-validation.html"> 
-<span class="menu-text">Validation</span></a>
+    <a class="nav-link" href="./current-work.html"> 
+<span class="menu-text">Current work</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./p2-reactive.html"> 
-<span class="menu-text">Reactive</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./p3-correction.html"> 
-<span class="menu-text">Correction</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./p4-iterative.html"> 
-<span class="menu-text">Iterative</span></a>
+    <a class="nav-link" href="./methods.html"> 
+<span class="menu-text">Methods</span></a>
   </li>  
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-studies" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Studies</span>
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-studies">    
-        <li>
-    <a class="dropdown-item" href="./01-sweep.html">
- <span class="dropdown-text">Study 01 — Bias × size</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./02-pbc.html">
- <span class="dropdown-text">Study 02 — Periodicity &amp; temperature</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./03-droplets.html">
- <span class="dropdown-text">Study 03 — Large vacuum droplets</span></a>
-  </li>  
+        <li class="dropdown-header">Core studies</li>
         <li>
     <a class="dropdown-item" href="./04-diels-alder.html">
- <span class="dropdown-text">Study 04 — Diels–Alder reaction</span></a>
+ <span class="dropdown-text">04 — Diels–Alder reaction</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./05-mace.html">
- <span class="dropdown-text">Study 05 — MACE-OFF23 surrogate</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./06-kpush.html">
- <span class="dropdown-text">Study 06 — kpush scaling</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./07-cv-design.html">
- <span class="dropdown-text">Study 07 — Collective-variable scoping</span></a>
+ <span class="dropdown-text">05 — MACE-OFF23 surrogate</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./08-corrections.html">
- <span class="dropdown-text">Study 08 — Post-training corrections</span></a>
+ <span class="dropdown-text">08 — Post-training corrections</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./09-handoff.html">
+ <span class="dropdown-text">09 — Reference handoff</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Reference-workflow infrastructure</li>
+        <li>
+    <a class="dropdown-item" href="./01-sweep.html">
+ <span class="dropdown-text">01 — Bias × size</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02-pbc.html">
+ <span class="dropdown-text">02 — Periodicity &amp; temperature</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03-droplets.html">
+ <span class="dropdown-text">03 — Large vacuum droplets</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./06-kpush.html">
+ <span class="dropdown-text">06 — kpush scaling</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./07-cv-design.html">
+ <span class="dropdown-text">07 — Collective-variable scoping</span></a>
   </li>  
     </ul>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="./research-map.html"> 
-<span class="menu-text">Research Map</span></a>
+<span class="menu-text">Map</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="https://github.com/tiangroup-uofa/xtb_metadynamics"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/tiangroup-uofa/ml-accelerated-metadynamics"> <i class="bi bi-github" role="img">
 </i> 
-<span class="menu-text">Repo</span></a>
+<span class="menu-text">Repository</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -279,44 +301,55 @@ ul.task-list li input[type="checkbox"] {
 <p>Enhanced sampling <em>finds</em> that a transition is reachable, but a quantitative barrier needs a proper TS treatment — the RMSD bias alone is chemically blind. (Also: xtb has no TS optimizer — <code>--optts</code> is not a flag; use Sella. And read the <code>vibspectrum</code> file for frequencies, not the <code>--hess</code> stdout.)</p>
 </div>
 </div>
-<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_diels_alder.md">Full findings — FINDINGS_diels_alder.md →</a></p>
+<p><a href="https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/diels_alder/FINDINGS_diels_alder.md">Full findings — FINDINGS_diels_alder.md →</a></p>
 </section>
 <section id="sec-mechanism" class="level2">
 <h2 class="anchored" data-anchor-id="sec-mechanism">2 · Mechanism and energetics</h2>
 <p>Does the MACE-OFF23 surrogate get reaction <em>energetics</em> right with <strong>no fine-tuning</strong>? xTB has a built-in path search; MACE doesn’t, so we build the profile with a climbing-image <strong>NEB</strong> (ASE) and compare.</p>
 <table class="table">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 48%">
+<col style="width: 33%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>quantity</th>
 <th style="text-align: center;">GFN2-xTB (built-in path)</th>
-<th style="text-align: center;">MACE-OFF23 (NEB)</th>
+<th style="text-align: center;">MACE-OFF23</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>activation barrier</td>
-<td style="text-align: center;">6.7 kcal/mol</td>
-<td style="text-align: center;"><strong>36.2 kcal/mol</strong></td>
+<td>activation barrier — CI-NEB highest image (13 images; band convergence not recorded)</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><strong>37.20 kcal/mol</strong></td>
 </tr>
 <tr class="even">
+<td>activation barrier — Sella saddle refined from that image</td>
+<td style="text-align: center;">6.7 kcal/mol (verified saddle)</td>
+<td style="text-align: center;"><strong>36.2 kcal/mol</strong></td>
+</tr>
+<tr class="odd">
 <td>reaction energy</td>
 <td style="text-align: center;">−57.6 kcal/mol</td>
 <td style="text-align: center;"><strong>−36.1 kcal/mol</strong></td>
 </tr>
-<tr class="odd">
-<td>TS forming C–C</td>
+<tr class="even">
+<td>TS forming C–C (refined saddle)</td>
 <td style="text-align: center;">2.32 Å</td>
 <td style="text-align: center;">2.03 / 1.98 Å (slightly asynchronous)</td>
 </tr>
 </tbody>
 </table>
+<p><span class="table-note">Both MACE barriers are measured from the MACE reactant relaxed with the forming bonds pinned. See the <a href="./methods.html#sec-glossary">estimator glossary</a>.</span></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="assets/neb_da_mace_vs_xtb.png" class="img-fluid figure-img" width="760"></p>
 <figcaption>Minimum energy path and energetics: MACE-OFF23 (CI-NEB) vs GFN2-xTB (built-in path).</figcaption>
 </figure>
 </div>
-<p><strong>Outcome (2): same TS location (~2.0–2.3 Å), very different energetics.</strong> Experiment/DFT give a barrier ≈ 22–27 kcal/mol and ΔH ≈ −40. GFN2-xTB badly underestimates the barrier (6.7) and overbinds the product (−57.6); MACE-OFF23 (DFT-trained) is closer on both, off the shelf. The refined MACE TS is a genuine first-order saddle (one imaginary mode, −740 cm⁻¹) and slightly <strong>asynchronous</strong> — MACE makes the perfectly synchronous geometry a second-order saddle.</p>
+<p><strong>Outcome (2): same TS location (~2.0–2.3 Å), very different energetics.</strong> Which surface is physically closer is not assessed here: the project has not established a higher-level (DFT or experimental) reference for this reaction. The refined MACE TS is a genuine first-order saddle (one imaginary mode, −740 cm⁻¹) and slightly <strong>asynchronous</strong> — MACE makes the perfectly synchronous geometry a second-order saddle.</p>
 <p>Both potentials agree the reaction is a <strong>concerted, synchronous</strong> cycloaddition — the two forming bonds contract together (b1 ≈ b2 along the whole path), with only MACE’s TS marginally asynchronous (2.03 / 1.98 Å). They differ in energetics, not mechanism.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -324,7 +357,7 @@ ul.task-list li input[type="checkbox"] {
 <figcaption>Forming-bond evolution: b1 and b2 contract synchronously for both methods; MACE’s TS carries a small 0.05 Å asynchrony.</figcaption>
 </figure>
 </div>
-<p><strong>Literature context:</strong> experiment gives a barrier ≈ 27.5 and ΔH ≈ −40 kcal/mol. xTB (6.7 / −57.6) is qualitatively wrong on both; MACE-OFF23 (36 / −36…−41) nails the reaction energy and is in the right kinetic regime, though it overestimates the barrier by ~9 kcal/mol.</p>
+<p><strong>Reference, not ground truth:</strong> xTB (6.7 / −57.6 kcal/mol) is the alignment target for every later experiment, and MACE-OFF23 (35.8–37.2 / −36.1) differs from it by ~30 and ~21 kcal/mol. Neither is compared here against an established higher-level reference.</p>
 </section>
 <section id="sec-divergence" class="level2">
 <h2 class="anchored" data-anchor-id="sec-divergence">3 · Where the potentials diverge</h2>
@@ -432,11 +465,11 @@ ul.task-list li input[type="checkbox"] {
 <p>The obvious objection to the ~30 kcal/mol gap: MACE used NEB, xTB used its built-in path search, so maybe the gap is a <strong>path-method mismatch</strong>. Three controls close that off.</p>
 <section id="maces-barrier-is-method-invariant" class="level3">
 <h3 class="anchored" data-anchor-id="maces-barrier-is-method-invariant">MACE’s barrier is method-invariant</h3>
-<p>Across the relaxed scan (36.0), the Sella saddle (36.2), and a standardized 13-image CI-NEB (36–37), MACE gives the same answer. It is also numerically converged — <strong>35.9 ± 1.0 kcal/mol for ≥11 NEB images</strong> (9 images is too few: the barrier collapses to ~18 and the TS drifts to 2.5 Å).</p>
+<p>Across the constrained relaxed scan (36.05), the CI-NEB highest image (37.20), and the Sella saddle refined from it (36.2), MACE gives the same answer to within 1.2 kcal/mol. The CI-NEB highest image is also stable with respect to image count — <strong>35.9 ± 1.0 kcal/mol for ≥11 NEB images</strong> (9 images is too few: the barrier collapses to ~18 and the TS drifts to 2.5 Å) — although none of these runs recorded whether the band optimization itself converged, and the 13-image band contains one collapsed image that the analysis excluded. The converged estimators are the relaxed scan and the Sella saddles.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="assets/neb_barrier_convergence.png" class="img-fluid figure-img" width="560"></p>
-<figcaption>Activation barrier vs NEB image count: converged for ≥11 images; 9 is under-resolved.</figcaption>
+<figcaption>Highest-image barrier vs NEB image count: stable for ≥11 images; 9 is under-resolved. Band-optimization convergence was not recorded for these runs.</figcaption>
 </figure>
 </div>
 </section>
@@ -444,13 +477,50 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="the-xtb-python-stability-gate">The xtb-python stability gate</h3>
 <p>Before running xTB through the same NEB driver, the backend was gated: single-points, forces, and geometry optimization are reproducible, with repeat-evaluation energy scatter of <strong>5.08e−14 eV</strong> (machine precision), a converged optimization at fmax 0.021, and ~4.4 ms per call. The robust settings (<code>electronic_temperature=1000</code>, <code>max_iterations=500</code>, <code>accuracy=1.0</code>) do not perturb path energetics.</p>
 </section>
-<section id="xtb-ase-neb-fails-under-the-standardized-settings" class="level3">
-<h3 class="anchored" data-anchor-id="xtb-ase-neb-fails-under-the-standardized-settings">xTB ASE-NEB fails under the standardized settings</h3>
-<p>Running <em>both</em> potentials through the identical 13-image CI-NEB (k = 0.5, FIRE / <code>NEBOptimizer</code>, fmax 0.05, climbing image, same concerted-scan seed): MACE converges, xTB does <strong>not</strong>. The band never forms a sensible path — atoms in the “TS” images fly apart (reported forming C–C of ~7–18 Å) and the apparent barrier balloons to <strong>240–250 kcal/mol</strong> under both optimizers.</p>
+<section id="the-standardized-neb-control-did-not-meet-its-criteria" class="level3">
+<h3 class="anchored" data-anchor-id="the-standardized-neb-control-did-not-meet-its-criteria">The standardized NEB control did not meet its criteria</h3>
+<p>Both potentials were run through the identical 13-image CI-NEB (k = 0.5, FIRE or <code>NEBOptimizer</code>, fmax 0.05, climbing image, same concerted-scan seed), with recorded convergence and physical-band checks.</p>
+<table class="table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 35%">
+<col style="width: 21%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>standardized run</th>
+<th style="text-align: center;">barrier (highest physical image)</th>
+<th>band optimization</th>
+<th>physical band?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MACE, <code>NEBOptimizer</code></td>
+<td style="text-align: center;">36.5 kcal/mol</td>
+<td><strong>not converged</strong> (47 steps, final NEB force 25.5 eV/Å)</td>
+<td><strong>no</strong> — collapsed image 11, one ordering inversion</td>
+</tr>
+<tr class="even">
+<td>MACE, FIRE</td>
+<td style="text-align: center;">37.2 kcal/mol</td>
+<td><strong>not converged</strong> (800-step cap, final NEB force 1312 eV/Å)</td>
+<td><strong>no</strong> — collapsed and scrambled image 11</td>
+</tr>
+<tr class="odd">
+<td>xTB, <code>NEBOptimizer</code> / FIRE</td>
+<td style="text-align: center;">251.6 / 241.2 kcal/mol</td>
+<td>—</td>
+<td><strong>no</strong> — no physical path</td>
+</tr>
+</tbody>
+</table>
+<p>So the control is <strong>not</strong> a converged MACE band. It is used only diagnostically: its MACE highest physical images (36.5, 37.2) agree with the converged estimators — the relaxed scan (36.05) and the Sella saddles (36.2, 35.81) — to within 1.4 kcal/mol, and nothing more is claimed for it. Why the MACE bands did not converge is not established. For xTB the band never forms a physical path, and the apparent barrier is meaningless.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="assets/a2_standardized_neb.png" class="img-fluid figure-img" width="720"></p>
-<figcaption>Standardized NEB: MACE gives a consistent ~36 kcal/mol barrier; the xTB band does not converge to a physical path under the identical settings (shown as its valid relaxed-scan reference instead).</figcaption>
+<figcaption>Standardized NEB control: the MACE highest physical image (~36–37 kcal/mol, from an unconverged band) and the xTB relaxed-scan reference, shown because the xTB band forms no physical path under the identical settings.</figcaption>
 </figure>
 </div>
 <div class="callout callout-style-default callout-important callout-titled">
@@ -459,14 +529,14 @@ ul.task-list li input[type="checkbox"] {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>A PES/algorithm compatibility issue, not a backend failure
+<span class="screen-reader-only">Important</span>The xTB failure is not a backend failure
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The same <code>xtb-python</code> that passed the stability gate produces a clean single-point everywhere; only the <em>band optimization</em> on xTB’s flatter, low-barrier surface diverges under these settings, and a file-based binary xTB would hit the identical problem. So the valid xTB reference stays the constrained relaxed scan + verified TS (6.7 kcal/mol). <strong>Because MACE’s barrier is the same ~36 kcal/mol no matter how it is computed, the ~30 kcal/mol gap is a genuine difference between the two potential-energy surfaces — not the original path-method mismatch.</strong></p>
+<p>The same <code>xtb-python</code> that passed the stability gate produces clean single points; the repository attributes the failure to the <em>band optimization</em> on xTB’s surface under these settings rather than to the backend. The valid xTB reference therefore stays the constrained relaxed scan + verified TS (6.7 kcal/mol). <strong>Because MACE’s converged estimators (relaxed scan 36.05; Sella saddles 36.2 and 35.81) agree to within 0.4 kcal/mol, the ~29 kcal/mol gap is a genuine difference between the two potential-energy surfaces — not the original path-method mismatch.</strong></p>
 </div>
 </div>
-<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_jul31.md">Jul 31 follow-up findings — FINDINGS_jul31.md →</a></p>
+<p><a href="https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/diels_alder/FINDINGS_jul31.md">Jul 31 follow-up findings — FINDINGS_jul31.md →</a></p>
 </section>
 </section>
 <section id="sec-cross-pes" class="level2">
@@ -568,7 +638,7 @@ ul.task-list li input[type="checkbox"] {
 <figcaption>Left: the xTB TS is not stationary on MACE. Right: two distinct but nearby saddles, and every δx perturbation recovers the same one.</figcaption>
 </figure>
 </div>
-<p>This recovered saddle agrees with the <em>independently obtained</em> CI-NEB result (35.8 vs 36.0 kcal/mol; 2.004 vs 2.005 Å mean forming C–C) — two different methods from two different starting points converging on the same structure.</p>
+<p>This recovered saddle agrees with the saddle refined <em>independently</em> from the CI-NEB image (35.81 vs 36.2 kcal/mol, each measured from its own reactant reference; 2.004 vs 2.005 Å mean forming C–C) — two different starting points converging on the same structure. (Earlier versions of this page called the 36.0 value a CI-NEB result; 36.0 is the relaxed-scan maximum, and the CI-NEB highest image is 37.20.)</p>
 </section>
 <section id="δx-robustness" class="level3">
 <h3 class="anchored" data-anchor-id="δx-robustness">δx robustness</h3>
@@ -648,9 +718,9 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="sec-interpretation">6 · Final interpretation</h2>
 <p><strong>Directly demonstrated.</strong> On identical frozen geometries the two potentials disagree by 21.2 kcal/mol on the barrier; the xTB TS is not a MACE stationary point (1.84 eV/Å); Sella from that TS converges to a genuine first-order MACE saddle 0.316 Å away at 35.8 kcal/mol, matching the independent NEB result; and that saddle is robustly recovered from ±0.05 Å perturbations with zero barrier spread.</p>
 <p><strong>Supported interpretation.</strong> The two surfaces describe nearby but distinct saddle regions. The barrier disagreement is intrinsic to the potentials rather than an artifact of methodology or convergence.</p>
-<p><strong>Not demonstrated.</strong> Which method is physically more accurate cannot be settled from this experiment — though DFT/experiment (≈22–27 kcal/mol) sits between them, closer to MACE. Nothing here establishes that the foundation model’s training set lacks these geometries, and nothing transfers automatically to other reactions.</p>
+<p><strong>Not demonstrated.</strong> Which method is physically more accurate cannot be settled from this experiment: no higher-level (DFT or experimental) reference has been established for this reaction in the project. Nothing here establishes that the foundation model’s training set lacks these geometries, and nothing transfers automatically to other reactions.</p>
 <p>Two claims that are easy to conflate stay separate: <strong>nearby TS geometry</strong> and <strong>matching TS energy</strong> are different achievements, and this system has the first without the second.</p>
-<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/PHASE1_COMPLETE_FINDINGS.md">Phase 1 complete findings — PHASE1_COMPLETE_FINDINGS.md →</a> · <a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_neb.md">NEB findings — FINDINGS_neb.md →</a></p>
+<p><a href="https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/diels_alder/PHASE1_COMPLETE_FINDINGS.md">Phase 1 complete findings — PHASE1_COMPLETE_FINDINGS.md →</a> · <a href="https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/diels_alder/FINDINGS_neb.md">NEB findings — FINDINGS_neb.md →</a></p>
 
 
 </section>
@@ -729,7 +799,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/tiangroup-uofa\.github\.io\/ml-accelerated-metadynamics\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -1060,14 +1130,14 @@ ul.task-list li input[type="checkbox"] {
 <footer class="footer">
   <div class="nav-footer">
     <div class="nav-footer-left">
-      &nbsp;
-    </div>   
+<p>ML-Accelerated Metadynamics · Tian group, University of Alberta</p>
+</div>   
     <div class="nav-footer-center">
-<p>xTB metadynamics of water · Tian group · <a href="https://github.com/tiangroup-uofa/xtb_metadynamics">github</a></p>
-</div>
-    <div class="nav-footer-right">
       &nbsp;
     </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/tiangroup-uofa/ml-accelerated-metadynamics">Repository</a> · <a href="./methods.html">Methods &amp; evidence standards</a></p>
+</div>
   </div>
 </footer>
 

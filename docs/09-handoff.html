@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Pillar 3 — Post-training correction – ML-Accelerated Metadynamics</title>
+<title>Study 09 — Reference handoff: cost and diagnostics – ML-Accelerated Metadynamics</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -208,24 +208,21 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul class="collapse">
-  <li><a href="#why-we-tested-it" id="toc-why-we-tested-it" class="nav-link active" data-scroll-target="#why-we-tested-it">Why we tested it</a></li>
-  <li><a href="#sec-architectures" id="toc-sec-architectures" class="nav-link" data-scroll-target="#sec-architectures">1 · Four correction architectures</a></li>
-  <li><a href="#sec-where" id="toc-sec-where" class="nav-link" data-scroll-target="#sec-where">2 · Where does calibration actually matter?</a></li>
-  <li><a href="#sec-targeted" id="toc-sec-targeted" class="nav-link" data-scroll-target="#sec-targeted">3 · Targeted versus generic data, at equal budget</a></li>
-  <li><a href="#sec-scan-vs-saddle" id="toc-sec-scan-vs-saddle" class="nav-link" data-scroll-target="#sec-scan-vs-saddle">4 · Scan versus saddle: a methodological refinement</a></li>
-  <li><a href="#sec-ts-criteria" id="toc-sec-ts-criteria" class="nav-link" data-scroll-target="#sec-ts-criteria">What counts as a transition state?</a></li>
-  <li><a href="#what-we-learned" id="toc-what-we-learned" class="nav-link" data-scroll-target="#what-we-learned">What we learned</a></li>
-  <li><a href="#related-studies" id="toc-related-studies" class="nav-link" data-scroll-target="#related-studies">Related studies</a></li>
+  <li><a href="#sec-method" id="toc-sec-method" class="nav-link active" data-scroll-target="#sec-method">Method</a></li>
+  <li><a href="#sec-cost" id="toc-sec-cost" class="nav-link" data-scroll-target="#sec-cost">Benchmark — cost to reach the xTB TS</a></li>
+  <li><a href="#sec-diagnostics" id="toc-sec-diagnostics" class="nav-link" data-scroll-target="#sec-diagnostics">Diagnostics — is there a handoff signal?</a></li>
+  <li><a href="#sec-caveats" id="toc-sec-caveats" class="nav-link" data-scroll-target="#sec-caveats">Caveats</a></li>
+  <li><a href="#related" id="toc-related" class="nav-link" data-scroll-target="#related">Related</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Pillar 3 — Post-training correction</h1>
-<p class="subtitle lead">Closing the reactive gap with a lightweight conservative correction — without fine-tuning the foundation model.</p>
+<h1 class="title">Study 09 — Reference handoff: cost and diagnostics</h1>
+<p class="subtitle lead">Can a corrected-MACE saddle hand off to the xTB saddle search more cheaply than the reference alone — and can we tell in advance when it will work?</p>
 </div>
 
 
@@ -243,376 +240,248 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="question">
-<p><span class="pillar-section-label">Scientific question</span> Can a <strong>lightweight post-training correction</strong> adapt a pretrained MACE toward a chosen reference, without fine-tuning the foundation model?</p>
+<p><span class="pillar-section-label">Scientific question</span> Given the Phase C corrected model and the iterative loop of <a href="./p4-iterative.html">Pillar 4</a>, does handing a corrected-model saddle to Sella on the GFN2-xTB surface reduce the reference cost of reaching the verified xTB transition state — and is there an observable that says when to hand off?</p>
 </div>
-<section id="why-we-tested-it" class="level2">
-<h2 class="anchored" data-anchor-id="why-we-tested-it">Why we tested it</h2>
-<p><a href="./p2-reactive.html">Pillar 2</a> established two things that together make a correction plausible. First, the disagreement is <strong>systematic, not random</strong>: force directions already agree (cosine ≈ 0.98) and it is magnitude that is off. Second, it is <strong>localized</strong> in the transition-state region rather than spread across the surface. A systematic, localized residual is exactly the kind of thing a small model can absorb.</p>
-<p>Fine-tuning MACE-OFF23 is deliberately off the table here — the point is to see how far a cheap wrapper gets. Every correction below is applied through a <code>CorrectedCalculator</code> that leaves the foundation model untouched.</p>
-<p>The page follows the progression in order:</p>
-<div class="pipeline">
-<div class="step">
-<p><strong>Raw MACE</strong> 36.05 (scan max)</p>
-</div>
-<p><span class="arrow">→</span></p>
-<div class="step">
-<p><strong>Simple corrections</strong> global / affine / element: 32.3–36.0</p>
-</div>
-<p><span class="arrow">→</span></p>
-<div class="step">
-<p><strong>Conservative pairwise Δ</strong> 11.66 (scan max)</p>
-</div>
-<p><span class="arrow">→</span></p>
-<div class="step">
-<p><strong>Barrier-enriched Δ</strong> 9.87 (scan max)</p>
-</div>
-<p><span class="arrow">→</span></p>
-<div class="step">
-<p><strong>Certified saddle</strong> 6.33 frozen xTB R · 8.23 model-relaxed R</p>
-</div>
-</div>
-<p>Barriers in kcal/mol against an xTB reference of 6.7; “scan max” is the constrained relaxed-scan maximum (<a href="./methods.html#sec-glossary">glossary</a>).</p>
+<p>Two linked experiments (Aug 21), both negative. Full write-ups: <a href="https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/corrections/AUG21_HANDOFF_FINDINGS.md">handoff benchmark</a> · <a href="https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/corrections/AUG21_DIAGNOSTIC_FINDINGS.md">handoff diagnostics</a>. All numbers below are read from <code>sweep/corrections/aug21_handoff/results.json</code> and <code>sweep/corrections/aug21_diagnostics/*.json</code>.</p>
+<section id="sec-method" class="level2">
+<h2 class="anchored" data-anchor-id="sec-method">Method</h2>
+<ul>
+<li><strong>Same settings for every case:</strong> Sella, Cartesian coordinates, <code>order = 1</code>, <code>fmax = 1e−4</code> eV/Å, 500 steps, on GFN2-xTB (electronic temperature 1000 K, 500 SCF iterations), run with sella 2.5.0 — the version used in Phase 2.</li>
+<li><strong>Cost metric:</strong> genuine <code>Calculator.calculate()</code> calls counted inside the xTB calculator (one call = one SCF giving energy and forces). Sella’s <code>nsteps</code> undercounts by 1.0–2.0× in these runs and is kept only as a cross-check.</li>
+<li><strong>Accounting:</strong> candidate <em>n</em> has a prior adaptive cost of 7<em>n</em> reference calls from the loop. The 106 Phase C training references are a separate sunk cost. Hessian certification (96 calls per case) is excluded from every case alike.</li>
+<li><strong>Baseline:</strong> the xTB-only route — a sequential relaxed scan from the reactant, then Sella from the scan maximum.</li>
+<li><strong>Control:</strong> an IDPP-interpolated guess, which costs no reference calls to produce.</li>
+</ul>
 </section>
-<section id="sec-architectures" class="level2">
-<h2 class="anchored" data-anchor-id="sec-architectures">1 · Four correction architectures</h2>
+<section id="sec-cost" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="sec-cost">Benchmark — cost to reach the xTB TS</h2>
+<div class="table-scroll column-page">
 <table class="table">
 <colgroup>
-<col style="width: 27%">
-<col style="width: 27%">
-<col style="width: 45%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>model</th>
-<th>form</th>
-<th style="text-align: center;">conservative?</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>global</strong></td>
-<td>F′ = αF</td>
-<td style="text-align: center;">yes</td>
-</tr>
-<tr class="even">
-<td><strong>affine</strong></td>
-<td>F′ = αF, E′ = αE + β</td>
-<td style="text-align: center;">yes</td>
-</tr>
-<tr class="odd">
-<td><strong>element</strong></td>
-<td>F′ᵢ = α(Zᵢ) Fᵢ, per element</td>
-<td style="text-align: center;"><strong>no</strong></td>
-</tr>
-<tr class="even">
-<td><strong>pairwise Delta</strong></td>
-<td>ΔE = Σ fitted radial pair potentials; F = −∇ΔE</td>
-<td style="text-align: center;">yes</td>
-</tr>
-</tbody>
-</table>
-<p>The Delta is a sum of Gaussian radial basis functions per element pair (48 coefficients across 6 pair channels, 3.6 Å cutoff), fit by ridge least-squares on the <strong>force residual</strong> F_xTB − F_MACE. Being an energy expression differentiated analytically, it is conservative and therefore safe for MD and metadynamics — unlike per-element force scaling.</p>
-<table class="table">
-<colgroup>
+<col style="width: 8%">
+<col style="width: 8%">
 <col style="width: 13%">
-<col style="width: 21%">
-<col style="width: 21%">
-<col style="width: 21%">
-<col style="width: 21%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>model</th>
-<th style="text-align: center;">held-out force RMSE ↓</th>
-<th style="text-align: center;">DA barrier (scan max)</th>
-<th style="text-align: center;">reaction energy</th>
-<th style="text-align: center;">droplet R_g</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>baseline MACE</td>
-<td style="text-align: center;">ref</td>
-<td style="text-align: center;">36.0</td>
-<td style="text-align: center;">−40.6</td>
-<td style="text-align: center;">3.94 Å</td>
-</tr>
-<tr class="even">
-<td>global / affine</td>
-<td style="text-align: center;">8%</td>
-<td style="text-align: center;">32.3</td>
-<td style="text-align: center;">−36.5</td>
-<td style="text-align: center;">3.9–4.0</td>
-</tr>
-<tr class="odd">
-<td>element</td>
-<td style="text-align: center;">9%</td>
-<td style="text-align: center;">36.0 <em>(inert)</em></td>
-<td style="text-align: center;">−40.6</td>
-<td style="text-align: center;">4.02</td>
-</tr>
-<tr class="even">
-<td><strong>pairwise Delta</strong></td>
-<td style="text-align: center;"><strong>16%</strong></td>
-<td style="text-align: center;"><strong>11.7</strong></td>
-<td style="text-align: center;"><strong>−57.1</strong></td>
-<td style="text-align: center;">3.71</td>
-</tr>
-<tr class="odd">
-<td><strong>xTB (target)</strong></td>
-<td style="text-align: center;">—</td>
-<td style="text-align: center;"><strong>6.7</strong></td>
-<td style="text-align: center;"><strong>−57.6</strong></td>
-<td style="text-align: center;"><strong>3.89</strong>*</td>
-</tr>
-</tbody>
-</table>
-<p>* xTB R_g from this experiment’s own reference run; other experiments’ xTB runs give 3.77–3.78 Å (<a href="./p1-validation.html">why</a>).</p>
-<p>Scalar corrections are too weak; element scaling is energetically <strong>inert</strong> (it rescales forces without changing relative energies) and breaks conservativeness. Only the pairwise Delta moves the energetics meaningfully.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="assets/corr_force_metrics.png" class="img-fluid figure-img" width="580"></p>
-<figcaption>Held-out force RMSE per correction, by domain.</figcaption>
-</figure>
-</div>
-</section>
-<section id="sec-where" class="level2">
-<h2 class="anchored" data-anchor-id="sec-where">2 · Where does calibration actually matter?</h2>
-<p>If the error is concentrated at the barrier, the training data for the correction should be too. Region-wise held-out force errors on a strict <strong>no-leakage split by parent path geometry</strong> confirm the target:</p>
-<table class="table">
-<colgroup>
 <col style="width: 13%">
-<col style="width: 21%">
-<col style="width: 21%">
-<col style="width: 21%">
-<col style="width: 21%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>region</th>
-<th style="text-align: center;">raw MACE</th>
-<th style="text-align: center;">baseline Delta</th>
-<th style="text-align: center;">barrier-enriched Delta</th>
-<th style="text-align: center;">generic control</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>overall</td>
-<td style="text-align: center;">0.556</td>
-<td style="text-align: center;">0.432</td>
-<td style="text-align: center;">0.456</td>
-<td style="text-align: center;"><strong>0.427</strong></td>
-</tr>
-<tr class="even">
-<td><strong>TS region</strong></td>
-<td style="text-align: center;">0.712</td>
-<td style="text-align: center;">0.519</td>
-<td style="text-align: center;"><strong>0.487</strong></td>
-<td style="text-align: center;">0.532</td>
-</tr>
-<tr class="odd">
-<td><strong>TS + post-TS</strong></td>
-<td style="text-align: center;">0.906</td>
-<td style="text-align: center;">0.714</td>
-<td style="text-align: center;"><strong>0.688</strong></td>
-<td style="text-align: center;">0.734</td>
-</tr>
-</tbody>
-</table>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="assets/phaseC_force_regions.png" class="img-fluid figure-img" width="640"></p>
-<figcaption>Region-wise held-out force error: the barrier-enriched Delta has the lowest TS and post-TS error.</figcaption>
-</figure>
-</div>
-</section>
-<section id="sec-targeted" class="level2">
-<h2 class="anchored" data-anchor-id="sec-targeted">3 · Targeted versus generic data, at equal budget</h2>
-<p>The controlled experiment: hold the architecture and hyperparameters fixed, and add the <strong>same number</strong> of extra training configurations — 32 either way — placed either in the barrier region (forming C–C ≈ 1.7–2.4 Å) or spread generically.</p>
-<table class="table">
-<colgroup>
-<col style="width: 16%">
-<col style="width: 27%">
-<col style="width: 27%">
-<col style="width: 27%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>model</th>
-<th style="text-align: center;">barrier (constrained-scan max)</th>
-<th style="text-align: center;">reaction energy</th>
-<th style="text-align: center;">TS forming C–C</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>raw MACE</td>
-<td style="text-align: center;">36.0</td>
-<td style="text-align: center;">−40.6</td>
-<td style="text-align: center;">2.02 Å</td>
-</tr>
-<tr class="even">
-<td>baseline Delta</td>
-<td style="text-align: center;">14.1</td>
-<td style="text-align: center;">−47.3</td>
-<td style="text-align: center;">2.02 Å</td>
-</tr>
-<tr class="odd">
-<td><strong>barrier-enriched Delta</strong></td>
-<td style="text-align: center;"><strong>9.9</strong></td>
-<td style="text-align: center;">−50.7</td>
-<td style="text-align: center;">2.62 Å</td>
-</tr>
-<tr class="even">
-<td>generic control (equal count)</td>
-<td style="text-align: center;">15.0</td>
-<td style="text-align: center;">−51.1</td>
-<td style="text-align: center;">2.02 Å</td>
-</tr>
-<tr class="odd">
-<td><strong>xTB (target)</strong></td>
-<td style="text-align: center;"><strong>6.7</strong></td>
-<td style="text-align: center;"><strong>−57.6</strong></td>
-<td style="text-align: center;">2.32 Å</td>
-</tr>
-</tbody>
-</table>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="assets/phaseC_reaction.png" class="img-fluid figure-img" width="700"></p>
-<figcaption>Corrected reaction profiles against the xTB target.</figcaption>
-</figure>
-</div>
-<div class="keyresult">
-<p><span class="lbl">Key result</span> <strong>Where the data goes matters more than how much of it there is.</strong> Barrier-region configurations moved the barrier 14.1 → <strong>9.9</strong>; the <em>same number</em> of generic configurations did essentially nothing (14.1 → 15.0). The cost is a small increase in <em>overall</em> held-out error (0.432 → 0.456) — the fixed-capacity Delta reallocates toward the barrier.</p>
-</div>
-<section id="water-is-not-damaged" class="level3">
-<h3 class="anchored" data-anchor-id="water-is-not-damaged">Water is not damaged</h3>
-<table class="table">
-<thead>
-<tr class="header">
-<th></th>
-<th style="text-align: center;">O–O peak</th>
-<th style="text-align: center;">droplet R_g</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>raw MACE</td>
-<td style="text-align: center;">2.84 Å</td>
-<td style="text-align: center;">3.90 Å</td>
-</tr>
-<tr class="even">
-<td>baseline Delta</td>
-<td style="text-align: center;">2.74 Å</td>
-<td style="text-align: center;">3.82 Å</td>
-</tr>
-<tr class="odd">
-<td><strong>barrier-enriched Delta</strong></td>
-<td style="text-align: center;">2.74 Å</td>
-<td style="text-align: center;"><strong>3.82 Å</strong></td>
-</tr>
-<tr class="even">
-<td>xTB (Phase C reference run)</td>
-<td style="text-align: center;">2.84 Å</td>
-<td style="text-align: center;">3.77 Å</td>
-</tr>
-</tbody>
-</table>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="assets/phaseC_water.png" class="img-fluid figure-img" width="700"></p>
-<figcaption>Droplet O–O distribution and size: barrier enrichment leaves water unchanged relative to the baseline Delta.</figcaption>
-</figure>
-</div>
-<p>Barrier enrichment leaves the equilibrium subsystem <strong>identical</strong> to the baseline Delta. The reason is structural: the Delta has separate channels per element pair, so added C–C/C–H barrier data touches only the carbon channels and leaves the O–O/O–H channels that govern water alone. That channel separation buys clean selectivity.</p>
-</section>
-</section>
-<section id="sec-scan-vs-saddle" class="level2">
-<h2 class="anchored" data-anchor-id="sec-scan-vs-saddle">4 · Scan versus saddle: a methodological refinement</h2>
-<p>The 9.9 kcal/mol above is a <strong>constrained-scan</strong> barrier — the maximum along a path in which both forming C–C distances are held equal and everything else relaxes. That is a useful, cheap estimator, but the scan path is not guaranteed to pass through the true saddle.</p>
-<p>Running a proper <strong>Sella first-order saddle search</strong> on the <em>same</em> barrier-enriched Delta model, and certifying it with a mass-weighted Hessian, gives a different and better-founded number:</p>
-<table class="table">
-<colgroup>
-<col style="width: 14%">
-<col style="width: 14%">
-<col style="width: 23%">
-<col style="width: 23%">
-<col style="width: 23%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>estimator, same corrected model</th>
-<th>reactant reference</th>
-<th style="text-align: center;">barrier</th>
+<th>case</th>
+<th>start</th>
+<th style="text-align: center;">prior refs</th>
+<th style="text-align: center;">handoff calls</th>
+<th style="text-align: center;"><strong>total</strong></th>
+<th style="text-align: center;">reached TS</th>
 <th style="text-align: center;">forming C–C</th>
-<th style="text-align: center;">certification</th>
+<th style="text-align: center;">barrier</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>constrained-scan maximum</td>
-<td>first scan point</td>
-<td style="text-align: center;">9.87 kcal/mol</td>
-<td style="text-align: center;">2.617 Å</td>
-<td style="text-align: center;">not a stationary point</td>
+<td>baseline scan + Sella</td>
+<td>xTB scan maximum</td>
+<td style="text-align: center;">547 (scan)</td>
+<td style="text-align: center;">35</td>
+<td style="text-align: center;"><strong>582</strong></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">2.3153 Å</td>
+<td style="text-align: center;">6.71</td>
 </tr>
 <tr class="even">
-<td><strong>certified first-order saddle</strong></td>
-<td><strong>frozen xTB reactant geometry</strong></td>
-<td style="text-align: center;"><strong>6.33 kcal/mol</strong></td>
-<td style="text-align: center;"><strong>2.428 Å</strong></td>
-<td style="text-align: center;">1 imaginary mode, −358.3 cm⁻¹</td>
+<td>iter00</td>
+<td>corrected-MACE saddle</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">97</td>
+<td style="text-align: center;"><strong>97</strong></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">2.3153 Å</td>
+<td style="text-align: center;">6.71</td>
 </tr>
 <tr class="odd">
-<td><strong>certified first-order saddle</strong> (same saddle)</td>
-<td><strong>reactant relaxed on the corrected model</strong></td>
-<td style="text-align: center;"><strong>8.23 kcal/mol</strong></td>
-<td style="text-align: center;">2.428 Å</td>
-<td style="text-align: center;">same</td>
+<td><strong>iter01</strong></td>
+<td>corrected-MACE saddle</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">43</td>
+<td style="text-align: center;"><strong>50</strong></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">2.3153 Å</td>
+<td style="text-align: center;">6.71</td>
 </tr>
 <tr class="even">
-<td><strong>xTB reference</strong></td>
-<td>xTB-optimized reactant</td>
-<td style="text-align: center;"><strong>6.7 kcal/mol</strong></td>
-<td style="text-align: center;">2.315 Å</td>
-<td style="text-align: center;">1 imaginary mode, −394 cm⁻¹</td>
+<td>iter02</td>
+<td>corrected-MACE saddle</td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">520</td>
+<td style="text-align: center;"><strong>534</strong></td>
+<td style="text-align: center;"><strong>no</strong></td>
+<td style="text-align: center;">2.3153 Å</td>
+<td style="text-align: center;">6.71</td>
+</tr>
+<tr class="odd">
+<td>iter03</td>
+<td>scan-max fallback</td>
+<td style="text-align: center;">21</td>
+<td style="text-align: center;">431</td>
+<td style="text-align: center;"><strong>452</strong></td>
+<td style="text-align: center;"><strong>no</strong></td>
+<td style="text-align: center;">3.7378 Å</td>
+<td style="text-align: center;">−0.20</td>
+</tr>
+<tr class="even">
+<td>iter04</td>
+<td>corrected-MACE saddle</td>
+<td style="text-align: center;">28</td>
+<td style="text-align: center;">506</td>
+<td style="text-align: center;"><strong>534</strong></td>
+<td style="text-align: center;"><strong>no</strong></td>
+<td style="text-align: center;">2.3153 Å</td>
+<td style="text-align: center;">6.71</td>
+</tr>
+<tr class="odd">
+<td>iter05</td>
+<td>scan-max fallback</td>
+<td style="text-align: center;">35</td>
+<td style="text-align: center;">69</td>
+<td style="text-align: center;"><strong>104</strong></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">2.3153 Å</td>
+<td style="text-align: center;">6.71</td>
+</tr>
+<tr class="even">
+<td><strong>IDPP control</strong></td>
+<td>interpolation</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">75</td>
+<td style="text-align: center;"><strong>75</strong></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">2.3153 Å</td>
+<td style="text-align: center;">6.71</td>
 </tr>
 </tbody>
 </table>
-<div class="keyresult">
-<p><span class="lbl">Key result</span> Measured as a <strong>certified saddle</strong> rather than a scan maximum, the targeted Delta gives <strong>6.33 kcal/mol relative to the frozen xTB reactant geometry</strong> and <strong>8.23 kcal/mol relative to the reactant relaxed on the corrected model</strong>, against an xTB reference of 6.7 — differences of −0.37 and +1.53 kcal/mol. Its reaction mode is at −358.3 cm⁻¹ (xTB: −394) and it sits 0.173 Å (RMSD) from the xTB TS. This is the strongest one-shot correction result in the project.</p>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/aug21_total_cost.png" class="img-fluid figure-img" width="680"></p>
+<figcaption>Total marginal xTB cost by handoff iteration. Crosses are failed handoffs; the horizontal lines are the xTB-only baseline (582) and the IDPP control (75).</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/aug21_handoff_only.png" class="img-fluid figure-img" width="680"></p>
+<figcaption>Handoff calls alone, excluding the cost of producing each starting point.</figcaption>
+</figure>
+</div>
+<div class="keyresult caution">
+<p><span class="lbl">Key result — negative</span> <strong>Only 3 of 6 handoffs reached the TS, with no trend in iteration number</strong> (successful totals 97, 50, 104 at <em>n</em> = 0, 1, 5; failures at <em>n</em> = 2, 3, 4). The baseline’s cost is dominated by its scan (547 of 582 calls), and a zero-cost IDPP guess reaches the same TS in 75 calls. Measured against that cheapest working alternative, only one handoff (iteration 1, 50 calls) is cheaper, and nothing identified it in advance.</p>
 </div>
 <div class="methodnote">
-<p><span class="lbl">Why both reactant references matter</span> The frozen reference evaluates the corrected model at the xTB reactant geometry; it asks how the corrected surface scores the reference’s own endpoints. The relaxed reference lets the reactant find its minimum on the corrected surface first, so both ends of the barrier are stationary points of the <em>same</em> model — the stricter internal-consistency check. The 1.9 kcal/mol gap between them is itself a measure of how far the corrected reactant basin still sits from the reference geometry. Neither number replaces the other.</p>
+<p><span class="lbl">What “failed” means here</span> Iterations 2 and 4 reach the right structure — forming C–C 2.3153 Å, 0.0016 Å RMSD from the xTB TS, 6.71 kcal/mol — but never tighten below the pre-registered <code>fmax = 1e−4</code> within 500 steps (they reach 1e−3 in 45 and 54 steps, like the successes). Iteration 3 is the only genuine wrong-basin failure: it converges to a reactant-basin stationary point (forming C–C 3.74 Å, −0.20 kcal/mol, reaction-mode overlap 5e−5). The threshold was not loosened after the fact; this is reported as threshold sensitivity, not a redefinition of the result.</p>
 </div>
-<div class="methodnote">
-<p><span class="lbl">Both numbers are real — they measure different things</span> <strong>9.9 kcal/mol</strong> is the constrained-scan estimator and remains the correct value for that quantity; it is what earlier write-ups reported and it has not been withdrawn. <strong>6.33 kcal/mol</strong> is the certified saddle on the same model. The scan overestimates by ≈3.5 kcal/mol here because its constrained path misses the saddle by ~0.19 Å in the forming C–C coordinate. Both estimators are tracked separately throughout <a href="./08-corrections.html#sec-scan-vs-saddle">Study 08</a>; neither replaces the other.</p>
+<p>Every successful run lands on the same structure: forming C–C 2.3153 Å, 6.71 kcal/mol, principal imaginary mode −393.4 cm⁻¹ — the verified xTB TS (2.315 Å, 6.7 kcal/mol, −394 cm⁻¹).</p>
+</section>
+<section id="sec-diagnostics" class="level2">
+<h2 class="anchored" data-anchor-id="sec-diagnostics">Diagnostics — is there a handoff signal?</h2>
+<p>The follow-up (777 further xTB evaluations) measured reproducibility, 14 descriptors of every starting geometry, and near-identical starting points.</p>
+<section id="reproducibility" class="level3">
+<h3 class="anchored" data-anchor-id="reproducibility">Reproducibility</h3>
+<table class="table">
+<thead>
+<tr class="header">
+<th>case</th>
+<th style="text-align: center;">calls in 3 replicates</th>
+<th>outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>iter01</td>
+<td style="text-align: center;">44, 44, 44</td>
+<td>reached the TS in all three</td>
+</tr>
+<tr class="even">
+<td>iter02</td>
+<td style="text-align: center;">519, 519, 519</td>
+<td>did not converge in all three</td>
+</tr>
+<tr class="odd">
+<td>iter03</td>
+<td style="text-align: center;">2079, 1351, 1934</td>
+<td>failed in all three, by different routes</td>
+</tr>
+</tbody>
+</table>
+<p>The qualitative outcome reproduces. iter03 dissociates the complex in every replicate (final forming C–C 4.03 / 4.92 / 5.21 Å) but along a different path each time: on a flat, dissociative surface, bit-level differences in xTB’s threaded SCF are amplified. Its cost should be read as “large and unstable”, not as one number.</p>
+</section>
+<section id="near-twin-starting-geometries" class="level3">
+<h3 class="anchored" data-anchor-id="near-twin-starting-geometries">Near-twin starting geometries</h3>
+<table class="table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 23%">
+<col style="width: 23%">
+<col style="width: 14%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>pair</th>
+<th style="text-align: center;">Kabsch RMSD between them</th>
+<th style="text-align: center;">median descriptor difference</th>
+<th>outcomes</th>
+<th style="text-align: center;">cost ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>iter01 vs iter04</td>
+<td style="text-align: center;"><strong>0.0217 Å</strong></td>
+<td style="text-align: center;">9.5%</td>
+<td>43 calls (reached) vs 506 (failed)</td>
+<td style="text-align: center;">11.8×</td>
+</tr>
+<tr class="even">
+<td>iter05 vs iter03</td>
+<td style="text-align: center;"><strong>0.0068 Å</strong></td>
+<td style="text-align: center;">2.5%</td>
+<td>69 calls (reached) vs 431 (failed)</td>
+<td style="text-align: center;">6.2×</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/aug21_descriptor_diagnosis.png" class="img-fluid figure-img" width="760"></p>
+<figcaption>Left: xTB residual force at the handoff geometry against outcome. Right: the two near-twin pairs, descriptor by descriptor.</figcaption>
+</figure>
 </div>
+<div class="keyresult caution">
+<p><span class="lbl">Key result — negative</span> <strong>No tested pre-handoff descriptor predicts success.</strong> Starting geometries 0.007 Å apart, with descriptors matching to 2.5%, have opposite outcomes. The intuitive rule is wrong: the IDPP start has the <em>largest</em> xTB residual force (4.99 eV/Å) and succeeds; iter03 (0.46) and iter02 (0.69) have small residual forces and fail.</p>
+</div>
+<ul>
+<li><span class="tag demo">Demonstrated</span> Within these seven cases, no single starting-state descriptor separates success from failure, and two near-twin pairs diverge.</li>
+<li><span class="tag interp">Interpretation</span> At the resolution that separates real candidates, the outcome does not behave as a smooth function of the starting state, so a pre-handoff criterion may be the wrong shape of solution.</li>
+<li><span class="tag open">Open question</span> A run-time guard — abort if the forming C–C leaves 1.5–3.0 Å, or if fmax has not reached 1e−3 within ~60 steps — would have caught every expensive case here, but has not been tested prospectively. Testing any pre-handoff rule would need on the order of 20–30 candidates, ideally from more than one reaction.</li>
+</ul>
 </section>
-<section id="sec-ts-criteria" class="level2">
-<h2 class="anchored" data-anchor-id="sec-ts-criteria">What counts as a transition state?</h2>
-<p>Matching a barrier number is not enough: a scan maximum or an NEB image can sit at the right energy without being a saddle point, and two different surfaces can give the same barrier from different structures. On this site a structure is called a <strong>certified first-order saddle</strong> only when every step below passes:</p>
-<ol type="1">
-<li><strong>Sella saddle search</strong> (<code>order = 1</code>) converged, final force below 1e−4 eV/Å.</li>
-<li><strong>Finite-difference Hessian</strong> of the converged structure (central differences, 1e−3 Å).</li>
-<li><strong>Mass-weighted</strong> vibrational analysis — frequencies from M^−½ H M^−½, not raw Hessian eigenvalues.</li>
-<li><strong>Exactly one significant imaginary mode</strong> (below −50 cm⁻¹).</li>
-<li><strong>The imaginary mode is the reaction</strong>: forming C–C in 1.5–3.0 Å and overlap ≥ 0.30 with the forming-bond coordinate.</li>
-</ol>
-<p>Two of the six iterations in <a href="./p4-iterative.html">Pillar 4</a> converged in Sella but failed step 4 (two imaginary modes); they are reported as uncertified. The full standard is on the <a href="./methods.html#sec-ts">Methods</a> page.</p>
 </section>
-<section id="what-we-learned" class="level2">
-<h2 class="anchored" data-anchor-id="what-we-learned">What we learned</h2>
-<p>A lightweight conservative correction, fit only on force residuals and applied without touching the foundation model, can bring the corrected surrogate’s <strong>certified saddle to within 0.4 kcal/mol (frozen xTB reactant) or 1.5 kcal/mol (model-relaxed reactant) of the chosen reference</strong> — and can do so with data concentrated in the region that actually disagrees, without disturbing the water structure relative to the baseline correction.</p>
-<p>Two honest caveats. The reference here is xTB, which is not ground truth, and no higher-level barrier has been established for this reaction in the project — so this demonstrates <strong>reference-matching, not improved physical accuracy</strong>. And the corrected saddle still sits 0.173 Å from the xTB one — energetic agreement is better than geometric agreement.</p>
-<p>The obvious next question is whether the same targeting trick keeps paying off when iterated. That is <a href="./p4-iterative.html">Pillar 4</a>.</p>
+<section id="sec-caveats" class="level2">
+<h2 class="anchored" data-anchor-id="sec-caveats">Caveats</h2>
+<ul>
+<li>One reaction, one system, one correction family.</li>
+<li>The 547-call scan cost depends on the sequential relaxed-scan protocol chosen.</li>
+<li><strong>Strict Hessian certification is unreliable on the xTB surface here.</strong> Identical structures (same forming distance, barrier, and −393.4 cm⁻¹ principal mode) intermittently show 1–3 imaginary modes because soft reactant-side van der Waals modes sit near the 50 cm⁻¹ cutoff. The benchmark therefore reports <em>reached the reference saddle</em> (structure and principal-mode identity) separately from strict Hessian cleanliness.</li>
+<li><strong>This is not active learning</strong>: the loop used a fixed, hand-specified query rule with no acquisition function or uncertainty estimate.</li>
+<li>A prediction made before the experiment — that the IDPP control would fail — was wrong.</li>
+</ul>
 </section>
-<section id="related-studies" class="level2">
-<h2 class="anchored" data-anchor-id="related-studies">Related studies</h2>
+<section id="related" class="level2">
+<h2 class="anchored" data-anchor-id="related">Related</h2>
 <div class="studylinks">
-<p><a href="./08-corrections.html" class="primary">Study 08 — Post-training corrections, full study</a> <a href="./p2-reactive.html#sec-localization">Barrier-region error localization</a> <a href="./08-corrections.html#sec-scan-vs-saddle">Scan vs saddle detail</a> <a href="./p4-iterative.html">Pillar 4 — iterating the correction</a></p>
+<p><a href="./p4-iterative.html#sec-handoff" class="primary">Pillar 4 — iterative correction and handoff</a> <a href="./08-corrections.html#sec-iterative">Study 08 — the iterative loop</a> <a href="./methods.html#sec-ts">Methods — what counts as a transition state</a></p>
 </div>
 
 

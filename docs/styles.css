@@ -11,12 +11,26 @@
   --accent-warm: #c1121f; /* xTB / reference */
   --tint: #f4f7f9;
   --tint-warm: #fdf6f5;
+  --wip: #a86b00;         /* work in progress (neutral amber) */
+  --tint-wip: #fdf8ec;
+  --ok: #3f7d4e;          /* demonstrated */
+  --serif: "Iowan Old Style", "Charter", "Bitstream Charter", "Source Serif Pro",
+           "Source Serif 4", Cambria, Georgia, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+          Arial, sans-serif;
 }
 
 body {
   color: var(--ink);
   line-height: 1.65;
+  font-family: var(--sans);
+  font-size: 1.02rem;
 }
+/* serif display headings (local font stack: no external dependency) */
+h1.title, main h2, main h3, .pillar-card h3, .hero h1 {
+  font-family: var(--serif);
+}
+main table { font-variant-numeric: tabular-nums; }
 
 /* ---------- typography & hierarchy ---------- */
 h1.title {
@@ -79,7 +93,7 @@ main ul, main ol { max-width: 66ch; }
   margin: 1.5rem 0;
   border-radius: 0 5px 5px 0;
 }
-.keyresult > .lbl {
+.keyresult .lbl {
   display: block;
   text-transform: uppercase;
   letter-spacing: 0.09em;
@@ -99,7 +113,7 @@ main ul, main ol { max-width: 66ch; }
   color: var(--ink-soft);
   border-radius: 0 4px 4px 0;
 }
-.methodnote > .lbl {
+.methodnote .lbl {
   display: block;
   text-transform: uppercase;
   letter-spacing: 0.09em;
@@ -112,7 +126,7 @@ main ul, main ol { max-width: 66ch; }
 
 /* negative / caution result */
 .keyresult.caution { border-left-color: var(--accent-warm); border-color: #eccfcd; background: var(--tint-warm); }
-.keyresult.caution > .lbl { color: var(--accent-warm); }
+.keyresult.caution .lbl { color: var(--accent-warm); }
 
 /* ---------- pillar cards on the overview ---------- */
 .pillar-grid {
@@ -237,3 +251,214 @@ figcaption, .figure-caption {
 
 /* keep wide tables scrollable rather than breaking the layout */
 main .table-responsive, main table { max-width: 100%; }
+
+/* ==================================================================
+   Additions for the Oct 2026 restructure
+   ================================================================== */
+
+/* ---------- evidence / status tags ---------- */
+.tag {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.12rem 0.5rem;
+  border-radius: 3px;
+  border: 1px solid currentColor;
+  vertical-align: 0.12em;
+  margin-right: 0.35rem;
+  white-space: nowrap;
+}
+.tag.demo   { color: var(--ok); }
+.tag.interp { color: var(--accent); }
+.tag.open   { color: var(--ink-soft); border-style: dashed; }
+.tag.wip    { color: var(--wip); background: var(--tint-wip); }
+.tag.neg    { color: var(--accent-warm); }
+.tag.lit    { color: #52606d; background: #f1f3f5; }   /* statement from the literature */
+
+/* ---------- overview hero ---------- */
+.hero-status {
+  margin: 0.4rem 0 1.4rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  font-size: 0.92rem;
+  background: #fff;
+}
+.hero-status > p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.4rem;
+  margin: 0;
+}
+.hero-status > p > span { white-space: nowrap; }
+
+/* ---------- "project in six answers" ---------- */
+.answers { counter-reset: ans; margin: 1rem 0 1.6rem; }
+.answers > div {
+  counter-increment: ans;
+  position: relative;
+  padding: 0.55rem 0 0.55rem 2.3rem;
+  border-bottom: 1px solid var(--rule);
+}
+.answers > div:last-child { border-bottom: 0; }
+.answers > div::before {
+  content: counter(ans);
+  position: absolute;
+  left: 0;
+  top: 0.62rem;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 50%;
+  background: var(--tint);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-align: center;
+  line-height: 1.55rem;
+}
+.answers p { margin: 0; max-width: 70ch; }
+.answers .q { display: block; font-weight: 640; }
+
+/* ---------- pipeline schematic ---------- */
+.pipeline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.35rem;
+  margin: 1.1rem 0 1.8rem;
+}
+.pipeline .step {
+  flex: 1 1 140px;
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent);
+  border-radius: 5px;
+  padding: 0.55rem 0.7rem;
+  background: #fff;
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+.pipeline .step.ref { border-top-color: var(--accent-warm); }
+.pipeline .step p { margin: 0; }
+.pipeline .step strong { display: block; font-size: 0.9rem; margin-bottom: 0.15rem; }
+.pipeline > p {               /* the arrow paragraphs between steps */
+  flex: 0 0 auto;
+  align-self: center;
+  margin: 0;
+}
+.pipeline .arrow { color: #9aa5b1; font-size: 1.1rem; }
+
+/* ---------- key-number cards (number + estimator + reference) ---------- */
+.numgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.8rem;
+  margin: 1.2rem 0 1.8rem;
+}
+.numcard {
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.8rem 0.9rem 0.85rem;
+  background: #fff;
+}
+.numcard .v {
+  display: block;
+  font-family: var(--serif);
+  font-size: 1.65rem;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.numcard .v small { font-size: 0.85rem; font-family: var(--sans); color: var(--ink-soft); font-weight: 500; }
+.numcard .est {
+  display: block;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  font-weight: 700;
+  margin: 0.3rem 0 0.15rem;
+}
+.numcard .ref { display: block; font-size: 0.84rem; color: var(--ink-soft); line-height: 1.4; }
+.numcard .alt {
+  display: block;
+  margin-top: 0.45rem;
+  padding-top: 0.4rem;
+  border-top: 1px dashed var(--rule);
+  font-size: 0.84rem;
+  color: var(--ink);
+}
+.numcard.neg { border-left: 3px solid var(--accent-warm); }
+
+/* ---------- work-in-progress styling ---------- */
+.wip-banner {
+  border: 1px solid #ecd9ae;
+  border-left: 4px solid var(--wip);
+  background: var(--tint-wip);
+  padding: 0.85rem 1.1rem;
+  margin: 1.2rem 0 1.6rem;
+  border-radius: 0 5px 5px 0;
+}
+.wip-banner .lbl {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--wip);
+  margin-bottom: 0.3rem;
+}
+.wip-banner p:last-child { margin-bottom: 0; }
+.pillar-card.wip {
+  border-top: 3px dashed var(--wip);
+  background: var(--tint-wip);
+}
+.pillar-card.wip .num { color: var(--wip); }
+
+/* status checklist */
+.checklist ul { list-style: none; padding-left: 0; }
+.checklist li { padding: 0.28rem 0 0.28rem 1.7rem; position: relative; }
+.checklist li::before {
+  position: absolute; left: 0; top: 0.28rem;
+  font-weight: 700; font-family: var(--sans);
+}
+.checklist.done li::before { content: "\2713"; color: var(--ok); }
+.checklist.blocked li::before { content: "\25CB"; color: var(--wip); }
+
+/* ---------- glossary (methods) ---------- */
+.glossary dt { font-weight: 650; margin-top: 0.9rem; }
+.glossary dd { margin: 0.15rem 0 0 0; max-width: 70ch; color: var(--ink); }
+.glossary dd .use { display: block; font-size: 0.88rem; color: var(--ink-soft); }
+
+/* ---------- wide scientific tables scroll inside their own box ---------- */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 1.1rem 0 0.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+.table-scroll table { margin: 0; min-width: 640px; }
+.table-scroll table td { white-space: nowrap; }
+.table-scroll table thead th { white-space: normal; min-width: 4.2rem; vertical-align: bottom; line-height: 1.3; }
+
+/* figures never overflow the column */
+main img { max-width: 100%; height: auto; }
+
+@media (max-width: 640px) {
+  body { font-size: 0.98rem; }
+  .numgrid { grid-template-columns: 1fr 1fr; gap: 0.55rem; }
+  .numcard .v { font-size: 1.35rem; }
+  .pipeline { flex-direction: column; }
+  .pipeline .step { flex: 0 0 auto; }
+  .pipeline > p { align-self: flex-start; margin-left: 1rem; }
+  .pipeline .arrow { display: inline-block; transform: rotate(90deg); }
+  .hero-status > p { flex-direction: column; gap: 0.3rem; }
+  .hero-status > p > span { white-space: normal; }
+  figure img, p > img { width: 100% !important; }
+}
+@media (max-width: 420px) {
+  .numgrid { grid-template-columns: 1fr; }
+}

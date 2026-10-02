@@ -99,71 +99,93 @@ ul.task-list li input[type="checkbox"] {
     <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Overview</span></a>
   </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-findings" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Findings</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-findings">    
+        <li>
+    <a class="dropdown-item" href="./p1-validation.html">
+ <span class="dropdown-text">1 · Validation — equilibrium water</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./p2-reactive.html">
+ <span class="dropdown-text">2 · Reactive benchmark — Diels–Alder</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./p3-correction.html">
+ <span class="dropdown-text">3 · Correction — targeted Delta</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./p4-iterative.html">
+ <span class="dropdown-text">4 · Iterative correction and handoff</span></a>
+  </li>  
+    </ul>
+  </li>
   <li class="nav-item">
-    <a class="nav-link active" href="./p1-validation.html" aria-current="page"> 
-<span class="menu-text">Validation</span></a>
+    <a class="nav-link" href="./current-work.html"> 
+<span class="menu-text">Current work</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./p2-reactive.html"> 
-<span class="menu-text">Reactive</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./p3-correction.html"> 
-<span class="menu-text">Correction</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./p4-iterative.html"> 
-<span class="menu-text">Iterative</span></a>
+    <a class="nav-link" href="./methods.html"> 
+<span class="menu-text">Methods</span></a>
   </li>  
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-studies" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Studies</span>
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-studies">    
-        <li>
-    <a class="dropdown-item" href="./01-sweep.html">
- <span class="dropdown-text">Study 01 — Bias × size</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./02-pbc.html">
- <span class="dropdown-text">Study 02 — Periodicity &amp; temperature</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./03-droplets.html">
- <span class="dropdown-text">Study 03 — Large vacuum droplets</span></a>
-  </li>  
+        <li class="dropdown-header">Core studies</li>
         <li>
     <a class="dropdown-item" href="./04-diels-alder.html">
- <span class="dropdown-text">Study 04 — Diels–Alder reaction</span></a>
+ <span class="dropdown-text">04 — Diels–Alder reaction</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./05-mace.html">
- <span class="dropdown-text">Study 05 — MACE-OFF23 surrogate</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./06-kpush.html">
- <span class="dropdown-text">Study 06 — kpush scaling</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./07-cv-design.html">
- <span class="dropdown-text">Study 07 — Collective-variable scoping</span></a>
+ <span class="dropdown-text">05 — MACE-OFF23 surrogate</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./08-corrections.html">
- <span class="dropdown-text">Study 08 — Post-training corrections</span></a>
+ <span class="dropdown-text">08 — Post-training corrections</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./09-handoff.html">
+ <span class="dropdown-text">09 — Reference handoff</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Reference-workflow infrastructure</li>
+        <li>
+    <a class="dropdown-item" href="./01-sweep.html">
+ <span class="dropdown-text">01 — Bias × size</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02-pbc.html">
+ <span class="dropdown-text">02 — Periodicity &amp; temperature</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03-droplets.html">
+ <span class="dropdown-text">03 — Large vacuum droplets</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./06-kpush.html">
+ <span class="dropdown-text">06 — kpush scaling</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./07-cv-design.html">
+ <span class="dropdown-text">07 — Collective-variable scoping</span></a>
   </li>  
     </ul>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="./research-map.html"> 
-<span class="menu-text">Research Map</span></a>
+<span class="menu-text">Map</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="https://github.com/tiangroup-uofa/xtb_metadynamics"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/tiangroup-uofa/ml-accelerated-metadynamics"> <i class="bi bi-github" role="img">
 </i> 
-<span class="menu-text">Repo</span></a>
+<span class="menu-text">Repository</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -285,16 +307,9 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="structure-in-unbiased-md">Structure in unbiased MD</h3>
 <p>Static forces are necessary but not sufficient — the real test is whether the surrogate produces the same <em>ensemble</em>.</p>
 <table class="table">
-<colgroup>
-<col style="width: 13%">
-<col style="width: 21%">
-<col style="width: 21%">
-<col style="width: 21%">
-<col style="width: 21%">
-</colgroup>
 <thead>
 <tr class="header">
-<th></th>
+<th>n = 20 droplet, unbiased NVT (<a href="./05-mace.html">Study 05</a>)</th>
 <th style="text-align: center;">O–O first peak</th>
 <th style="text-align: center;">radius of gyration</th>
 <th style="text-align: center;">mean coordination</th>
@@ -318,6 +333,9 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
+<div class="methodnote">
+<p><span class="lbl">Which R_g?</span> The xTB droplet R_g appears as <strong>3.78 Å</strong> here, <strong>3.89 Å</strong> in the first correction benchmark and <strong>3.77 Å</strong> in the Phase C / iterative experiments. These are three separate short unbiased NVT runs of the same n = 20 droplet (σ ≈ 0.06 Å each), so a ~0.1 Å spread is run-to-run variability. Each comparison on this site uses the xTB run from its own experiment; the values are not reconciled into one number.</p>
+</div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="assets/md_structure_n20.png" class="img-fluid figure-img" width="680"></p>
@@ -338,7 +356,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="related-studies" class="level2">
 <h2 class="anchored" data-anchor-id="related-studies">Related studies</h2>
-<p>The metadynamics-methodology work below supports this pillar but is not part of the MACE-vs-xTB comparison itself. It establishes that the <em>reference</em> workflow behaves sensibly before a surrogate is introduced.</p>
+<p>The early metadynamics studies below <strong>established the reference workflow</strong> — how the xTB RMSD bias behaves, how to keep clusters intact, how bias strength must scale with size, and which collective variables are independent. They are infrastructure for the main result, not part of the MACE-versus-xTB comparison itself, and are listed under <em>Reference-workflow infrastructure</em> in the Studies menu.</p>
 <div class="studylinks">
 <p><a href="./05-mace.html" class="primary">Study 05 — MACE-OFF23 validation (full study)</a> <a href="./03-droplets.html">Study 03 — Large vacuum droplets</a> <a href="./06-kpush.html">Study 06 — kpush must scale with N</a> <a href="./07-cv-design.html">Study 07 — Collective-variable scoping</a> <a href="./01-sweep.html">Study 01 — Bias × size</a> <a href="./02-pbc.html">Study 02 — Periodicity &amp; temperature</a></p>
 </div>
@@ -421,7 +439,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/tiangroup-uofa\.github\.io\/ml-accelerated-metadynamics\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -752,14 +770,14 @@ ul.task-list li input[type="checkbox"] {
 <footer class="footer">
   <div class="nav-footer">
     <div class="nav-footer-left">
-      &nbsp;
-    </div>   
+<p>ML-Accelerated Metadynamics · Tian group, University of Alberta</p>
+</div>   
     <div class="nav-footer-center">
-<p>xTB metadynamics of water · Tian group · <a href="https://github.com/tiangroup-uofa/xtb_metadynamics">github</a></p>
-</div>
-    <div class="nav-footer-right">
       &nbsp;
     </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/tiangroup-uofa/ml-accelerated-metadynamics">Repository</a> · <a href="./methods.html">Methods &amp; evidence standards</a></p>
+</div>
   </div>
 </footer>
 

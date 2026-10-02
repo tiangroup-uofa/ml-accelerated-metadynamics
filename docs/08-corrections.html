@@ -99,71 +99,93 @@ ul.task-list li input[type="checkbox"] {
     <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Overview</span></a>
   </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-findings" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Findings</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-findings">    
+        <li>
+    <a class="dropdown-item" href="./p1-validation.html">
+ <span class="dropdown-text">1 · Validation — equilibrium water</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./p2-reactive.html">
+ <span class="dropdown-text">2 · Reactive benchmark — Diels–Alder</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./p3-correction.html">
+ <span class="dropdown-text">3 · Correction — targeted Delta</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./p4-iterative.html">
+ <span class="dropdown-text">4 · Iterative correction and handoff</span></a>
+  </li>  
+    </ul>
+  </li>
   <li class="nav-item">
-    <a class="nav-link" href="./p1-validation.html"> 
-<span class="menu-text">Validation</span></a>
+    <a class="nav-link" href="./current-work.html"> 
+<span class="menu-text">Current work</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./p2-reactive.html"> 
-<span class="menu-text">Reactive</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./p3-correction.html"> 
-<span class="menu-text">Correction</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./p4-iterative.html"> 
-<span class="menu-text">Iterative</span></a>
+    <a class="nav-link" href="./methods.html"> 
+<span class="menu-text">Methods</span></a>
   </li>  
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-studies" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Studies</span>
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-studies">    
-        <li>
-    <a class="dropdown-item" href="./01-sweep.html">
- <span class="dropdown-text">Study 01 — Bias × size</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./02-pbc.html">
- <span class="dropdown-text">Study 02 — Periodicity &amp; temperature</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./03-droplets.html">
- <span class="dropdown-text">Study 03 — Large vacuum droplets</span></a>
-  </li>  
+        <li class="dropdown-header">Core studies</li>
         <li>
     <a class="dropdown-item" href="./04-diels-alder.html">
- <span class="dropdown-text">Study 04 — Diels–Alder reaction</span></a>
+ <span class="dropdown-text">04 — Diels–Alder reaction</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./05-mace.html">
- <span class="dropdown-text">Study 05 — MACE-OFF23 surrogate</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./06-kpush.html">
- <span class="dropdown-text">Study 06 — kpush scaling</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./07-cv-design.html">
- <span class="dropdown-text">Study 07 — Collective-variable scoping</span></a>
+ <span class="dropdown-text">05 — MACE-OFF23 surrogate</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./08-corrections.html">
- <span class="dropdown-text">Study 08 — Post-training corrections</span></a>
+ <span class="dropdown-text">08 — Post-training corrections</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./09-handoff.html">
+ <span class="dropdown-text">09 — Reference handoff</span></a>
+  </li>  
+        <li><hr class="dropdown-divider"></li>
+        <li class="dropdown-header">Reference-workflow infrastructure</li>
+        <li>
+    <a class="dropdown-item" href="./01-sweep.html">
+ <span class="dropdown-text">01 — Bias × size</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02-pbc.html">
+ <span class="dropdown-text">02 — Periodicity &amp; temperature</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03-droplets.html">
+ <span class="dropdown-text">03 — Large vacuum droplets</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./06-kpush.html">
+ <span class="dropdown-text">06 — kpush scaling</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./07-cv-design.html">
+ <span class="dropdown-text">07 — Collective-variable scoping</span></a>
   </li>  
     </ul>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="./research-map.html"> 
-<span class="menu-text">Research Map</span></a>
+<span class="menu-text">Map</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="https://github.com/tiangroup-uofa/xtb_metadynamics"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/tiangroup-uofa/ml-accelerated-metadynamics"> <i class="bi bi-github" role="img">
 </i> 
-<span class="menu-text">Repo</span></a>
+<span class="menu-text">Repository</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -198,7 +220,7 @@ ul.task-list li input[type="checkbox"] {
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -246,7 +268,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>model</th>
 <th style="text-align: center;">val force RMSE ↓</th>
-<th style="text-align: center;">DA barrier</th>
+<th style="text-align: center;">DA barrier (scan max)</th>
 <th style="text-align: center;">DA ΔE</th>
 <th style="text-align: center;">droplet Rg (Å)</th>
 <th style="text-align: center;">conservative</th>
@@ -290,11 +312,12 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: center;">—</td>
 <td style="text-align: center;"><strong>6.7</strong></td>
 <td style="text-align: center;"><strong>−57.6</strong></td>
-<td style="text-align: center;"><strong>3.89</strong></td>
+<td style="text-align: center;"><strong>3.89</strong>*</td>
 <td style="text-align: center;">—</td>
 </tr>
 </tbody>
 </table>
+<p><span class="table-note">* xTB R_g from this benchmark’s own short NVT run of the n = 20 droplet; the Phase C and iterative experiments use a separate xTB run (3.77 Å). The ~0.1 Å spread between runs is run-to-run variability (<a href="./p1-validation.html">why</a>).</span></p>
 <section id="forces-corrections-fix-magnitude-not-direction" class="level3">
 <h3 class="anchored" data-anchor-id="forces-corrections-fix-magnitude-not-direction">Forces: corrections fix magnitude, not direction</h3>
 <p>Force direction is already aligned (cosine 0.985); the delta removes the most magnitude error (16%), scalar corrections ~8–9%.</p>
@@ -324,7 +347,7 @@ ul.task-list li input[type="checkbox"] {
 <figcaption>Droplet O–O distribution and size vs the xTB reference.</figcaption>
 </figure>
 </div>
-<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/corrections/FINDINGS_corrections.md">Full findings — FINDINGS_corrections.md →</a></p>
+<p><a href="https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/corrections/FINDINGS_corrections.md">Full findings — FINDINGS_corrections.md →</a></p>
 </section>
 </section>
 <section id="sec-localization" class="level2">
@@ -471,7 +494,7 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: center;"><strong>3.82 Å</strong></td>
 </tr>
 <tr class="even">
-<td>xTB</td>
+<td>xTB (Phase C reference run)</td>
 <td style="text-align: center;">2.84 Å</td>
 <td style="text-align: center;">3.77 Å</td>
 </tr>
@@ -484,7 +507,7 @@ ul.task-list li input[type="checkbox"] {
 </figure>
 </div>
 <p>Barrier enrichment leaves water <strong>identical</strong> to the baseline Delta. The pairwise Delta has separate channels per element pair, so added C–C/C–H data touches only the carbon channels and leaves the O–O/O–H channels that govern water untouched — clean selectivity.</p>
-<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/diels_alder/FINDINGS_jul31.md">Jul 31 follow-up findings — FINDINGS_jul31.md →</a></p>
+<p><a href="https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/diels_alder/FINDINGS_jul31.md">Jul 31 follow-up findings — FINDINGS_jul31.md →</a></p>
 </section>
 </section>
 <section id="sec-scan-vs-saddle" class="level2">
@@ -514,12 +537,18 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: center;">not a stationary point</td>
 </tr>
 <tr class="even">
-<td><strong>certified first-order saddle</strong></td>
+<td><strong>certified first-order saddle</strong>, vs frozen xTB reactant</td>
 <td style="text-align: center;"><strong>6.33 kcal/mol</strong></td>
 <td style="text-align: center;"><strong>2.428 Å</strong></td>
 <td style="text-align: center;">1 imaginary mode, −358.3 cm⁻¹</td>
 </tr>
 <tr class="odd">
+<td>same saddle, vs reactant relaxed on the corrected model</td>
+<td style="text-align: center;"><strong>8.23 kcal/mol</strong></td>
+<td style="text-align: center;">2.428 Å</td>
+<td style="text-align: center;">same</td>
+</tr>
+<tr class="even">
 <td><strong>xTB reference</strong></td>
 <td style="text-align: center;"><strong>6.7 kcal/mol</strong></td>
 <td style="text-align: center;">2.315 Å</td>
@@ -542,11 +571,12 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </section>
-<section id="sec-iterative" class="level2">
+<section id="sec-iterative" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="sec-iterative">7 · Iterative correction experiment</h2>
 <p>If targeted calibration works once, does repeating it keep working? The loop: find the current corrected saddle → query xTB there → add the data → refit the same Delta → re-search. Run as a <strong>controlled experiment</strong> with a hand-fixed query rule; no acquisition function or uncertainty estimate was involved.</p>
 <p><strong>One iteration.</strong> Relaxed scan (giving both a scan barrier and a Sella seed) → Sella saddle search → TS validity gate (converged, exactly one imaginary mode, forming C–C in 1.5–3.0 Å, reaction-mode overlap ≥ 0.30) → xTB query at that geometry → a packet of the saddle plus ±0.05/±0.10 Å along the imaginary mode plus 2 isotropic 0.05 Å perturbations = <strong>7 new xTB calculations</strong> → refit on the cumulative dataset.</p>
 <p>Held fixed: architecture and every hyperparameter; a 48-configuration held-out reactive split never trained on.</p>
+<div class="table-scroll column-page">
 <table class="table">
 <colgroup>
 <col style="width: 6%">
@@ -564,7 +594,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>iter</th>
 <th style="text-align: center;">cum. xTB calls</th>
-<th style="text-align: center;">certified saddle barrier</th>
+<th style="text-align: center;">Sella stationary-point barrier (frozen xTB R; bracketed = uncertified)</th>
 <th style="text-align: center;">scan barrier</th>
 <th style="text-align: center;">forming C–C</th>
 <th style="text-align: center;">certified?</th>
@@ -614,7 +644,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="even">
 <td>3</td>
 <td style="text-align: center;">28</td>
-<td style="text-align: center;">8.62</td>
+<td style="text-align: center;">(8.62)</td>
 <td style="text-align: center;">12.75</td>
 <td style="text-align: center;">2.519 Å</td>
 <td style="text-align: center;"><strong>no</strong> (2 modes)</td>
@@ -638,7 +668,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="even">
 <td>5</td>
 <td style="text-align: center;">42</td>
-<td style="text-align: center;">9.25</td>
+<td style="text-align: center;">(9.25)</td>
 <td style="text-align: center;">13.91</td>
 <td style="text-align: center;">2.519 Å</td>
 <td style="text-align: center;"><strong>no</strong> (2 modes)</td>
@@ -661,6 +691,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
+</div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="assets/phase2_barrier.png" class="img-fluid figure-img" width="680"></p>
@@ -685,7 +716,7 @@ ul.task-list li input[type="checkbox"] {
 <figcaption>Held-out reactive error and water stability.</figcaption>
 </figure>
 </div>
-<p><strong>Iteration 0 was the best model of the run.</strong> Across 5 iterations and 42 additional xTB reference calculations, the certified saddle barrier oscillated away from target (error 0.37 → 2.55 kcal/mol) and the scan barrier degraded monotonically (9.87 → 13.91). Held-out TS+post-TS error rose 0.6879 → 0.7113 (+3.4%); overall rose 0.4556 → 0.4704 (+3.3%). Water stayed within MD noise throughout (Rg 3.690–3.841, per-iteration σ 0.037–0.086, no condensation).</p>
+<p><strong>Iteration 0 was the best model of the run.</strong> Across 5 iterations and 42 additional xTB reference calculations, the certified saddle barrier oscillated away from target (6.33 → 9.46 kcal/mol at the last certified iteration, error 0.37 → 2.76; against the model-relaxed reactant 8.23 → 13.98; earlier versions quoted 0.37 → 2.55, whose endpoint is the uncertified iteration 5) and the scan barrier degraded monotonically (9.87 → 13.91). Held-out TS+post-TS error rose 0.6879 → 0.7113 (+3.4%); overall rose 0.4556 → 0.4704 (+3.3%). Water stayed within MD noise throughout (Rg 3.690–3.841, per-iteration σ 0.037–0.086, no condensation).</p>
 <p><strong>The fit is not diverging.</strong> Delta coefficient norms across iterations: 6.051, 5.953, 5.988, 5.966, 5.947, 6.111. This is a fixed capacity being <em>reallocated</em>, not an unstable regression.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -716,12 +747,12 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="sec-limitations" class="level2">
 <h2 class="anchored" data-anchor-id="sec-limitations">8 · Limitations and next question</h2>
-<p><strong>Reference, not truth.</strong> xTB is the chosen proof-of-concept target, not ground truth. For this reaction it <em>under</em>-estimates the barrier relative to DFT and experiment (≈22–27 kcal/mol), so matching it demonstrates <strong>reference-matching, not improved physical accuracy</strong>.</p>
+<p><strong>Reference, not truth.</strong> xTB is the chosen proof-of-concept target, not ground truth. No higher-level (DFT or experimental) barrier has been established for this reaction in the project, so matching xTB demonstrates <strong>reference-matching, not improved physical accuracy</strong>.</p>
 <p><strong>Energetic before geometric.</strong> Even the best corrected saddle sits 0.173 Å from the xTB TS. Energy agreement outran geometry agreement.</p>
 <p><strong>Scope.</strong> One reaction, one correction family, one acquisition rule, one budget. Nothing here transfers automatically to other systems.</p>
 <p><strong>Not demonstrated.</strong> No active learning was implemented — no acquisition metric, no uncertainty estimate, no autonomous sampling — so this says nothing about active learning in general. And the pairwise Delta has not been shown <em>incapable</em> of matching the xTB saddle; only that it did not, under this rule and budget.</p>
 <p><strong>Next question — is correction-model capacity the bottleneck?</strong> Two observations point that way: the Delta is a sum of <em>radial</em> pair potentials with no angular or many-body terms, while a cycloaddition saddle’s position and curvature depend on angular reorganization of the forming ring; and xTB is never near-stationary at the corrected saddle, so force-matching there asks the correction to reproduce a large reference gradient at a point the model believes is stationary. The discriminating experiment holds the acquisition rule fixed and varies expressiveness — angular/three-body terms, a larger cutoff, more radial channels. That behaviour is <strong>consistent with a correction-capacity limitation</strong>, which is a supported hypothesis, not a demonstrated result.</p>
-<p><a href="https://github.com/tiangroup-uofa/xtb_metadynamics/blob/main/sweep/corrections/PHASE2_ITERATIVE_CORRECTION_FINDINGS.md">Phase 2 findings — PHASE2_ITERATIVE_CORRECTION_FINDINGS.md →</a></p>
+<p><a href="https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/blob/main/sweep/corrections/PHASE2_ITERATIVE_CORRECTION_FINDINGS.md">Phase 2 findings — PHASE2_ITERATIVE_CORRECTION_FINDINGS.md →</a></p>
 
 
 </section>
@@ -800,7 +831,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/tiangroup-uofa\.github\.io\/ml-accelerated-metadynamics\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -1131,14 +1162,14 @@ ul.task-list li input[type="checkbox"] {
 <footer class="footer">
   <div class="nav-footer">
     <div class="nav-footer-left">
-      &nbsp;
-    </div>   
+<p>ML-Accelerated Metadynamics · Tian group, University of Alberta</p>
+</div>   
     <div class="nav-footer-center">
-<p>xTB metadynamics of water · Tian group · <a href="https://github.com/tiangroup-uofa/xtb_metadynamics">github</a></p>
-</div>
-    <div class="nav-footer-right">
       &nbsp;
     </div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/tiangroup-uofa/ml-accelerated-metadynamics">Repository</a> · <a href="./methods.html">Methods &amp; evidence standards</a></p>
+</div>
   </div>
 </footer>
 
