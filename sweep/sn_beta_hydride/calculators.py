@@ -2,10 +2,10 @@
 """
 calculators.py
 ==============
-ASE calculators for the MACE foundation models tested on the Sn-beta hydride
-transfer: **MACE-OMOL** and **MACE-POLAR**. The scientific workflow only ever
-sees a ``ModelHandle``; everything model-specific lives in the ``_build_*``
-functions and the ``MODELS`` registry below.
+ASE calculators for the methods compared on the Sn-beta hydride transfer:
+**MACE-OMOL**, **MACE-POLAR** and **GFN2-xTB**. The scientific workflow only
+ever sees a ``ModelHandle``; everything method-specific lives in the
+``_build_*`` functions and the ``MODELS`` registry below.
 
 Verified against the installed mace-torch 0.3.16 (``mace.calculators``):
 
@@ -22,6 +22,16 @@ Both read ``atoms.info["charge"]`` (total charge) and ``atoms.info["spin"]``
 (spin **multiplicity** 2S+1) and *silently default to 0 / 1 when absent*. The
 ``ChargeSpinCalculator`` wrapper therefore injects the configured values on
 every call and refuses atoms that carry conflicting values.
+
+GFN2-xTB uses the ASE calculator of **xtb-python** (``xtb.ase.calculator.XTB``,
+conda-forge), the interface already used in ``sweep/diels_alder/neb/`` and
+``sweep/corrections/``. It does NOT read ``atoms.info``: per its source it
+takes the total charge as ``sum(atoms.get_initial_charges())`` and the number
+of unpaired electrons as ``round(sum(atoms.get_initial_magnetic_moments()))``.
+``ChargeSpinCalculator`` therefore sets those arrays (charge and 2S = mult - 1
+on atom 0, zeros elsewhere) for that method, and refuses atoms whose own arrays
+sum to different values. xtb-python is not installed on every machine; the
+dispatch and charge/spin plumbing are unit-tested with a stand-in calculator.
 
 The existing MACE-OFF23 workflows (``sweep/diels_alder/neb/calculators.py`` etc.)
 are untouched.
@@ -45,6 +55,17 @@ GRAPH_LONGRANGE_FIX = ('pip install --no-deps '
 # --------------------------------------------------------------------------- #
 #  model-specific builders (the ONLY place that knows about each model's API)
 # --------------------------------------------------------------------------- #
+def check_mace_dependency() -> str:
+    """Raise a clear error if mace-torch (with the OMOL loader) is not importable."""
+    try:
+        import mace
+        from mace.calculators import mace_omol  # noqa: F401
+    except ImportError as e:
+        raise RuntimeError(f"MACE-OMOL needs mace-torch, which is not importable ({e}). "
+                           'Install it first: pip install "mace-torch==0.3.16"') from e
+    return getattr(mace, "__file__", "?")
+
+
 def _build_omol(variant, device, dtype, options):
     from mace.calculators import mace_omol
 
@@ -56,8 +77,11 @@ def check_polar_dependency() -> str:
     # mace must be imported FIRST: its __init__ sets TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD,
     # without which e3nn (imported by graph_longrange) fails to load its constants
     # under torch >= 2.6 ("Weights only load failed").
-    import mace  # noqa: F401
-
+    try:
+        import mace  # noqa: F401
+    except ImportError as e:
+        raise RuntimeError(f"MACE-POLAR needs mace-torch, which is not importable ({e}). "
+                           'Install it first: pip install "mace-torch==0.3.16"') from e
     try:
         import graph_longrange  # noqa: F401
         from graph_longrange.features import GTOElectrostaticFeatures
@@ -82,6 +106,35 @@ def _build_polar(variant, device, dtype, options):
     return mace_polar(model=variant, device=device, default_dtype=dtype, **options)
 
 
+XTB_FIX = "conda install -c conda-forge xtb-python   (pip wheels are not provided)"
+
+
+def check_xtb_dependency() -> str:
+    """Raise a clear error if xtb-python's ASE calculator is not importable."""
+    try:
+        from xtb.ase.calculator import XTB  # noqa: F401
+    except ImportError as e:
+        raise RuntimeError("GFN2-xTB needs xtb-python (xtb.ase.calculator), which is not "
+                           f"importable ({e}). Install it with:\n  " + XTB_FIX) from e
+    import xtb
+
+    return getattr(xtb, "__file__", "?")
+
+
+def _build_xtb(variant, device, dtype, options):
+    """GFN2-xTB through xtb-python. ``dtype`` is irrelevant (xtb is float64);
+    only CPU exists. ``options`` go to ``XTB(...)`` (e.g. accuracy,
+    electronic_temperature, max_iterations); the default electronic temperature
+    is xtb's own 300 K (the Diels-Alder NEB used 1000 K for SCF robustness —
+    set it explicitly if needed, and record it)."""
+    if device != "cpu":
+        raise ConfigError(f"gfn2-xtb runs on the CPU only (device={device!r})")
+    check_xtb_dependency()
+    from xtb.ase.calculator import XTB
+
+    return XTB(method="GFN2-xTB", **options)
+
+
 @dataclass(frozen=True)
 class ModelSpec:
     key: str
@@ -90,13 +143,28 @@ class ModelSpec:
     variants: tuple
     default_variant: str
     reads_charge_spin: bool = True
+    # how the total charge / multiplicity reach the method:
+    #   "info"           atoms.info["charge"], atoms.info["spin"] (= multiplicity)  [MACE]
+    #   "initial_arrays" sum(initial_charges), round(sum(initial_magmoms)) = 2S     [xtb-python]
+    charge_spin_mode: str = "info"
+    family: str = "mace"
+    # supported atomic numbers when the calculator cannot report them (None = ask the model)
+    supported_z: tuple | None = None
+    dependency_check: object = None
 
 
 MODELS = {
     "mace-omol": ModelSpec("mace-omol", "MACE-OMOL-0", _build_omol,
-                           ("extra_large",), "extra_large"),
+                           ("extra_large",), "extra_large",
+                           dependency_check=check_mace_dependency),
     "mace-polar": ModelSpec("mace-polar", "MACE-POLAR-1", _build_polar,
-                            ("polar-1-s", "polar-1-m", "polar-1-l"), "polar-1-s"),
+                            ("polar-1-s", "polar-1-m", "polar-1-l"), "polar-1-s",
+                            dependency_check=check_polar_dependency),
+    # GFN2-xTB is parametrized for Z = 1-86 (Bannwarth, Ehlert, Grimme, JCTC 15, 1652 (2019))
+    "gfn2-xtb": ModelSpec("gfn2-xtb", "GFN2-xTB", _build_xtb, ("gfn2",), "gfn2",
+                          charge_spin_mode="initial_arrays", family="xtb",
+                          supported_z=tuple(range(1, 87)),
+                          dependency_check=check_xtb_dependency),
 }
 DTYPES = ("float32", "float64")
 
@@ -136,6 +204,8 @@ def parse_calc_settings(cfg: dict, model=None, variant=None, device=None,
     dtype = dtype or c.get("dtype", "float64")
     if dtype not in DTYPES:
         raise ConfigError(f"dtype must be one of {DTYPES}, got '{dtype}'")
+    if spec.family == "xtb" and dtype != "float64":
+        raise ConfigError("gfn2-xtb always computes in float64; do not request float32")
     options = dict(per_model.get("options") or {})
     for bad in ("model", "device", "default_dtype"):
         if bad in options:
@@ -161,12 +231,16 @@ class ChargeSpinCalculator(Calculator):
 
     implemented_properties = ["energy", "free_energy", "forces"]
 
-    def __init__(self, base, charge: int, multiplicity: int, correction=None, **kw):
+    def __init__(self, base, charge: int, multiplicity: int, correction=None,
+                 mode: str = "info", **kw):
         super().__init__(**kw)
+        if mode not in ("info", "initial_arrays"):
+            raise ValueError(f"unknown charge/spin mode {mode!r}")
         self.base = base
         self.charge = int(charge)
         self.multiplicity = int(multiplicity)
         self.correction = correction
+        self.mode = mode
         self.n_calls = 0
 
     def calculate(self, atoms=None, properties=("energy",), system_changes=all_changes):
@@ -179,6 +253,8 @@ class ChargeSpinCalculator(Calculator):
         a = atoms.copy()
         a.info["charge"] = self.charge
         a.info["spin"] = self.multiplicity
+        if self.mode == "initial_arrays":
+            self._set_initial_arrays(atoms, a)
         self.base.reset()          # never reuse a cached result across wrappers
         a.calc = self.base
         e = float(a.get_potential_energy())
@@ -189,6 +265,24 @@ class ChargeSpinCalculator(Calculator):
         self.results["energy"] = e
         self.results["free_energy"] = e
         self.results["forces"] = f
+
+    def _set_initial_arrays(self, atoms, a):
+        """xtb-python reads charge = sum(initial charges), 2S = sum(initial magmoms).
+        Atoms carrying their own non-zero arrays must agree with the configuration."""
+        unpaired = self.multiplicity - 1
+        for name, getter, want in (("initial charges", atoms.get_initial_charges, self.charge),
+                                   ("initial magnetic moments", atoms.get_initial_magnetic_moments,
+                                    unpaired)):
+            have = np.asarray(getter(), float)
+            if np.any(have != 0) and not np.isclose(have.sum(), want):
+                raise ValueError(f"atoms {name} sum to {have.sum():g}, conflicting with the "
+                                 f"configured value {want}; refusing to evaluate")
+        q = np.zeros(len(a))
+        q[0] = self.charge
+        m = np.zeros(len(a))
+        m[0] = unpaired
+        a.set_initial_charges(q)
+        a.set_initial_magnetic_moments(m)
 
 
 class ModelHandle:
@@ -201,8 +295,13 @@ class ModelHandle:
         self.multiplicity = multiplicity
         self._calcs = []
 
+    @property
+    def spec(self) -> ModelSpec:
+        return MODELS[self.settings.model]
+
     def new_calc(self, correction=None) -> ChargeSpinCalculator:
-        c = ChargeSpinCalculator(self.base, self.charge, self.multiplicity, correction)
+        c = ChargeSpinCalculator(self.base, self.charge, self.multiplicity, correction,
+                                 mode=self.spec.charge_spin_mode)
         self._calcs.append(c)
         return c
 
@@ -212,6 +311,8 @@ class ModelHandle:
 
     @property
     def supported_numbers(self) -> set[int]:
+        if self.spec.supported_z is not None:
+            return set(self.spec.supported_z)
         return {int(z) for z in self.base.z_table.zs}
 
     def check_elements(self, atoms) -> None:
@@ -231,8 +332,20 @@ class ModelHandle:
             except PackageNotFoundError:
                 return None
 
-        model = self.base.models[0]
         zs = sorted(self.supported_numbers)
+        if self.spec.family == "xtb":
+            return {
+                "model": self.settings.model, "pretty": self.spec.pretty,
+                "variant": self.settings.variant, "method": "GFN2-xTB",
+                "calculator_class": type(self.base).__name__,
+                "xtb_options": dict(self.settings.options),
+                "z_range": [zs[0], zs[-1]], "n_elements": len(zs),
+                "device": "cpu", "dtype": "float64 (native)",
+                "charge": self.charge, "spin_multiplicity": self.multiplicity,
+                "charge_spin_mode": self.spec.charge_spin_mode,
+                "xtb_python": _v("xtb"), "ase": _v("ase"),
+            }
+        model = self.base.models[0]
         return {
             "model": self.settings.model,
             "pretty": MODELS[self.settings.model].pretty,
@@ -250,12 +363,13 @@ class ModelHandle:
 
 
 def build_model(settings: CalcSettings, charge: int, multiplicity: int) -> ModelHandle:
+    spec = MODELS[settings.model]
     if settings.threads:
         os.environ["OMP_NUM_THREADS"] = str(settings.threads)
-        import torch
+        if spec.family == "mace":
+            import torch
 
-        torch.set_num_threads(int(settings.threads))
-    spec = MODELS[settings.model]
+            torch.set_num_threads(int(settings.threads))
     variant = settings.model_path or settings.variant
     if settings.model_path and not Path(settings.model_path).exists():
         raise FileNotFoundError(f"model_path does not exist: {settings.model_path}")
