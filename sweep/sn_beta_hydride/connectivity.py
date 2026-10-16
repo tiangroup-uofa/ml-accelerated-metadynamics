@@ -16,8 +16,9 @@ Procedure (ported from Tian's glucose/structures/scripts/ts_sella.py, step 4):
 3. relax both with an ordinary minimizer (default BFGS, fmax 0.02 eV/Å)
 4. label each relaxed structure from the mapped hydride coordinate
    (``hydride.classify_hydride_state``: reactant-like / product-like / ...)
-5. compare each side with the relaxed input endpoints: whole and
-   reactive-core RMSD
+5. compare each side with the relaxed input endpoint of the same state:
+   whole and reactive-core RMSD, changed torsions, energy offset
+   (``conformer_diagnostics.compare``)
 
 The saddle "connects" when one side is reactant-like and the other
 product-like. A steepest-descent path (IRC) can still end in different
@@ -32,6 +33,7 @@ from pathlib import Path
 
 import numpy as np
 
+from conformer_diagnostics import compare as conformer_compare
 from energetics import EV2KJ
 from geometry import kabsch_rmsd, max_force
 from hydride import classify_hydride_state, core_distances, core_indices
@@ -121,7 +123,11 @@ def connectivity_check(ts, mode, new_calc, cfg: dict, endpoints: dict | None = N
                                               "rmsd_core_A": kabsch_rmsd(P[core], Q[core])}
             match = {"reactant-like": "reactant", "product-like": "product"}.get(st["state"])
             if match and match in endpoints:
+                ep = endpoints[match]
                 side["matched_endpoint"] = match
+                side["conformer_vs_matched_endpoint"] = conformer_compare(
+                    ep["atoms"], relaxed, cfg, ep.get("energy_eV"), rec["energy_eV"],
+                    f"{match}-side minimum vs relaxed input {match}")
         sides[sign] = side
         sides[sign]["_atoms"] = relaxed
     if not np.allclose(ts.get_positions(), ts_pos0):
