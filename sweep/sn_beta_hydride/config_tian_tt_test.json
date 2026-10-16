@@ -1,0 +1,146 @@
+{
+  "_comment": "Sn-beta glucose C2->C1 hydride transfer on Tian's RECONSTRUCTED 42-atom vacuum cluster (tt-test commit b97ef46). NOT literature coordinates and NOT authoritative: see input/tian_tt_test/provenance.json. Charge 0 / multiplicity 1 are inferred model choices. Atom indices are ZERO-BASED and identical in reactant and product. config.json remains the (unconfigured) slot for authoritative structures.",
+
+  "provenance": {
+    "dataset": "tian_tt_test",
+    "structure_class": "reconstructed",
+    "not_literature_coordinates": true,
+    "constructed_by": "T. Tian (manual, agent-assisted SMILES conversion)",
+    "construction_method": "RDKit build + geometric Sn-site placement, relaxed with MACE-POLAR-1-S (glucose/structures/scripts/)",
+    "charge_spin_status": "inferred",
+    "provenance_file": "input/tian_tt_test/provenance.json",
+    "solvent": "none (vacuum cluster)",
+    "_comment": "structure_class 'reconstructed' => stages print a provenance banner, every result JSON carries this block, and run_path refuses --allow-unoptimized (endpoints must be validated AND relaxed with the method in use first)."
+  },
+
+  "system": {
+    "label": "Sn-beta / glucose C2->C1 hydride transfer -- RECONSTRUCTED vacuum cluster (Tian, tt-test)",
+    "test_only": false,
+    "charge": 0,
+    "spin_multiplicity": 1,
+    "_charge_comment": "Inferred model choice (Tian), consistent with Sn(IV) + 4 anionic O and 230 electrons; NOT literature-confirmed.",
+    "expected_n_atoms": 42,
+    "expected_formula": "C6H22O10Si3Sn",
+    "require_elements": ["Sn", "C", "H", "O", "Si"],
+    "expect_elements": []
+  },
+
+  "structures": {
+    "reactant": "input/tian_tt_test/reactant.xyz",
+    "product": "input/tian_tt_test/product.xyz"
+  },
+
+  "atom_map": {
+    "C1": 1,
+    "C2": 2,
+    "H_transfer": 13,
+    "H_C1": 12,
+    "Sn": 23,
+    "O1": 0,
+    "O2": 3,
+    "O_water": 24
+  },
+  "_atom_map_comment": "Copied from Tian's atom_map.json (checked equal by tests). C1 = aldehyde carbon (acceptor); C2 = donor; H_transfer = H* on C2 in the reactant; O_water = O of the Sn-bound water.",
+
+  "expected_elements": {
+    "C1": "C", "C2": "C", "H_transfer": "H", "H_C1": "H",
+    "Sn": "Sn", "O1": "O", "O2": "O", "O_water": "O"
+  },
+
+  "fixed_atoms": [],
+  "_fixed_atoms_comment": "Tian froze nothing; kept for comparability. The SiH3 caps therefore relax freely (they rotate between conformers -- see conformer diagnostics).",
+
+  "capping": {
+    "anchor": "Sn",
+    "cap_element": "Si",
+    "expected_n_caps": 3,
+    "cap_neighbours": {"H": 3, "O": 1},
+    "_comment": "Each cap is O-SiH3 with the O bound to Sn. Checked by validate_structure._check_caps (errors)."
+  },
+
+  "sn_site": {
+    "expected_n_O": 6,
+    "expected_neighbours": ["O1", "O2", "O_water"],
+    "source": "Our reading of Ali 2025 thesis Fig. 4.1b/c (adapted from Mushrif et al. 2015 Fig. 1). Diagnostic warnings only."
+  },
+
+  "endpoint_bonds": {
+    "reactant": {"bonded": [["C2", "H_transfer"]], "not_bonded": [["C1", "H_transfer"]]},
+    "product":  {"bonded": [["C1", "H_transfer"]], "not_bonded": [["C2", "H_transfer"]]}
+  },
+
+  "expected_bond_changes": {
+    "break": [["C2", "H_transfer"]],
+    "form":  [["C1", "H_transfer"]]
+  },
+
+  "cvs": {
+    "d_C1_H":  {"type": "distance", "atoms": ["C1", "H_transfer"]},
+    "d_C2_H":  {"type": "distance", "atoms": ["C2", "H_transfer"]},
+    "delta_H": {"type": "distance_difference", "plus": ["C2", "H_transfer"], "minus": ["C1", "H_transfer"]},
+    "CV1": {
+      "type": "coordination", "center": ["C1"], "group": ["H_C1", "H_transfer"],
+      "r0": 1.5, "n": 6, "m": 12, "d0": 0.0,
+      "parameters_confirmed": false,
+      "status": "Same as config.json: atoms from thesis Fig. 4.1c; r0/n/m are PLACEHOLDERS."
+    },
+    "CV2": {
+      "type": "coordination", "center": ["C2"], "group": ["H_C1", "H_transfer"],
+      "r0": 1.5, "n": 6, "m": 12, "d0": 0.0,
+      "parameters_confirmed": false,
+      "status": "Same as config.json: atoms from thesis Fig. 4.1c; r0/n/m are PLACEHOLDERS."
+    }
+  },
+
+  "reference_basins": {
+    "source": "As config.json (Ali 2025 thesis Sec. 4.2). DIAGNOSTIC ONLY; not interpretable while CV parameters are unconfirmed.",
+    "tolerance": 0.3,
+    "basins": {
+      "reactant": {"CV1": 0.9, "CV2": 0.9},
+      "product":  {"CV1": 1.8, "CV2": 0.1}
+    }
+  },
+
+  "ts_mode_reference": "delta_H",
+
+  "validation": {
+    "duplicate_A": 0.10,
+    "min_distance_A": 0.50,
+    "short_contact_scale": 0.70,
+    "bond_scale": 1.20,
+    "isolated_scale": 1.60,
+    "allowed_isolated": [],
+    "sn_shell_A": 2.80,
+    "endpoint_bond_severity": "error",
+    "max_nonreactive_displacement_A": 2.0,
+    "fixed_atom_tolerance_A": 0.001
+  },
+
+  "calculator": {
+    "model": "mace-polar",
+    "device": "cpu",
+    "dtype": "float64",
+    "threads": 4,
+    "models": {
+      "mace-omol":  {"variant": "extra_large", "options": {}},
+      "mace-polar": {"variant": "polar-1-s", "options": {}},
+      "gfn2-xtb":   {"variant": "gfn2",
+                     "options": {"accuracy": 1.0, "electronic_temperature": 300.0, "max_iterations": 250}}
+    }
+  },
+
+  "_protocol_comment": "Common protocol for all three methods. Endpoint fmax 0.02 and Sella internal/1e-3 match Tian's POLAR run so his numbers can be reproduced; NEB settings are the repository defaults (13 images, CI, k=0.5).",
+  "optimize": {"optimizer": "BFGS", "fmax": 0.02, "steps": 2000},
+  "path": {"n_images": 13, "k": 0.5, "climb": true, "method": "improvedtangent",
+           "interpolation": "idpp", "optimizer": "FIRE", "fmax": 0.05, "steps": 1500,
+           "align_product": true},
+  "sella": {"order": 1, "internal": true, "fmax": 0.001, "steps": 1000},
+  "hessian": {"delta": 0.001, "imag_cutoff_cm": 50.0, "atoms": "free",
+              "min_reaction_overlap": 0.30, "stationary_fmax": 0.01},
+  "connectivity": {"enabled": true, "mode_displacement_A": 0.1,
+                   "optimizer": "BFGS", "fmax": 0.02, "steps": 1500},
+  "conformer": {"material_offset_kJ_mol": 4.184, "core_similar_A": 0.25,
+                "dihedral_change_deg": 30.0},
+
+  "output_dir": "outputs/tian_tt_test"
+}

@@ -14,8 +14,8 @@ Checks
   2. shipped config.json loads and is (correctly) unconfigured
   3. validation + CV machinery on the TEST-ONLY toy, plus deliberate failures
   4. mass-weighted Hessian on an analytic harmonic diatomic
-  5. per model (MACE-OMOL, MACE-POLAR): construction, element coverage (Sn),
-     energy/force call on the toy, response to total charge
+  5. per method (MACE-OMOL, MACE-POLAR, GFN2-xTB): construction, element
+     coverage (Sn), energy/force call on the toy, response to total charge
   6. --pipeline: optimize -> NEB -> Sella -> Hessian on the toy with short
      limits, to prove the stage scripts run end to end (not to converge them)
 
@@ -74,16 +74,22 @@ def check_imports():
     import importlib
 
     mods = ["config_io", "geometry", "calculators", "validate_structure", "reaction_coordinate",
-            "vibrations", "workflow", "optimize_endpoints", "run_path", "refine_ts",
-            "validate_ts", "toy_hydride"]
+            "vibrations", "workflow", "hydride", "energetics", "conformer_diagnostics",
+            "connectivity", "optimize_endpoints", "run_path", "refine_ts", "validate_ts",
+            "run_protocol", "toy_hydride"]
     for m in mods:
         importlib.import_module(m)
     import ase
     import sella  # noqa: F401
-    from importlib.metadata import version
+    from importlib.metadata import PackageNotFoundError, version
 
+    def _v(pkg):
+        try:
+            return version(pkg)
+        except PackageNotFoundError:
+            return None                # reported; the per-method checks then SKIP
     return {"modules": mods, "ase": ase.__version__, "sella": version("sella"),
-            "mace-torch": version("mace-torch")}
+            "mace-torch": _v("mace-torch"), "xtb-python": _v("xtb")}
 
 
 def check_shipped_config():
@@ -142,8 +148,9 @@ def build_model(model, cfg):
     import calculators as C
 
     try:
-        if model == "mace-polar":
-            C.check_polar_dependency()
+        dep = C.MODELS[model].dependency_check
+        if dep is not None:
+            dep()
         return C.model_from_config(cfg, model=model)
     except RuntimeError as e:
         raise ModelUnavailable(str(e)) from e
@@ -173,7 +180,7 @@ def check_model(model, cfg, handles):
     from calculators import ChargeSpinCalculator
 
     b = reactant()
-    b.calc = ChargeSpinCalculator(h.base, 0, 2)  # same geometry, neutral doublet
+    b.calc = ChargeSpinCalculator(h.base, 0, 2, mode=h.spec.charge_spin_mode)  # neutral doublet
     e_neutral = b.get_potential_energy()
     return {"model_info": info, "load_seconds": round(load_s, 1),
             "ef_call_seconds": round(ef_s, 3), "Sn_supported": True,
@@ -219,7 +226,7 @@ def run_pipeline(model, handles, tmp):
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="TEST-ONLY software smoke test")
-    ap.add_argument("--models", nargs="*", default=["mace-omol", "mace-polar"])
+    ap.add_argument("--models", nargs="*", default=["mace-omol", "mace-polar", "gfn2-xtb"])
     ap.add_argument("--pipeline", action="store_true", help="also run all stages on the toy")
     ap.add_argument("--pipeline-model", default=None,
                     help="model for --pipeline (default: first available, POLAR-S preferred)")

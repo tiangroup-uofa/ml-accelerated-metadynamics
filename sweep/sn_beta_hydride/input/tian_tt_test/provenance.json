@@ -1,0 +1,53 @@
+{
+  "_comment": "Provenance of the tian_tt_test input dataset. Hashes are SHA-256 of the file content with CRLF normalized to LF (git core.autocrlf may rewrite line endings on Windows checkouts). Checked by tests/test_tian_dataset.py.",
+  "dataset": "tian_tt_test",
+  "structure_class": "reconstructed",
+  "authoritative": false,
+  "not_literature_coordinates": true,
+  "constructed_by": "T. Tian (manual reconstruction, agent-assisted SMILES -> 3D build with RDKit, glucose/structures/scripts/build_guess.py)",
+  "construction_method": "Open-chain D-glucose (O2 deprotonated) from SMILES, RDKit ETKDG + MMFF conformer 199 of 300, O2-C2-C1-O1 dihedral set to 0, Sn and ligands (3 x OSiH3, H2O) placed geometrically; reactant relaxed with MACE-POLAR-1 polar-1-s (FIRE 0.2 -> BFGS 0.02 eV/A); product built from that relaxed reactant by moving only H13 from C2 to C1, then relaxed the same way.",
+  "literature_basis": "Interpretation of the cluster drawing in Mushrif, Varghese, Krishnamurthy, PCCP 17, 4961 (2015), Fig. 1b/c, as reproduced in M. A. Y. Ali, MSc thesis, U. Alberta (2025), Fig. 4.1. The paper gives no coordinates; these are NOT the paper's or the CPMD run's coordinates.",
+  "model": "vacuum cluster, 42 atoms, C6H22O10Si3Sn: open-chain glucose bound to Sn(OSiH3)3(H2O)(O2)(O1); no solvent, no PBC, no frozen atoms",
+  "charge": 0,
+  "spin_multiplicity": 1,
+  "charge_spin_status": "inferred",
+  "charge_spin_basis": "Model choice by T. Tian (glucose/structures/README.md: 'inferred model choices'), consistent with formal Sn(IV) + four anionic O ligands (O2 alkoxide, 3 x OSiH3) and an even electron count (230). Not stated in any literature source read so far.",
+  "relaxation_state": "relaxed with MACE-POLAR-1 polar-1-s only. Every method in the standardized protocol re-relaxes these endpoints with its own potential before any path calculation.",
+  "known_header_issue": "The XYZ comment lines of both relaxed files were inherited from the unrelaxed guess and read 'REACTANT, hand-built guess (unrelaxed)' -- including product.xyz. The coordinates and energies are the relaxed ones; the header text is wrong. Files are kept byte-identical to the source and NOT edited.",
+  "source": {
+    "repository": "https://github.com/tiangroup-uofa/ml-accelerated-metadynamics",
+    "branch": "tt-test",
+    "commit": "b97ef46a00a23a1fef8c192418ee91479cd44eaa",
+    "upstream_note": "Tian's glucose/structures/provenance.json records these as byte-for-byte copies of untracked local output in sweep/sn_beta_hydride/build/ on his machine (source commit 34f653d)."
+  },
+  "files": {
+    "reactant.xyz": {
+      "source_path": "glucose/structures/reactant_mace-polar_polar-1-s.xyz",
+      "sha256_lf": "8fb704a84dc5b4652474ec864f3e32ae52bca4045e90f2dc4807bad78c693708",
+      "role": "reactant (H* on C2), MACE-POLAR-1-S local minimum",
+      "energy_in_file_eV": -56520.653897531585,
+      "energy_method": "MACE-POLAR-1 polar-1-s, float64, charge 0, multiplicity 1"
+    },
+    "product.xyz": {
+      "source_path": "glucose/structures/product_mace-polar_polar-1-s.xyz",
+      "sha256_lf": "b5dc1c3fa81bcaf6d975ad8f980ca63fa6a135a8bdff586d91e588e938bab7f0",
+      "role": "product (H* on C1), MACE-POLAR-1-S local minimum",
+      "energy_in_file_eV": -56520.96505096508,
+      "energy_method": "MACE-POLAR-1 polar-1-s, float64, charge 0, multiplicity 1"
+    },
+    "atom_map_tian.json": {
+      "source_path": "glucose/structures/atom_map.json",
+      "sha256_lf": "ded60694c71e2e4a41919312ba305e27a22fad9bf06ee250e0cd0e093a005aaa",
+      "role": "Tian's zero-based atom map; config_tian_tt_test.json must agree with it"
+    }
+  },
+  "tian_polar_results": {
+    "_comment": "Tian's saved MACE-POLAR outputs (not copied; read in place by summarize_tian_polar.py)",
+    "relax_json": "glucose/structures/relax_mace-polar_polar-1-s.json",
+    "ts_json": "glucose/structures/ts_mace-polar_polar-1-s.json",
+    "ts_xyz": "glucose/structures/ts_mace-polar_polar-1-s.xyz",
+    "reactant_side_xyz": "glucose/structures/ts_reactant_side_mace-polar_polar-1-s.xyz",
+    "product_side_xyz": "glucose/structures/ts_product_side_mace-polar_polar-1-s.xyz",
+    "scan_csv": "glucose/structures/scan_mace-polar_polar-1-s.csv"
+  }
+}
