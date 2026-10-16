@@ -14,7 +14,17 @@ Reports
   * per-atom participation of that mode (is the transferring H dominant?)
   * overlap |c . v| of that mode with the gradient of the configured
     hydride-transfer CV (``ts_mode_reference``, default ``delta_H``)
-  * the TS energy relative to this model's optimized reactant, if stage 1 ran
+  * +/- imaginary-mode connectivity check (``connectivity.py``; config section
+    ``connectivity``): displace the TS both ways along the normalized mode,
+    relax, label each side reactant-/product-like from the mapped hydride
+    coordinate, compare with the relaxed endpoints (RMSD, core distances,
+    torsions, energy offsets). A sanity check, NOT an IRC.
+  * energetics against BOTH labelled reference states (``energetics.py``):
+    ``relaxed_endpoint`` (stage-1 endpoints) and ``connected_side_minimum``
+    (the +/- mode minima). No unlabeled barrier is written.
+  * a single certification label (``connectivity.ts_certification``):
+    CERTIFIED only with stationarity + exactly one significant imaginary mode
+    aligned with the hydride transfer + valid geometry + connectivity.
 
 A valid first-order saddle for this step has exactly one significant imaginary
 mode that is dominated by the hydride moving between C2 and C1. The verdict is
@@ -24,9 +34,15 @@ Partial Hessians (``hessian.atoms`` = "free" with fixed atoms, or an explicit
 list) are an approximation and are flagged in the output.
 
 Outputs (vib/): validate_ts.json, frequencies.csv, hessian.npy,
-imag_mode.xyz (animation of the dominant imaginary mode)
+normal_modes.npz (all frequencies + mass-weighted eigenvectors + 1/sqrt(m)
+weights, so any mode can be inspected later), imag_mode_vector.npy (unit
+Cartesian displacement of the dominant imaginary mode, n_atoms x 3),
+imag_mode.xyz (animation), connectivity/ (start + relaxed side structures,
+trajectories, logs)
 
-    python validate_ts.py --config config.json [--ts path/to/ts.xyz]
+    python validate_ts.py --config config.json [--ts path/to/ts.xyz] [--no-connectivity]
+
+Exit code 0 only when the label is CERTIFIED; 2 otherwise; 1 if refused.
 """
 from __future__ import annotations
 
@@ -43,10 +59,13 @@ from ase.io import read, write  # noqa: E402
 
 from calculators import add_calc_args, model_from_config, parse_calc_settings  # noqa: E402
 from config_io import fixed_atoms, index_of, load_config, output_root, section, write_json  # noqa: E402
+from connectivity import (connectivity_check, options as conn_options,  # noqa: E402
+                          side_minimum_reference, ts_certification)
+from energetics import energetics, format_table, reference_state  # noqa: E402
 from validate_structure import (ValidationError, print_report, require_valid,  # noqa: E402
                                 validate_single)
-from vibrations import analyze_hessian, hessian  # noqa: E402
-from workflow import (EV2KCAL, apply_fixed, banner, cv_values, ef_record,  # noqa: E402
+from vibrations import analyze_hessian, hessian, normal_modes  # noqa: E402
+from workflow import (apply_fixed, banner, cv_values, ef_record,  # noqa: E402
                       provenance, stage_dir, strip_calc)
 
 DEFAULTS = {"delta": 0.001, "imag_cutoff_cm": 50.0, "atoms": "free",
@@ -98,10 +117,30 @@ def _mode_verdict(res, opts, h_index):
             + (f" ({'; '.join(parts)})" if parts else ""))
 
 
+def load_endpoints(cfg, tag) -> dict | None:
+    """This model's relaxed endpoints from stage 1 (atoms + energies), or None."""
+    ep = output_root(cfg, tag) / "endpoints"
+    js = ep / "endpoints.json"
+    if not js.exists():
+        return None
+    data = json.loads(js.read_text())["endpoints"]
+    out = {}
+    for role in ("reactant", "product"):
+        xyz = ep / f"{role}_opt.xyz"
+        if not xyz.exists():
+            return None
+        out[role] = {"atoms": read(str(xyz)), "energy_eV": data[role]["final"]["energy_eV"],
+                     "converged": data[role]["converged"], "source": str(xyz)}
+    return out
+
+
 def run(cfg, model=None, variant=None, device=None, dtype=None, ts=None, out=None,
-        handle=None) -> dict:
+        handle=None, connectivity=None) -> dict:
     banner(cfg)
     opts = {**DEFAULTS, **section(cfg, "hessian")}
+    copts = conn_options(cfg)
+    if connectivity is not None:
+        copts["enabled"] = bool(connectivity)
     tag = (handle.settings if handle else
            parse_calc_settings(cfg, model, variant, device, dtype)).tag
     ts = Path(ts) if ts else output_root(cfg, tag) / "ts" / "ts_sella.xyz"
@@ -145,6 +184,14 @@ def run(cfg, model=None, variant=None, device=None, dtype=None, ts=None, out=Non
     H = hessian(strip_calc(at), calc, float(opts["delta"]), idx, prog)
     res = analyze_hessian(H, at, idx, ref_vec, float(opts["imag_cutoff_cm"]))
     np.save(out / "hessian.npy", H)
+    h_idx = np.arange(len(at)) if idx is None else np.asarray(idx)
+    nu_all, vecs_mw, w = normal_modes(H, at.get_masses()[h_idx])
+    np.savez(out / "normal_modes.npz", frequencies_cm=nu_all, eigenvectors_mass_weighted=vecs_mw,
+             inv_sqrt_mass_per_dof=w, hessian_atom_indices=h_idx,
+             note="Cartesian displacement of mode k = eigenvectors_mass_weighted[:, k] * "
+                  "inv_sqrt_mass_per_dof (then normalize)")
+    if res["mode_displacement"] is not None:
+        np.save(out / "imag_mode_vector.npy", np.array(res["mode_displacement"]))
 
     with open(out / "frequencies.csv", "w", newline="") as fh:
         w = csv.writer(fh)
@@ -160,15 +207,55 @@ def run(cfg, model=None, variant=None, device=None, dtype=None, ts=None, out=Non
             frames.append(f)
         write(str(out / "imag_mode.xyz"), frames)
 
-    barrier = None
-    ep = output_root(cfg, tag) / "endpoints" / "endpoints.json"
-    if ep.exists():
-        e_r = json.loads(ep.read_text())["endpoints"]["reactant"]["final"]["energy_eV"]
-        barrier = {"note": "E(this stationary point) - E(optimized reactant), same model; "
-                           "meaningful only if the verdict is a first-order saddle",
-                   "eV": ef["energy_eV"] - e_r, "kcal_mol": (ef["energy_eV"] - e_r) * EV2KCAL}
-
     v = verdict(res, opts, h_index, ef["fmax_eV_A"])
+    stationary = ef["fmax_eV_A"] <= float(opts["stationary_fmax"])
+    endpoints = load_endpoints(cfg, tag)
+
+    # +/- imaginary-mode connectivity (sanity check, not an IRC)
+    conn, conn_skip = None, None
+    if not copts["enabled"]:
+        conn_skip = "disabled"
+    elif res["n_imaginary"] != 1 or res["mode_displacement"] is None:
+        conn_skip = f"needs exactly one significant imaginary mode (found {res['n_imaginary']})"
+    else:
+        print(f"== +/- imaginary-mode connectivity ({copts['optimizer']}, fmax {copts['fmax']}, "
+              f"step {copts['mode_displacement_A']} Å on the lead atom; NOT an IRC) ==", flush=True)
+        conn = connectivity_check(strip_calc(at), res["mode_displacement"], handle.new_calc,
+                                  cfg, endpoints, out / "connectivity", ef["energy_eV"])
+        conn.pop("_atoms")
+        for k, s in conn["sides"].items():
+            print(f"  side {k}: {s['state']:13s} E={s['energy_eV']:.6f} eV converged="
+                  f"{s['converged']}  C2-H*={s['hydride_state']['d_C2_H_A']:.3f} "
+                  f"C1-H*={s['hydride_state']['d_C1_H_A']:.3f}")
+        print(f"  {conn['verdict']}")
+
+    label = ts_certification(stationary=stationary, fmax=ef["fmax_eV_A"],
+                             stationary_fmax=float(opts["stationary_fmax"]),
+                             n_imaginary=res["n_imaginary"],
+                             overlap=res["reaction_mode_overlap"],
+                             min_overlap=float(opts["min_reaction_overlap"]),
+                             geometry_valid=rep["status"] != "FAIL", connectivity=conn)
+
+    states = []
+    if endpoints:
+        states.append(reference_state(
+            "relaxed_endpoint", endpoints["reactant"]["energy_eV"],
+            endpoints["product"]["energy_eV"],
+            {k: endpoints[k]["source"] for k in ("reactant", "product")}))
+    else:
+        states.append(reference_state("relaxed_endpoint",
+                                      unavailable_reason="stage-1 endpoints.json not found"))
+    e_rs, e_ps, why = side_minimum_reference(conn)
+    if conn is None and conn_skip:
+        why = f"connectivity check not run ({conn_skip})"
+    states.append(reference_state(
+        "connected_side_minimum", e_rs, e_ps,
+        ({"reactant": conn["sides"][conn["reactant_side"]]["files"],
+          "product": conn["sides"][conn["product_side"]]["files"]} if e_rs is not None else None),
+        why))
+    en = energetics(ef["energy_eV"], states, label, str(ts),
+                    float((cfg.get("conformer") or {}).get("material_offset_kJ_mol", 4.184)))
+
     summary = {
         **provenance(cfg, handle, stage="validate_ts"),
         "structure": str(ts), "settings": opts, "hessian_scope": scope,
@@ -177,10 +264,16 @@ def run(cfg, model=None, variant=None, device=None, dtype=None, ts=None, out=Non
         "fmax_all_atoms_incl_fixed_eV_A": fmax_all, "cvs": cvs,
         "mode_reference_cv": ref_name,
         **res,
-        "barrier_vs_reactant": barrier,
         "verdict": v,
+        "connectivity": conn, "connectivity_skipped": conn_skip,
+        "ts_certification": label,
+        "energetics": en,
         "files": {"hessian": str(out / "hessian.npy"), "frequencies": str(out / "frequencies.csv"),
-                  "imag_mode": str(out / "imag_mode.xyz") if res["mode_displacement"] else None},
+                  "normal_modes": str(out / "normal_modes.npz"),
+                  "imag_mode_vector": (str(out / "imag_mode_vector.npy")
+                                       if res["mode_displacement"] else None),
+                  "imag_mode": str(out / "imag_mode.xyz") if res["mode_displacement"] else None,
+                  "connectivity_dir": str(out / "connectivity") if conn else None},
     }
     write_json(out / "validate_ts.json", summary)
     print(f"  significant imaginary modes: {res['n_imaginary']}  {res['imag_freqs_cm']}")
@@ -191,9 +284,9 @@ def run(cfg, model=None, variant=None, device=None, dtype=None, ts=None, out=Non
     if res["mode_atom_participation"]:
         print("  dominant-mode participation: " + ", ".join(
             f"{p['element']}{p['index']}:{p['fraction']:.2f}" for p in res["mode_atom_participation"][:5]))
-    if barrier:
-        print(f"  E - E(reactant_opt) = {barrier['kcal_mol']:.2f} kcal/mol")
-    print(f"  VERDICT: {v}")
+    print(format_table(en))
+    print(f"  MODE VERDICT: {v}")
+    print(f"  TS: {label}")
     print(f"  wrote {out}/validate_ts.json")
     return summary
 
@@ -203,14 +296,17 @@ def main(argv=None) -> int:
     add_calc_args(ap)
     ap.add_argument("--ts", default=None, help="structure (default: ts/ts_sella.xyz)")
     ap.add_argument("--out", default=None)
+    ap.add_argument("--no-connectivity", action="store_true",
+                    help="skip the +/- mode relaxation (the TS can then not be CERTIFIED)")
     a = ap.parse_args(argv)
     cfg = load_config(a.config)
     try:
-        s = run(cfg, a.model, a.variant, a.device, a.dtype, a.ts, a.out)
+        s = run(cfg, a.model, a.variant, a.device, a.dtype, a.ts, a.out,
+                connectivity=False if a.no_connectivity else None)
     except (ValidationError, FileNotFoundError) as e:
         print(f"ABORTED: {e}")
         return 1
-    return 0 if s["verdict"].startswith("FIRST-ORDER SADDLE CANDIDATE") else 2
+    return 0 if s["ts_certification"].startswith("CERTIFIED") else 2
 
 
 if __name__ == "__main__":

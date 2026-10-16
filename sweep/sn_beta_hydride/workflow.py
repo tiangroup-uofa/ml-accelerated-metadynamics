@@ -22,6 +22,7 @@ from config_io import fixed_atoms, output_root
 from geometry import max_force
 
 EV2KCAL = 23.060548
+EV2KJ = 96.48533212
 STAGES = ("validation", "endpoints", "path", "ts", "vib")
 TEST_ONLY_BANNER = ("*** TEST-ONLY SYNTHETIC SYSTEM — software check, NOT the Sn-beta "
                     "structure; numbers below are not chemistry ***")
