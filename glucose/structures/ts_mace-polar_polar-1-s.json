@@ -1,0 +1,124 @@
+{
+  "model": {
+    "model": "mace-polar",
+    "pretty": "MACE-POLAR-1",
+    "variant": "polar-1-s",
+    "model_path": null,
+    "model_class": "PolarMACE",
+    "head": "Default",
+    "r_max_A": 6.0,
+    "z_range": [
+      1,
+      83
+    ],
+    "n_elements": 83,
+    "device": "cpu",
+    "dtype": "float64",
+    "charge": 0,
+    "spin_multiplicity": 1,
+    "mace_torch": "0.3.16",
+    "torch": "2.12.0",
+    "ase": "3.28.0",
+    "graph_longrange": "0.4.0"
+  },
+  "charge": 0,
+  "spin_multiplicity": 1,
+  "scan": {
+    "n_points": 15,
+    "fmax": 0.03,
+    "max_point": 7,
+    "barrier_scan_kJ_mol": 118.46363338794323
+  },
+  "ts": {
+    "sella_converged": true,
+    "steps": 43,
+    "fmax_eV_A": 0.0006883970365839288,
+    "fmax_criterion": 0.001,
+    "energy_eV": -56519.48302971562,
+    "delta_A": -0.03359270393854197,
+    "d_C2_H_A": 1.3144112623591442,
+    "d_C1_H_A": 1.3480039662976862
+  },
+  "vib": {
+    "n_imaginary": 1,
+    "imag_freqs_cm": [
+      -923.0900236445386
+    ],
+    "nu_imag_cm": -923.0900236445386,
+    "reaction_mode_overlap": 0.7504818856192812,
+    "lowest_10_cm": [
+      -923.0900236445386,
+      -0.5707900129722682,
+      -0.23742073879116388,
+      -0.21712704425561644,
+      -0.002114678021692134,
+      0.003569050186001654,
+      0.011033353828835798,
+      14.007842291315368,
+      20.02086267046145,
+      25.490705277594827
+    ],
+    "mode_atom_participation": [
+      {
+        "index": 13,
+        "element": "H",
+        "fraction": 0.8539441015248036
+      },
+      {
+        "index": 12,
+        "element": "H",
+        "fraction": 0.059896750768896584
+      },
+      {
+        "index": 2,
+        "element": "C",
+        "fraction": 0.036119698960208564
+      },
+      {
+        "index": 1,
+        "element": "C",
+        "fraction": 0.030660589233444432
+      },
+      {
+        "index": 0,
+        "element": "O",
+        "fraction": 0.006577758092009953
+      },
+      {
+        "index": 3,
+        "element": "O",
+        "fraction": 0.005650272641300814
+      },
+      {
+        "index": 15,
+        "element": "H",
+        "fraction": 0.00435913785321949
+      },
+      {
+        "index": 14,
+        "element": "H",
+        "fraction": 0.001155776425680902
+      }
+    ]
+  },
+  "connectivity": {
+    "reactant_side": {
+      "delta_A": -0.9913592675592644,
+      "energy_eV": -56520.793173229555,
+      "E_minus_endpoint_kJ_mol": -13.438015718579882,
+      "rmsd_to_endpoint_A": 1.2448633459818128
+    },
+    "product_side": {
+      "delta_A": 1.0007418002244886,
+      "energy_eV": -56520.991804614474,
+      "E_minus_endpoint_kJ_mol": -2.5813258615918313,
+      "rmsd_to_endpoint_A": 0.9955019950360442
+    }
+  },
+  "barrier_forward_kJ_mol": 112.97118122318935,
+  "barrier_reverse_kJ_mol": 142.99282025411424,
+  "dE_kJ_mol": -30.021639030924888,
+  "force_calls": 771,
+  "wall_s": 534.9,
+  "note": "potential energies of hand-built local minima; not free energies"
+}

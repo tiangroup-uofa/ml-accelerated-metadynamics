@@ -1,0 +1,74 @@
+{
+  "model": {
+    "model": "mace-polar",
+    "pretty": "MACE-POLAR-1",
+    "variant": "polar-1-s",
+    "model_path": null,
+    "model_class": "PolarMACE",
+    "head": "Default",
+    "r_max_A": 6.0,
+    "z_range": [
+      1,
+      83
+    ],
+    "n_elements": 83,
+    "device": "cpu",
+    "dtype": "float64",
+    "charge": 0,
+    "spin_multiplicity": 1,
+    "mace_torch": "0.3.16",
+    "torch": "2.12.0",
+    "ase": "3.28.0",
+    "graph_longrange": "0.4.0"
+  },
+  "charge": 0,
+  "spin_multiplicity": 1,
+  "reactant": {
+    "energy_eV": -56520.653897531585,
+    "fmax_eV_A": 0.01951205232839607,
+    "converged": true,
+    "wall_s": 170.7,
+    "C1-H*": 2.111575849239341,
+    "C2-H*": 1.104801007279443,
+    "C1-O1": 1.2176501970034421,
+    "C2-O2": 1.387396412858948,
+    "Sn-O1": 2.33948845898551,
+    "Sn-O2": 2.042657489920648,
+    "Sn-Ow": 2.3114752732830772,
+    "n_O_within_2.8": 6,
+    "Sn-O_shell": [
+      1.978,
+      1.993,
+      1.994,
+      2.043,
+      2.311,
+      2.339,
+      4.55
+    ]
+  },
+  "product": {
+    "energy_eV": -56520.96505096508,
+    "fmax_eV_A": 0.018956998342162044,
+    "converged": true,
+    "wall_s": 164.4,
+    "C1-H*": 1.100268360359916,
+    "C2-H*": 2.115216336001612,
+    "C1-O1": 1.3852670009997192,
+    "C2-O2": 1.2197977791173031,
+    "Sn-O1": 1.9916669909481104,
+    "Sn-O2": 2.4729456242366377,
+    "Sn-Ow": 2.377524366457399,
+    "n_O_within_2.8": 6,
+    "Sn-O_shell": [
+      1.963,
+      1.967,
+      1.984,
+      1.992,
+      2.378,
+      2.473,
+      5.07
+    ]
+  },
+  "dE_product_minus_reactant_kJ_mol": -30.02,
+  "note": "local minima from a hand-built guess; potential energy, not a free energy"
+}

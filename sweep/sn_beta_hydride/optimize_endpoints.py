@@ -32,7 +32,7 @@ from config_io import load_config, resolve_path, section, write_json  # noqa: E4
 from geometry import bond_set  # noqa: E402
 from validate_structure import (print_report, require_valid, validate_atoms,  # noqa: E402
                                 validate_pair, vcfg)
-from workflow import (EV2KCAL, apply_fixed, banner, cv_values, ef_record,  # noqa: E402
+from workflow import (EV2KCAL, EV2KJ, apply_fixed, banner, cv_values, ef_record,  # noqa: E402
                       make_optimizer, provenance, stage_dir, strip_calc)
 
 DEFAULTS = {"optimizer": "BFGS", "fmax": 0.03, "steps": 800}
@@ -115,13 +115,14 @@ def run(cfg, model=None, variant=None, device=None, dtype=None, reactant=None,
         "post_optimization_pair_validation": post_pair,
         "reaction_energy_model": {
             "note": "E(product_opt) - E(reactant_opt) with this model; not a free energy",
-            "eV": dE, "kcal_mol": dE * EV2KCAL},
+            "reference_state": "relaxed_endpoint",
+            "eV": dE, "kJ_mol": dE * EV2KJ, "kcal_mol": dE * EV2KCAL},
         "ok": bool(res["reactant"]["converged"] and res["product"]["converged"]
                    and post_pair["status"] != "FAIL"),
     }
     write_json(out / "endpoints.json", summary)
-    print(f"  ΔE(product - reactant, optimized, {tag}) = {dE:.4f} eV "
-          f"({dE * EV2KCAL:.2f} kcal/mol)")
+    print(f"  ΔE(product - reactant, relaxed_endpoint, {tag}) = {dE:.4f} eV "
+          f"({dE * EV2KJ:.2f} kJ/mol, {dE * EV2KCAL:.2f} kcal/mol)")
     if post_pair["status"] == "FAIL":
         print("  !! optimized endpoints FAIL validation:")
         print_report(post_pair)

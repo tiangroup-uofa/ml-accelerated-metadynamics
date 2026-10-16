@@ -1,0 +1,54 @@
+{
+  "source_commit": "34f653d",
+  "note": "Structure/results source was untracked local build output; copied byte-for-byte. Scripts copied with workspace isolation changes.",
+  "files": {
+    "atom_map.json": {
+      "source": "sweep/sn_beta_hydride/build/atom_map.json",
+      "sha256": "ded60694c71e2e4a41919312ba305e27a22fad9bf06ee250e0cd0e093a005aaa"
+    },
+    "product_guess.xyz": {
+      "source": "sweep/sn_beta_hydride/build/product_guess.xyz",
+      "sha256": "9b82963443aad5b0b91a237dc7b5ae31bf5aee0907e31bf01bc7f73459d7092c"
+    },
+    "product_mace-polar_polar-1-s.xyz": {
+      "source": "sweep/sn_beta_hydride/build/product_mace-polar_polar-1-s.xyz",
+      "sha256": "b5dc1c3fa81bcaf6d975ad8f980ca63fa6a135a8bdff586d91e588e938bab7f0"
+    },
+    "reactant_guess.xyz": {
+      "source": "sweep/sn_beta_hydride/build/reactant_guess.xyz",
+      "sha256": "a2d5627e4d08651b47d352e863486af0b4cc3ad55feb16200cb259cc0f1b8c48"
+    },
+    "reactant_mace-polar_polar-1-s.xyz": {
+      "source": "sweep/sn_beta_hydride/build/reactant_mace-polar_polar-1-s.xyz",
+      "sha256": "8fb704a84dc5b4652474ec864f3e32ae52bca4045e90f2dc4807bad78c693708"
+    },
+    "relax_mace-polar_polar-1-s.json": {
+      "source": "sweep/sn_beta_hydride/build/relax_mace-polar_polar-1-s.json",
+      "sha256": "82be75fada7c6cbd2e5535e4cd54e99847f6db4b608e0d51dd18c35bda906619"
+    },
+    "scan_mace-polar_polar-1-s.csv": {
+      "source": "sweep/sn_beta_hydride/build/scan_mace-polar_polar-1-s.csv",
+      "sha256": "15df38132a1c28b55e024c6db884fe0d5cf423982ad0b1191e606013dea7ad7d"
+    },
+    "scan_mace-polar_polar-1-s.xyz": {
+      "source": "sweep/sn_beta_hydride/build/scan_mace-polar_polar-1-s.xyz",
+      "sha256": "5a29597740910c9742c2b358d529ea77e7f4b47d2393eea580fcc22de0206ed5"
+    },
+    "ts_mace-polar_polar-1-s.json": {
+      "source": "sweep/sn_beta_hydride/build/ts_mace-polar_polar-1-s.json",
+      "sha256": "7963761625b1b79b78b731b730d05ab232761ed4580e0afe027f38eefe3a1170"
+    },
+    "ts_mace-polar_polar-1-s.xyz": {
+      "source": "sweep/sn_beta_hydride/build/ts_mace-polar_polar-1-s.xyz",
+      "sha256": "2901a64fe5490e14dc235273984b9e2527f64b3fa6b8be405294375de99ec04c"
+    },
+    "ts_product_side_mace-polar_polar-1-s.xyz": {
+      "source": "sweep/sn_beta_hydride/build/ts_product_side_mace-polar_polar-1-s.xyz",
+      "sha256": "cee9b289e9abc59ae54957e57a90c578bb66bdfa2290016cb54bb828f888f6c8"
+    },
+    "ts_reactant_side_mace-polar_polar-1-s.xyz": {
+      "source": "sweep/sn_beta_hydride/build/ts_reactant_side_mace-polar_polar-1-s.xyz",
+      "sha256": "d7b2c3c7ceca9b58bdb0966e75784b41288f44b9abda2b34a28cf23b5dc9b11b"
+    }
+  }
+}

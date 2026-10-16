@@ -1,0 +1,18 @@
+{
+  "_comment": "zero-based indices, same order in reactant and product",
+  "atom_map": {
+    "C1": 1,
+    "C2": 2,
+    "H_transfer": 13,
+    "H_C1": 12,
+    "Sn": 23,
+    "O1": 0,
+    "O2": 3,
+    "O_water": 24
+  },
+  "n_atoms": 42,
+  "charge": 0,
+  "spin_multiplicity": 1,
+  "rdkit_conformer": 199,
+  "min_contact_A": 2.506
+}

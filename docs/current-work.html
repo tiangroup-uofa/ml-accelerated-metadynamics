@@ -45,7 +45,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-908d35bb53390a20ee9612226264221b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-8a73ed13ea957822dcf47ac340cca186.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -211,6 +211,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#sec-question" id="toc-sec-question" class="nav-link active" data-scroll-target="#sec-question">The question</a></li>
   <li><a href="#sec-why" id="toc-sec-why" class="nav-link" data-scroll-target="#sec-why">Why new foundation models</a></li>
   <li><a href="#sec-status" id="toc-sec-status" class="nav-link" data-scroll-target="#sec-status">Infrastructure status</a></li>
+  <li><a href="#sec-reconstructed" id="toc-sec-reconstructed" class="nav-link" data-scroll-target="#sec-reconstructed">Reconstructed input structures and audit</a></li>
   <li><a href="#sec-blockers" id="toc-sec-blockers" class="nav-link" data-scroll-target="#sec-blockers">Blocked on authoritative information</a></li>
   <li><a href="#sec-literature" id="toc-sec-literature" class="nav-link" data-scroll-target="#sec-literature">What the literature does and does not establish</a></li>
   <li><a href="#sec-next" id="toc-sec-next" class="nav-link" data-scroll-target="#sec-next">Next experiments</a></li>
@@ -241,7 +242,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="wip-banner">
-<p><span class="lbl">Work in progress</span> <strong>No Sn-β scientific result exists yet.</strong> The pipeline below is built and tested on software checks only; the authoritative reactant and product structures have not been received. Nothing on this page is a barrier, energy, or frequency for this system.</p>
+<p><span class="lbl">Work in progress</span> <strong>No final Sn-β benchmark result exists yet.</strong> The authoritative reactant and product structures have not been received. A <em>reconstructed</em> model of the cluster and a collaborator’s preliminary MACE-POLAR run have been audited from saved raw data (<a href="#sec-reconstructed">below</a>). Those numbers come from a hand-built model, are not independently certified, and are not benchmark results.</p>
 </div>
 <section id="sec-question" class="level2">
 <h2 class="anchored" data-anchor-id="sec-question">The question</h2>
@@ -271,6 +272,37 @@ ul.task-list li input[type="checkbox"] {
 <li>Mass-weighted Hessian validation of the saddle (<a href="./methods.html#sec-ts">standard</a>)</li>
 </ul>
 </div>
+<p>Added after the reconstructed-structure audit, and tested on software checks:</p>
+<div class="checklist done">
+<ul>
+<li>Structure-provenance policy: authoritative structures preferred; reconstructed ones accepted only with an explicit label, and only after validation and relaxation with the method in use</li>
+<li>Cluster-termination (cap) checks, a hydride-state label from the mapped atoms, and reactive-core distances in every validation report</li>
+<li>Barriers and reaction energies always reported against a named reference state — the relaxed input endpoints, or the minima connected to the saddle</li>
+<li>±imaginary-mode connectivity check (a sanity check, not an IRC); the full normal-mode set is saved</li>
+<li>Conformer diagnostics: RMSD of the whole structure and of the reactive core, changed torsions, and energy offsets</li>
+<li>GFN2-xTB as a third method under the same protocol (dependency: xtb-python)</li>
+</ul>
+</div>
+</section>
+<section id="sec-reconstructed" class="level2">
+<h2 class="anchored" data-anchor-id="sec-reconstructed">Reconstructed input structures and audit</h2>
+<p><span class="tag wip">Work in progress</span> Tian built a 42-atom vacuum model by hand: open-chain glucose bound to a SiH₃-capped Sn site, C₆H₂₂O₁₀Si₃Sn, interpreting the literature drawing. He relaxed it with MACE-POLAR-1-S and ran a relaxed scan, a Sella saddle search and a Hessian. These are <strong>not</strong> the paper’s coordinates. The neutral singlet charge state is an <strong>inferred</strong> model choice.</p>
+<p><span class="tag demo">Directly demonstrated</span> — recomputed from the saved files, with no new calculation:</p>
+<ul>
+<li><strong>The files are intact.</strong> All twelve saved files match their recorded checksums, and the energies stored in the structures agree with the result records.</li>
+<li><strong>Both endpoints pass structural validation.</strong> They have the same composition and atom order, three intact O–SiH₃ caps, and six O around Sn. The hydride sits on C2 in the reactant and on C1 in the product.</li>
+<li><strong>The barrier depends on the reference state.</strong> It is 113.0 kJ/mol relative to the relaxed input reactant, and 126.4 kJ/mol relative to the reactant-side minimum reached by relaxing away from the saddle. The reaction energies are −30.0 and −19.2 kJ/mol. All are MACE-POLAR-1-S electronic energies in vacuum.</li>
+<li><strong>The 13.4 kJ/mol difference is conformational.</strong> The reactive core is essentially unchanged (RMSD 0.08 Å); a backbone torsion rotates by about 70°.</li>
+</ul>
+<p><span class="tag interp">Supported interpretation</span> The saddle is very likely a genuine hydride-transfer saddle. The saved records show one imaginary mode (−923 cm⁻¹), dominated by the transferring H, and relaxations away from it reach reactant-like and product-like minima. Our pipeline has <strong>not</strong> independently recomputed it, so it is not certified.</p>
+<p><span class="tag open">Not demonstrated</span> These are not established:</p>
+<ul>
+<li>a DFT reference for this exact model and charge state</li>
+<li>that the reactant-side minimum is the lowest conformer (no conformer search has been done)</li>
+<li>any solvent effect for this model.</li>
+</ul>
+<p>Preliminary MACE-OMOL and GFN2-xTB values exist in a collaborator’s table, but no raw outputs are available, so they are not shown. The ≈77–78 kJ/mol implicit-solvent DFT value sometimes quoted has not been traced to a primary source.</p>
+<p>Sources: <a href="https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/tree/main/sweep/sn_beta_hydride/audit/tian_tt_test"><code>audit/tian_tt_test/</code></a> (<code>tian_polar_summary.json</code>, <code>structure_views.png</code>).</p>
 </section>
 <section id="sec-blockers" class="level2">
 <h2 class="anchored" data-anchor-id="sec-blockers">Blocked on authoritative information</h2>
@@ -305,10 +337,16 @@ ul.task-list li input[type="checkbox"] {
 <section id="sec-next" class="level2">
 <h2 class="anchored" data-anchor-id="sec-next">Next experiments</h2>
 <ol type="1">
-<li>Receive and validate the authoritative endpoints; record their provenance.</li>
-<li>Optimize endpoints with MACE-OMOL and MACE-POLAR, and check that both basins survive.</li>
-<li>CI-NEB between them; refine the highest image with Sella.</li>
-<li>Certify the saddle with the mass-weighted Hessian, and check that its imaginary mode is the hydride moving from C2 to C1.</li>
+<li>Run the same protocol with MACE-OMOL, MACE-POLAR and GFN2-xTB on the reconstructed model:
+<ul>
+<li>relax the endpoints with each method</li>
+<li>13-image CI-NEB, then Sella refinement</li>
+<li>mass-weighted Hessian and the ±mode connectivity check</li>
+<li>report barriers against both reference states.</li>
+</ul></li>
+<li>Independently reproduce the collaborator’s MACE-POLAR saddle and Hessian.</li>
+<li>Run a limited conformer check of the endpoints before any barrier is compared at the ±10 kJ/mol level.</li>
+<li>Receive and validate the authoritative endpoints when available, and repeat.</li>
 </ol>
 <p>The code and its tests are in <a href="https://github.com/tiangroup-uofa/ml-accelerated-metadynamics/tree/main/sweep/sn_beta_hydride"><code>sweep/sn_beta_hydride/</code></a>, with the full literature audit in its README.</p>
 

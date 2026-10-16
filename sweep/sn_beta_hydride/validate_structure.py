@@ -20,7 +20,16 @@ ERRORS (hard fail)
   * endpoint bond expectations violated (default: H* bonded to C2 and not C1 in
     the reactant, the reverse in the product) — catches swapped files and wrong
     H indices; severity configurable
+  * hydride state (hydride.classify_hydride_state) not reactant-like for the
+    reactant / product-like for the product (same severity)
+  * formula != system.expected_formula
+  * capping groups (config "capping", e.g. three O-SiH3 on Sn) malformed or
+    miscounted
   * reactant/product atom counts or element ordering differ
+  * (pair) structure provenance undeclared or incomplete: config "provenance"
+    must give structure_class "authoritative" or "reconstructed"; a
+    reconstructed set must state who built it, how, that it is NOT literature
+    coordinates, and the status of its charge/spin
 
 WARNINGS (reported, do not block)
   * short contacts (d < short_contact_scale x covalent sum)
@@ -30,9 +39,11 @@ WARNINGS (reported, do not block)
   * fixed atoms that differ between endpoints
   * no O around Sn within the shell; CV values far from the reference basins
   * expected-but-not-required elements absent (system.expect_elements, e.g. Si)
+  * (pair) reconstructed structures; charge/spin that are inferred, not confirmed
 
 DIAGNOSTICS (info only): formula, element counts, cell/PBC, fragments, Sn
-coordination shell (neighbours, distances), reactive-atom distances, CVs.
+coordination shell (neighbours, distances), reactive-atom distances, reactive-
+core distances, hydride state, cap groups, CVs.
 
 Usage
 -----
@@ -166,6 +177,9 @@ def validate_atoms(atoms, cfg: dict, label="structure", role=None, rep=None) -> 
     exp_n = (cfg.get("system") or {}).get("expected_n_atoms")
     if exp_n is not None and n != exp_n:
         rep.error(f"atom count {n} != system.expected_n_atoms {exp_n}")
+    exp_f = (cfg.get("system") or {}).get("expected_formula")
+    if exp_f is not None and rep.info["formula"] != exp_f:
+        rep.error(f"formula {rep.info['formula']} != system.expected_formula {exp_f}")
     for el in v["require_elements"]:
         if el not in syms:
             rep.error(f"required element {el} is absent (formula {rep.info['formula']})")
@@ -187,10 +201,70 @@ def validate_atoms(atoms, cfg: dict, label="structure", role=None, rep=None) -> 
     _check_distances(atoms, cfg, v, rep)
     _check_mapping(atoms, cfg, rep)
     _sn_environment(atoms, cfg, v, rep)
+    _check_caps(atoms, cfg, v, rep)
+    if not rep.info.get("mapping_errors"):
+        _hydride_diagnostics(atoms, cfg, v, role, rep)
     if role in ("reactant", "product") and not rep.info.get("mapping_errors"):
         _check_endpoint_bonds(atoms, cfg, v, role, rep)
     _cv_diagnostics(atoms, cfg, role, rep)
     return rep
+
+
+def _hydride_diagnostics(atoms, cfg, v, role, rep):
+    """Hydride-state label + reactive-core distances from the mapped atoms."""
+    from hydride import classify_hydride_state, core_distances
+
+    try:
+        st = classify_hydride_state(atoms, cfg, v["bond_scale"])
+    except ConfigError:
+        return                                   # C1/C2/H_transfer not mapped (e.g. Sn-only fixture)
+    rep.info["hydride_state"] = st
+    rep.info["core_distances_A"] = core_distances(atoms, cfg)
+    want = {"reactant": "reactant-like", "product": "product-like"}.get(role)
+    if want and st["state"] != want:
+        sev = rep.error if v["endpoint_bond_severity"] == "error" else rep.warn
+        sev(f"{role}: hydride state is {st['state']} (C2-H* {st['d_C2_H_A']:.3f} Å, "
+            f"C1-H* {st['d_C1_H_A']:.3f} Å), expected {want}; donor/acceptor assignment, "
+            "atom map or file roles are wrong")
+
+
+def _check_caps(atoms, cfg, v, rep):
+    """Cluster-termination groups (config['capping']): every cap atom (e.g. Si)
+    must carry exactly the configured neighbours (e.g. 3 H + 1 O) and its O must
+    sit in the anchor's (Sn) coordination shell; their number must match."""
+    cap = cfg.get("capping")
+    if not cap:
+        return
+    syms = atoms.get_chemical_symbols()
+    anchor_el = cap.get("anchor", "Sn")
+    anchors = [i for i, s in enumerate(syms) if s == anchor_el]
+    mapped = (cfg.get("atom_map") or {}).get(anchor_el)
+    if isinstance(mapped, int) and not isinstance(mapped, bool) and mapped < len(atoms):
+        anchors = [mapped]
+    D = distance_matrix(atoms)
+    bonds = {b for b in bond_set(atoms, v["bond_scale"], D)
+             if not any(syms[i] == anchor_el for i in b)}
+    want = dict(cap.get("cap_neighbours") or {})
+    groups = []
+    for i in (k for k, s in enumerate(syms) if s == cap["cap_element"]):
+        nbs = sorted(j for b in bonds if i in b for j in b if j != i)
+        counts = dict(Counter(syms[j] for j in nbs))
+        bridge = [j for j in nbs if syms[j] == "O"]
+        g = {"cap_atom": i, "neighbours": nbs, "neighbour_counts": counts,
+             "bridging_O": bridge,
+             "anchor_O_distance_A": (round(float(min(D[a, bridge[0]] for a in anchors)), 4)
+                                     if bridge and anchors else None)}
+        groups.append(g)
+        if want and counts != want:
+            rep.error(f"cap {syms[i]}{i} has neighbours {counts}, expected {want}")
+        if bridge and anchors and g["anchor_O_distance_A"] > v["sn_shell_A"]:
+            rep.error(f"cap {syms[i]}{i}: bridging O{bridge[0]} is "
+                      f"{g['anchor_O_distance_A']:.2f} Å from {anchor_el} "
+                      f"(> {v['sn_shell_A']} Å shell)")
+    rep.info["cap_groups"] = groups
+    exp = cap.get("expected_n_caps")
+    if exp is not None and len(groups) != exp:
+        rep.error(f"{len(groups)} {cap['cap_element']} cap group(s), expected {exp}")
 
 
 def _check_charge_spin(atoms, cfg, rep):
@@ -460,6 +534,48 @@ def compare_endpoints(R, P, cfg, rep: Report):
             rep.warn(f"fixed atoms differ between endpoints by up to {np.max(dfix):.4f} Å")
 
 
+STRUCTURE_CLASSES = ("authoritative", "reconstructed")
+RECONSTRUCTED_REQUIRED = ("constructed_by", "construction_method", "charge_spin_status")
+CHARGE_SPIN_STATUSES = ("inferred", "literature", "computed")
+
+
+def check_provenance(cfg: dict, rep: Report) -> None:
+    """Structure policy. Authoritative structures remain preferred; reconstructed
+    ones are allowed only when explicitly labelled (who, how, NOT literature
+    coordinates, charge/spin status). TEST-ONLY configs are exempt."""
+    if (cfg.get("system") or {}).get("test_only"):
+        rep.info["structure_class"] = "test_only"
+        return
+    p = cfg.get("provenance")
+    if not isinstance(p, dict):
+        rep.error("config has no 'provenance' block: declare structure_class "
+                  f"{STRUCTURE_CLASSES} (see input/README.md)")
+        return
+    cls = p.get("structure_class")
+    rep.info["structure_class"] = cls
+    rep.info["provenance"] = p
+    if cls not in STRUCTURE_CLASSES:
+        rep.error(f"provenance.structure_class must be one of {STRUCTURE_CLASSES}, got {cls!r}")
+        return
+    if cls == "reconstructed":
+        for k in RECONSTRUCTED_REQUIRED:
+            if not p.get(k):
+                rep.error(f"reconstructed structures need provenance.{k}")
+        if p.get("not_literature_coordinates") is not True:
+            rep.error("reconstructed structures must set provenance.not_literature_coordinates "
+                      "= true")
+        rep.warn("RECONSTRUCTED structures: hand-built model, not literature/CPMD coordinates "
+                 f"({p.get('constructed_by')}); production runs require validation AND "
+                 "endpoint relaxation with the method in use")
+    cs = p.get("charge_spin_status")
+    if cs is not None and cs not in CHARGE_SPIN_STATUSES:
+        rep.error(f"provenance.charge_spin_status must be one of {CHARGE_SPIN_STATUSES}, got {cs!r}")
+    if cs == "inferred":
+        sysc = cfg.get("system") or {}
+        rep.warn(f"charge {sysc.get('charge')} / multiplicity {sysc.get('spin_multiplicity')} are "
+                 "INFERRED model choices, not literature-confirmed")
+
+
 def validate_pair(reactant, product, cfg: dict) -> dict:
     """Validate a reactant/product pair (paths or Atoms). Returns a JSON-able dict
     with per-structure reports and a pair report; ``status`` is the worst."""
@@ -471,6 +587,7 @@ def validate_pair(reactant, product, cfg: dict) -> dict:
             validate_atoms(a, cfg, role, role, rep)
         reps[role], atoms[role] = rep, a
     pair = Report("pair")
+    check_provenance(cfg, pair)
     if atoms["reactant"] is not None and atoms["product"] is not None:
         compare_endpoints(atoms["reactant"], atoms["product"], cfg, pair)
     else:
@@ -519,6 +636,12 @@ def print_report(report: dict) -> None:
         if "min_distance_A" in i:
             print(f"    min distance {i['min_distance_A']:.3f} Å  fragments {i.get('n_fragments')}"
                   f"  Sn present: {i.get('has_Sn')}")
+        if i.get("hydride_state"):
+            h = i["hydride_state"]
+            print(f"    hydride: {h['state']}  C2-H*={h['d_C2_H_A']:.3f}  C1-H*={h['d_C1_H_A']:.3f} Å")
+        if i.get("cap_groups"):
+            print(f"    caps: {len(i['cap_groups'])} x " + ", ".join(
+                f"{c['cap_atom']}:{c['neighbour_counts']}" for c in i["cap_groups"]))
         if i.get("cvs"):
             print("    CVs: " + "  ".join(f"{k}={v:.3f}" for k, v in i["cvs"].items()))
         for env in i.get("Sn_environment", []):

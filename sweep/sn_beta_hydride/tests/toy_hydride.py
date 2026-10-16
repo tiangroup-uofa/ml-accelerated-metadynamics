@@ -113,6 +113,82 @@ def toy_config(outdir) -> dict:
     return cfg
 
 
+def product_minimum() -> Atoms:
+    """TEST-ONLY: the reactant frame with H* mirrored onto C1 (x -> -x on the
+    C1-C2 axis). Unlike ``product()`` it keeps every other atom in place, so it
+    is the product minimum of ``DoubleWellHydride`` (for bias = 0)."""
+    a = reactant()
+    a.positions[8] = a.positions[8] * np.array([-1.0, 1.0, 1.0])
+    return a
+
+
+def ts_geometry() -> Atoms:
+    """TEST-ONLY: H* at the C1-C2 midpoint (delta_H = 0), the exact saddle of
+    ``DoubleWellHydride`` for bias = 0."""
+    a = reactant()
+    a.positions[8] = 0.5 * (a.positions[0] + a.positions[4])
+    return a
+
+
+class DoubleWellHydride(Calculator):
+    """TEST-ONLY analytic hydride-transfer surface on the 9-atom toy.
+
+    E = A (delta^2 - delta0^2)^2 + bias * delta              hydride double well
+      + 1/2 k_perp r_perp^2                                  H* kept on the C1-C2 axis
+      + sum 1/2 k_net (r_ij - r0_ij)^2                       elastic network of every
+                                                             non-H* pair < 3.5 Å in
+                                                             the reactant frame
+
+    with delta = d(C2-H*) - d(C1-H*). For bias = 0 the reactant() and
+    product_minimum() geometries are minima with equal energy and
+    ts_geometry() is a first-order saddle whose only negative curvature is H*
+    moving along C1-C2. Forces are central differences of the energy (h = 1e-6 Å).
+    ``n_calls`` counts energy+force evaluations. NOT chemistry.
+    """
+
+    implemented_properties = ["energy", "free_energy", "forces"]
+
+    def __init__(self, barrier_eV=1.0, delta0=0.86, bias=0.0, k_perp=10.0, k_net=20.0,
+                 h=1e-6, **kw):
+        super().__init__(**kw)
+        self.A = barrier_eV / delta0 ** 4
+        self.delta0, self.bias, self.k_perp, self.k_net, self.h = delta0, bias, k_perp, k_net, h
+        ref = reactant().get_positions()
+        idx = [i for i in range(9) if i != 8]
+        self.pairs = [(i, j, float(np.linalg.norm(ref[i] - ref[j])))
+                      for a, i in enumerate(idx) for j in idx[a + 1:]
+                      if np.linalg.norm(ref[i] - ref[j]) < 3.5]
+        self.n_calls = 0
+
+    def energy(self, X):
+        c1, c2, hs = X[0], X[4], X[8]
+        d1, d2 = np.linalg.norm(hs - c1), np.linalg.norm(hs - c2)
+        delta = d2 - d1
+        e = self.A * (delta ** 2 - self.delta0 ** 2) ** 2 + self.bias * delta
+        u = (c2 - c1) / np.linalg.norm(c2 - c1)
+        v = hs - c1
+        e += 0.5 * self.k_perp * (v @ v - (v @ u) ** 2)
+        for i, j, r0 in self.pairs:
+            e += 0.5 * self.k_net * (np.linalg.norm(X[i] - X[j]) - r0) ** 2
+        return float(e)
+
+    def calculate(self, atoms=None, properties=("energy",), system_changes=all_changes):
+        super().calculate(atoms, properties, system_changes)
+        X = atoms.get_positions().astype(float)
+        f = np.zeros_like(X)
+        for i in range(len(X)):
+            for k in range(3):
+                X[i, k] += self.h
+                ep = self.energy(X)
+                X[i, k] -= 2 * self.h
+                em = self.energy(X)
+                X[i, k] += self.h
+                f[i, k] = -(ep - em) / (2 * self.h)
+        e = self.energy(X)
+        self.n_calls += 1
+        self.results = {"energy": e, "free_energy": e, "forces": f}
+
+
 # TEST-ONLY analytic potential for Hessian checks
 class Harmonic(Calculator):
     """E = 1/2 k (r - r0)^2 for every listed pair."""

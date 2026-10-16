@@ -44,8 +44,8 @@ from config_io import (fixed_atoms, load_config, output_root, resolve_path,  # n
 from geometry import kabsch_align, kabsch_rmsd, max_force, uses_pbc  # noqa: E402
 from validate_structure import (Report, ValidationError, _check_distances,  # noqa: E402
                                 print_report, require_valid, validate_pair, vcfg)
-from workflow import (EV2KCAL, apply_fixed, banner, cv_values, provenance,  # noqa: E402
-                      stage_dir, strip_calc)
+from workflow import (EV2KCAL, EV2KJ, apply_fixed, banner, cv_values, provenance,  # noqa: E402
+                      stage_dir, strip_calc, structure_class)
 
 DEFAULTS = {"n_images": 13, "k": 0.5, "climb": True, "method": "improvedtangent",
             "interpolation": "idpp", "optimizer": "FIRE", "fmax": 0.05, "steps": 800,
@@ -90,6 +90,10 @@ def run(cfg, model=None, variant=None, device=None, dtype=None, reactant=None,
         if (ep / "reactant_opt.xyz").exists() and (ep / "product_opt.xyz").exists():
             reactant = reactant or ep / "reactant_opt.xyz"
             product = product or ep / "product_opt.xyz"
+        elif allow_unoptimized and structure_class(cfg) == "reconstructed":
+            raise ValidationError("reconstructed input structures must be relaxed with this "
+                                  "method (optimize_endpoints.py) before a path calculation; "
+                                  "--allow-unoptimized is refused for them")
         elif allow_unoptimized:
             st = cfg.get("structures") or {}
             reactant = reactant or resolve_path(cfg, st["reactant"])
@@ -168,6 +172,7 @@ def run(cfg, model=None, variant=None, device=None, dtype=None, reactant=None,
         _check_distances(strip_calc(im), cfg, vcfg(cfg), rep)
         geom_err[i] = rep.errors
         rows.append({"image": i, "energy_eV": float(E[i]), "rel_eV": float(rel[i]),
+                     "rel_kJ_mol": float(rel[i] * EV2KJ),
                      "rel_kcal_mol": float(rel[i] * EV2KCAL),
                      "fmax_true_eV_A": max_force(im.get_forces()),
                      "n_geometry_errors": len(rep.errors), **cvs})
@@ -210,12 +215,21 @@ def run(cfg, model=None, variant=None, device=None, dtype=None, reactant=None,
         "converged": converged, "steps": nsteps, "neb_fmax_final": neb_fmax,
         "calculator_calls": handle.total_calls - calls0,
         "images": rows,
-        "ts_candidate": {"image": ts_i, "rel_eV": float(rel[ts_i]),
-                         "rel_kcal_mol": float(rel[ts_i] * EV2KCAL),
+        "ts_candidate": {"image": ts_i,
+                         "certified": False,
+                         "E_highest_image_minus_E_band_image0": {
+                             "eV": float(rel[ts_i]), "kJ_mol": float(rel[ts_i] * EV2KJ),
+                             "kcal_mol": float(rel[ts_i] * EV2KCAL),
+                             "reference_state": "relaxed_endpoint (band image 0)",
+                             "note": "highest NEB image, NOT a barrier: no saddle refinement "
+                                     "or Hessian yet" + ("" if converged else
+                                                         "; band NOT converged")},
                          "file": str(out / "ts_candidate.xyz"),
                          "status": "highest-energy NEB image; NOT a verified transition "
                                    "state — refine with refine_ts.py, verify with validate_ts.py"},
-        "reaction_energy_band": {"eV": float(rel[-1]), "kcal_mol": float(rel[-1] * EV2KCAL)},
+        "reaction_energy_band": {"eV": float(rel[-1]), "kJ_mol": float(rel[-1] * EV2KJ),
+                                 "kcal_mol": float(rel[-1] * EV2KCAL),
+                                 "reference_state": "relaxed_endpoint"},
         "warnings": warnings,
     }
     write_json(out / "path.json", summary)
