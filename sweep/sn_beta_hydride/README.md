@@ -1,9 +1,116 @@
-# Sn-beta glucose hydride transfer — MACE-OMOL / MACE-POLAR benchmark
+# Sn-beta glucose hydride transfer — MACE-OMOL / MACE-POLAR / GFN2-xTB benchmark
 
-**Status: infrastructure only.** Every stage is implemented and tested, but **no
-Sn-beta calculation has been run**, because the authoritative reactant and
-product coordinates are not available yet. Nothing in this directory is a
-Sn-beta result.
+**Status (Oct 2026).**
+
+- **No authoritative structures yet.** `config.json` remains unconfigured.
+- **A reconstructed input set exists:** `input/tian_tt_test/` (from Tian's
+  `tt-test` branch, commit b97ef46). It is a hand-built 42-atom vacuum cluster,
+  not literature coordinates, with charge 0 and a singlet inferred.
+- **Its saved MACE-POLAR results have been audited from raw data** (see the
+  next section).
+- **The standardized three-method protocol is implemented and tested.** It has
+  **not been run** on the Sn-beta cluster with our pipeline.
+
+None of the numbers below is a final benchmark result.
+
+## Current scientific status
+
+| evidence class | what |
+|---|---|
+| **Verified from saved raw data** | Tian's POLAR arithmetic: 12/12 file hashes match; XYZ and JSON energies agree. Composition, atom ordering and geometry, measured directly. |
+| **Strong, but not independently certified** | POLAR saddle: Sella fmax 6.9e-4 eV/Å; one imaginary mode, −923.1 cm⁻¹; overlap 0.75 with δ; H\* 85% of the mode; ±mode side minima are reactant-like and product-like. Our pipeline has not recomputed the Hessian, and the eigenvector was not saved. |
+| **Preliminary / table only** | MACE-OMOL 102.8 kJ/mol and GFN2-xTB 101.9 kJ/mol (Tian's table). There are no raw outputs on any branch. |
+| **Not established** | a DFT reference for this exact cluster and charge state; 77–78 kJ/mol (B3LYP-CPCM, source not traced) as a comparable reference; global-minimum conformers; the solvent effect for this model |
+
+**MACE-POLAR-1-S, vacuum, electronic energies, recomputed from Tian's saved
+energies:**
+
+| quantity | `relaxed_endpoint` | `connected_side_minimum` |
+|---|---|---|
+| barrier | 112.97 kJ/mol | 126.41 kJ/mol |
+| ΔE(P−R) | −30.02 kJ/mol | −19.17 kJ/mol |
+
+- **The handoff table's 126.4 / −19.2 uses the side-minimum reference.**
+- **The 13.4 kJ/mol reactant-side difference is conformational:**
+  - reactive-core RMSD is 0.083 Å, whole-system RMSD 1.245 Å
+  - the C1–C2–C4–O5 torsion turns by −70°
+  - the side minimum is a lower *local* minimum only.
+- Full details: [`audit/tian_tt_test/`](audit/tian_tt_test/README.md).
+
+## Reporting rule: every barrier names its reference state
+
+`energetics.py` never returns a bare "barrier". Each barrier, reverse barrier
+and reaction energy is keyed by:
+
+- `relaxed_endpoint`: E(TS) − E(R), where R and P are this method's relaxed
+  input endpoints (stage 1)
+- `connected_side_minimum`: E(TS) − E(R), where R and P are the minima reached
+  from the TS by ±imaginary-mode displacement and relaxation. This is a
+  connectivity sanity check, **not an IRC**.
+
+Further rules:
+
+- **Spread is flagged.** The spread between the two states is reported, and
+  flagged when it is ≥ 4.184 kJ/mol (1 kcal/mol).
+- **Uncertified saddles are labelled.** Unless the saddle is CERTIFIED (see
+  below), every value is labelled as an energy difference to an *uncertified*
+  stationary point.
+- **Scan and NEB maxima are never barriers.** A relaxed-scan maximum or a
+  highest NEB image is never reported as a barrier.
+
+## Standardized protocol (`run_protocol.py`)
+
+Every method uses the same config:
+
+1. the same provenance-labelled R/P input
+2. validate (refusing before any model loads)
+3. method-specific endpoint relaxation
+4. 13-image CI-NEB
+5. Sella refinement of the highest image (only as a starting guess)
+6. mass-weighted Hessian
+7. exactly-one-imaginary-mode check
+8. overlap of that mode with the hydride coordinate
+9. ±mode connectivity relaxation
+10. barriers against **both** reference states
+
+**CERTIFIED** requires *all* of:
+
+- stationarity (fmax ≤ 0.01 eV/Å)
+- exactly one imaginary mode below −50 cm⁻¹
+- overlap ≥ 0.30 with ∇δ
+- a geometry that passes validation
+- converged ±mode relaxations that reach a reactant-like and a product-like
+  minimum
+
+```bash
+python run_protocol.py --config config_tian_tt_test.json --model mace-polar --dry-run   # plan only
+python run_protocol.py --config config_tian_tt_test.json --model mace-polar
+python run_protocol.py --config config_tian_tt_test.json --model mace-omol
+python run_protocol.py --config config_tian_tt_test.json --model gfn2-xtb
+```
+
+Common settings (`config_tian_tt_test.json`):
+
+| stage | settings |
+|---|---|
+| endpoints | BFGS, fmax 0.02 eV/Å |
+| NEB | 13 images, k 0.5, CI, improvedtangent, IDPP, FIRE fmax 0.05, 1500 steps |
+| Sella | internal coordinates, fmax 1e-3 eV/Å |
+| Hessian | δ = 1e-3 Å, cutoff −50 cm⁻¹ |
+| connectivity | ±0.1 Å on the lead atom, BFGS fmax 0.02 |
+
+Endpoint fmax and the Sella settings match Tian's POLAR run, so his numbers can
+be reproduced. The NEB settings are the repository defaults.
+
+Differences between methods are limited to the calculator:
+
+| | MACE-OMOL-0 | MACE-POLAR-1 | GFN2-xTB |
+|---|---|---|---|
+| variant | `extra_large` | `polar-1-s` | `gfn2` (xtb-python) |
+| charge / spin input | `atoms.info["charge"]`, `["spin"]` = 2S+1 | same | Σ initial charges, round(Σ initial magmoms) = 2S |
+| dtype / device | float64 / cpu | float64 / cpu | float64 native / cpu only |
+| extra dependency | — | `graph_longrange` v0.4.0 | `xtb-python` (conda-forge) |
+| method options | — | — | accuracy 1.0, electronic temperature 300 K, 250 SCF iterations (written explicitly; the Diels–Alder NEB used 1000 K) |
 
 ## Scientific question
 
@@ -184,7 +291,11 @@ named in older READMEs no longer exists.
 
 ```
 validate → optimize endpoints → NEB path → Sella saddle → Hessian / TS validation
+                                                         (+ ±mode connectivity, both reference states)
 ```
+
+`run_protocol.py` chains the four stages for one method. They can also be run
+one at a time, as below.
 
 Run every command from this directory. Each stage accepts `--config`,
 `--model {mace-omol,mace-polar}`, `--variant`, `--device` and `--dtype`.
@@ -197,13 +308,42 @@ runs never overwrite each other.
 | 1 | `python optimize_endpoints.py --config config.json --model mace-omol` | the endpoint pair fails validation (checked **before** the model is loaded), or an element is not supported by the model | `endpoints/{reactant,product}_opt.{xyz,traj,log}`, `endpoints.json`, `validation/endpoints_input_validation.json` |
 | 2 | `python run_path.py --config config.json --model mace-omol [--seed-band f.xyz] [--images 13]` | optimized endpoints are missing or invalid, or the initial band has clashing atoms | `path/images/image_XX.xyz`, `band.xyz`, `neb.traj`, `neb.log`, `path.csv`, `path.json`, `ts_candidate.xyz` |
 | 3 | `python refine_ts.py --config config.json --model mace-omol [--band … --image N \| --start f.xyz]` | the starting geometry fails validation | `ts/ts_sella.xyz`, `sella.traj`, `sella.log`, `refine_ts.json` |
-| 4 | `python validate_ts.py --config config.json --model mace-omol [--ts f.xyz]` | the TS geometry fails validation | `vib/validate_ts.json`, `frequencies.csv`, `hessian.npy`, `imag_mode.xyz` |
+| 4 | `python validate_ts.py --config config.json --model mace-omol [--ts f.xyz] [--no-connectivity]` | the TS geometry fails validation | `vib/validate_ts.json` (with `ts_certification`, `connectivity`, `energetics`), `frequencies.csv`, `hessian.npy`, `normal_modes.npz`, `imag_mode_vector.npy`, `imag_mode.xyz`, `connectivity/conn_{plus,minus}_{start,relaxed}.xyz` |
 
 Exit codes:
 
-- **0** — success
-- **1** — refused, because the input or config is invalid
+- **0** — success (for `validate_ts.py` / `run_protocol.py`: TS CERTIFIED)
+- **1** — refused, because the input or config is invalid, or a dependency is
+  missing
 - **2** — ran, but did not converge or did not verify
+
+### ±mode connectivity check (`connectivity.py`)
+
+This step is ported from Tian's `ts_sella.py`. It is a **sanity check, not an
+IRC**:
+
+1. The dominant imaginary eigenvector is scaled so the atom that moves most is
+   displaced by 0.1 Å.
+2. TS ± that displacement are relaxed (BFGS, fmax 0.02). The TS itself is never
+   modified.
+3. Each side is labelled reactant-like, product-like, shared or detached by
+   `hydride.classify_hydride_state` (covalent C–H\* criterion, 1.284 Å).
+4. Each side is compared with the relaxed endpoint of the same state:
+   - whole and reactive-core RMSD
+   - reactive-core distances
+   - changed torsions and the energy offset (`conformer_diagnostics.py`)
+
+### Conformer diagnostics (`conformer_diagnostics.py`)
+
+For two structures of the same chemical state, this reports:
+
+- whole-system, reactive-core and non-core Kabsch RMSD
+- one representative torsion per rotatable non-metal heavy-atom bond, listing
+  those that changed by ≥ 30°
+- the energy offset, flagged **MATERIAL** at ≥ 4.184 kJ/mol
+
+It is descriptive only. It runs no conformer search and never claims a global
+minimum.
 
 `reaction_coordinate.py frames.xyz --config config.json --csv cvs.csv` computes
 CVs for any XYZ file or trajectory (for example `path/band.xyz` or
@@ -332,14 +472,24 @@ are not chemistry and must never be reported.** The scientific config
 unconfigured.
 
 ```bash
-/usr/bin/python3 -m pytest tests -q            # 40 unit tests, no model weights needed
+/usr/bin/python3 -m pytest tests -q            # 78 tests, no model weights / xtb needed
 /usr/bin/python3 run_smoke_test.py             # imports, config, validation, CVs, Hessian, both models
 /usr/bin/python3 run_smoke_test.py --pipeline  # + all four stages end to end on the toy
 ```
 
+## Open items that need Tian
+
+- **Raw MACE-OMOL and GFN2-xTB outputs** behind his table (102.8 / 101.9
+  kJ/mol), and the xTB driver he used. They are not on `tt-test`.
+- **Confirmation of charge 0 / singlet** for the cluster (currently inferred).
+- **The primary source of the 77–78 kJ/mol B3LYP-CPCM value** and of the
+  −12 to −15 kJ/mol reaction energies.
+- **His cheaper-DFT reference calculation,** if it can be reproduced.
+
 ## Blocked on authoritative coordinates
 
-The following need the real structures:
+The following need the real structures (the reconstructed `tian_tt_test` set
+does not replace them):
 
 - `input/reactant.xyz`, `input/product.xyz` and their provenance
 - the `config.json` fields `system.charge`, `spin_multiplicity`,
@@ -359,9 +509,20 @@ The following need the real structures:
 
 | file | role |
 |---|---|
-| `config.json` | scientific configuration (atom map, charge/spin, CVs, stage settings) — **unconfigured** |
+| `config.json` | scientific configuration for **authoritative** structures (atom map, charge/spin, CVs, stage settings) — **unconfigured** |
+| `config_tian_tt_test.json` | configuration of the **reconstructed** `input/tian_tt_test/` set and the standardized three-method protocol |
 | `config_io.py` | config loading, path resolution, atom-name → index resolution |
-| `calculators.py` | MACE-OMOL / MACE-POLAR registry, charge/spin wrapper, POLAR dependency check |
+| `calculators.py` | MACE-OMOL / MACE-POLAR / GFN2-xTB registry, charge/spin wrapper, dependency checks |
+| `hydride.py` | hydride-state labels (reactant-like / product-like / shared / detached) and reactive-core distances |
+| `energetics.py` | barriers / reaction energies keyed by reference state (`relaxed_endpoint`, `connected_side_minimum`) |
+| `connectivity.py` | ±imaginary-mode displacement + relaxation (not an IRC) and the TS certification label |
+| `conformer_diagnostics.py` | RMSD / torsion / energy-offset comparison of two structures of the same state |
+| `run_protocol.py` | the standardized protocol for one method (`--dry-run` prints the plan) |
+| `summarize_tian_polar.py` | both-reference-state summary of Tian's saved POLAR records from raw energies |
+| `audit_tian_tt_test.py` | regenerates `audit/tian_tt_test/` (validation JSON, summary, structure views) |
+| `visualize_structures.py` | x/y/z views in a common Sn-centred frame (qualitative only) |
+| `audit/tian_tt_test/` | committed audit artifacts for the reconstructed set |
+| `input/tian_tt_test/` | the reconstructed input set + `provenance.json` |
 | `validate_structure.py` | strict pre-calculation validation (CLI + library) |
 | `reaction_coordinate.py` | config-driven CVs (+ gradients, basin diagnostics, CSV) |
 | `geometry.py` | distances with periodic boundaries (minimum image), bond graph, Kabsch (same as `phase2_lib`) |

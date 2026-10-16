@@ -21,7 +21,7 @@
       "tip": "Pillar 4 — does iterating the correction, or handing off to the reference, keep improving it?" },
     { "id": "wip-snbeta", "kind": "wip", "col": 1, "row": 20.4, "href": "current-work.html",
       "label": "Current work · Sn-β (WIP)",
-      "tip": "Sn-β glucose hydride transfer with MACE-OMOL / MACE-POLAR. Pipeline built; no results yet." },
+      "tip": "Sn-β glucose hydride transfer with MACE-OMOL / MACE-POLAR / GFN2-xTB. Pipeline built; reconstructed model audited; no certified result yet." },
 
     { "id": "s05", "kind": "study", "col": 2, "row": 0.0, "href": "05-mace.html",
       "label": "Study 05 · MACE-OFF23 validation",
