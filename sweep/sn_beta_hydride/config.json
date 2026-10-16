@@ -1,6 +1,16 @@
 {
   "_comment": "Sn-beta glucose C2->C1 intramolecular hydride transfer (Mushrif, Varghese, Krishnamurthy, PCCP 2015, DOI 10.1039/C4CP05063K). Keys starting with '_' are comments. Every null below MUST be filled from the authoritative structures before any stage will run; nothing here is inferred from a real Sn-beta geometry. Atom indices are ZERO-BASED (ASE order of input/reactant.xyz).",
 
+  "provenance": {
+    "dataset": null,
+    "structure_class": "authoritative",
+    "not_literature_coordinates": null,
+    "constructed_by": null,
+    "charge_spin_status": null,
+    "provenance_file": "input/README.md",
+    "_comment": "Slot for AUTHORITATIVE structures (original CPMD frames / published coordinates) -- still empty. The reconstructed dataset from Tian lives in config_tian_tt_test.json. See input/README.md for the structure policy."
+  },
+
   "system": {
     "label": "Sn-beta / glucose C2->C1 hydride transfer",
     "test_only": false,

@@ -45,7 +45,7 @@ from geometry import kabsch_align, kabsch_rmsd, max_force, uses_pbc  # noqa: E40
 from validate_structure import (Report, ValidationError, _check_distances,  # noqa: E402
                                 print_report, require_valid, validate_pair, vcfg)
 from workflow import (EV2KCAL, EV2KJ, apply_fixed, banner, cv_values, provenance,  # noqa: E402
-                      stage_dir, strip_calc)
+                      stage_dir, strip_calc, structure_class)
 
 DEFAULTS = {"n_images": 13, "k": 0.5, "climb": True, "method": "improvedtangent",
             "interpolation": "idpp", "optimizer": "FIRE", "fmax": 0.05, "steps": 800,
@@ -90,6 +90,10 @@ def run(cfg, model=None, variant=None, device=None, dtype=None, reactant=None,
         if (ep / "reactant_opt.xyz").exists() and (ep / "product_opt.xyz").exists():
             reactant = reactant or ep / "reactant_opt.xyz"
             product = product or ep / "product_opt.xyz"
+        elif allow_unoptimized and structure_class(cfg) == "reconstructed":
+            raise ValidationError("reconstructed input structures must be relaxed with this "
+                                  "method (optimize_endpoints.py) before a path calculation; "
+                                  "--allow-unoptimized is refused for them")
         elif allow_unoptimized:
             st = cfg.get("structures") or {}
             reactant = reactant or resolve_path(cfg, st["reactant"])

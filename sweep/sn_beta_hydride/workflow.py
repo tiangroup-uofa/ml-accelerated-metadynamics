@@ -26,15 +26,28 @@ EV2KJ = 96.48533212
 STAGES = ("validation", "endpoints", "path", "ts", "vib")
 TEST_ONLY_BANNER = ("*** TEST-ONLY SYNTHETIC SYSTEM — software check, NOT the Sn-beta "
                     "structure; numbers below are not chemistry ***")
+RECONSTRUCTED_BANNER = ("*** RECONSTRUCTED INPUT STRUCTURES — hand-built model, NOT literature / "
+                        "CPMD coordinates; charge/spin: {cs}. See {pf} ***")
 
 
 def is_test_only(cfg: dict) -> bool:
     return bool((cfg.get("system") or {}).get("test_only"))
 
 
+def structure_class(cfg: dict):
+    """'test_only', or config['provenance']['structure_class'] (None if undeclared)."""
+    if is_test_only(cfg):
+        return "test_only"
+    return (cfg.get("provenance") or {}).get("structure_class")
+
+
 def banner(cfg: dict) -> None:
     if is_test_only(cfg):
         print(TEST_ONLY_BANNER)
+    elif structure_class(cfg) == "reconstructed":
+        p = cfg.get("provenance") or {}
+        print(RECONSTRUCTED_BANNER.format(cs=p.get("charge_spin_status"),
+                                          pf=p.get("provenance_file")))
 
 
 def stage_dir(cfg: dict, tag: str, stage: str, override=None) -> Path:
@@ -52,6 +65,10 @@ def provenance(cfg: dict, handle=None, **extra) -> dict:
     }
     if is_test_only(cfg):
         out["warning"] = TEST_ONLY_BANNER
+    out["structure_class"] = structure_class(cfg)
+    out["structure_provenance"] = cfg.get("provenance")
+    if structure_class(cfg) == "reconstructed":
+        out["warning"] = "RECONSTRUCTED input structures (not literature coordinates)"
     if handle is not None:
         out["calculator"] = handle.info()
     out.update(extra)
