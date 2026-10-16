@@ -1,0 +1,807 @@
+{
+  "tian_polar_ts": {
+    "label": "tian_polar_ts",
+    "status": "PASS",
+    "errors": [],
+    "warnings": [],
+    "info": {
+      "file": "glucose/structures/ts_mace-polar_polar-1-s.xyz",
+      "n_atoms": 42,
+      "formula": "C6H22O10Si3Sn",
+      "element_counts": {
+        "C": 6,
+        "H": 22,
+        "O": 10,
+        "Si": 3,
+        "Sn": 1
+      },
+      "has_Sn": true,
+      "pbc": [
+        false,
+        false,
+        false
+      ],
+      "cell_lengths_A": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cell_volume_A3": 0.0,
+      "role": null,
+      "charge": 0,
+      "spin_multiplicity": 1,
+      "n_electrons": 230,
+      "min_distance_A": 0.9659425194881821,
+      "min_distance_pair": [
+        24,
+        25
+      ],
+      "isolated_atoms": [],
+      "n_bonds": 41,
+      "n_fragments": 2,
+      "fragment_sizes": [
+        41,
+        1
+      ],
+      "atom_map": {
+        "C1": {
+          "index": 1,
+          "element": "C"
+        },
+        "C2": {
+          "index": 2,
+          "element": "C"
+        },
+        "H_transfer": {
+          "index": 13,
+          "element": "H"
+        },
+        "H_C1": {
+          "index": 12,
+          "element": "H"
+        },
+        "Sn": {
+          "index": 23,
+          "element": "Sn"
+        },
+        "O1": {
+          "index": 0,
+          "element": "O"
+        },
+        "O2": {
+          "index": 3,
+          "element": "O"
+        },
+        "O_water": {
+          "index": 24,
+          "element": "O"
+        }
+      },
+      "mapping_errors": false,
+      "reactive_distances_A": {
+        "C1-C2": 1.4106,
+        "C1-H_transfer": 1.348,
+        "C1-H_C1": 1.0926,
+        "C1-Sn": 2.8114,
+        "C1-O1": 1.2965,
+        "C1-O2": 2.328,
+        "C1-O_water": 4.8468,
+        "C2-H_transfer": 1.3144,
+        "C2-H_C1": 2.168,
+        "C2-Sn": 2.8447,
+        "C2-O1": 2.3514,
+        "C2-O2": 1.3157,
+        "C2-O_water": 4.3136,
+        "H_transfer-H_C1": 1.9121,
+        "H_transfer-Sn": 2.9545,
+        "H_transfer-O1": 2.2277,
+        "H_transfer-O2": 2.2079,
+        "H_transfer-O_water": 4.5906,
+        "H_C1-Sn": 3.8701,
+        "H_C1-O1": 2.0673,
+        "H_C1-O2": 3.3127,
+        "H_C1-O_water": 5.9331,
+        "Sn-O1": 2.107,
+        "Sn-O2": 2.1282,
+        "Sn-O_water": 2.3198,
+        "O1-O2": 2.6723,
+        "O1-O_water": 4.399,
+        "O2-O_water": 3.1202
+      },
+      "Sn_environment": [
+        {
+          "Sn_index": 23,
+          "shell_cutoff_A": 2.8,
+          "coordination": 7,
+          "n_O": 6,
+          "neighbours": [
+            {
+              "index": 27,
+              "element": "O",
+              "name": null,
+              "distance_A": 1.9794
+            },
+            {
+              "index": 32,
+              "element": "O",
+              "name": null,
+              "distance_A": 1.998
+            },
+            {
+              "index": 37,
+              "element": "O",
+              "name": null,
+              "distance_A": 2.0024
+            },
+            {
+              "index": 0,
+              "element": "O",
+              "name": "O1",
+              "distance_A": 2.107
+            },
+            {
+              "index": 3,
+              "element": "O",
+              "name": "O2",
+              "distance_A": 2.1282
+            },
+            {
+              "index": 24,
+              "element": "O",
+              "name": "O_water",
+              "distance_A": 2.3198
+            },
+            {
+              "index": 26,
+              "element": "H",
+              "name": null,
+              "distance_A": 2.6969
+            }
+          ],
+          "nearest_O_A": 1.9794
+        }
+      ],
+      "cap_groups": [
+        {
+          "cap_atom": 28,
+          "neighbours": [
+            27,
+            29,
+            30,
+            31
+          ],
+          "neighbour_counts": {
+            "O": 1,
+            "H": 3
+          },
+          "bridging_O": [
+            27
+          ],
+          "anchor_O_distance_A": 1.9794
+        },
+        {
+          "cap_atom": 33,
+          "neighbours": [
+            32,
+            34,
+            35,
+            36
+          ],
+          "neighbour_counts": {
+            "O": 1,
+            "H": 3
+          },
+          "bridging_O": [
+            32
+          ],
+          "anchor_O_distance_A": 1.998
+        },
+        {
+          "cap_atom": 38,
+          "neighbours": [
+            37,
+            39,
+            40,
+            41
+          ],
+          "neighbour_counts": {
+            "O": 1,
+            "H": 3
+          },
+          "bridging_O": [
+            37
+          ],
+          "anchor_O_distance_A": 2.0024
+        }
+      ],
+      "hydride_state": {
+        "state": "shared",
+        "d_C2_H_A": 1.3144112605417055,
+        "d_C1_H_A": 1.3480039642634971,
+        "delta_H_A": -0.03359270372179157,
+        "bond_cutoff_A": 1.284,
+        "shared_cutoff_A": 1.6,
+        "criterion": "covalent C-H* bond (d < bond_scale x (r_C + r_H)) on the mapped atoms"
+      },
+      "core_distances_A": {
+        "C2-H*": 1.3144,
+        "C1-H*": 1.348,
+        "C1-O1": 1.2965,
+        "C2-O2": 1.3157,
+        "C1-C2": 1.4106,
+        "Sn-O1": 2.107,
+        "Sn-O2": 2.1282,
+        "Sn-O_water": 2.3198,
+        "C1-H_C1": 1.0926
+      },
+      "cvs": {
+        "d_C1_H": 1.348,
+        "d_C2_H": 1.31441,
+        "delta_H": -0.03359,
+        "CV1": 1.52504,
+        "CV2": 0.78721
+      },
+      "reference_basins": {
+        "note": "diagnostic only; CV definitions must match the reference work; NOT comparable: CV parameters of ['CV1', 'CV2'] are unconfirmed, so distances to the reference basins are not interpretable",
+        "source": "As config.json (Ali 2025 thesis Sec. 4.2). DIAGNOSTIC ONLY; not interpretable while CV parameters are unconfirmed.",
+        "basins": {
+          "reactant": {
+            "target": {
+              "CV1": 0.9,
+              "CV2": 0.9
+            },
+            "distance": 0.6351392193847099,
+            "within_tolerance": null
+          },
+          "product": {
+            "target": {
+              "CV1": 1.8,
+              "CV2": 0.1
+            },
+            "distance": 0.7401705911808691,
+            "within_tolerance": null
+          }
+        },
+        "comparable": false
+      }
+    },
+    "n_errors": 0,
+    "n_warnings": 0
+  },
+  "tian_polar_reactant_side_min": {
+    "label": "tian_polar_reactant_side_min",
+    "status": "PASS",
+    "errors": [],
+    "warnings": [],
+    "info": {
+      "file": "glucose/structures/ts_reactant_side_mace-polar_polar-1-s.xyz",
+      "n_atoms": 42,
+      "formula": "C6H22O10Si3Sn",
+      "element_counts": {
+        "C": 6,
+        "H": 22,
+        "O": 10,
+        "Si": 3,
+        "Sn": 1
+      },
+      "has_Sn": true,
+      "pbc": [
+        false,
+        false,
+        false
+      ],
+      "cell_lengths_A": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cell_volume_A3": 0.0,
+      "role": "reactant",
+      "charge": 0,
+      "spin_multiplicity": 1,
+      "n_electrons": 230,
+      "min_distance_A": 0.9656323212566552,
+      "min_distance_pair": [
+        24,
+        25
+      ],
+      "isolated_atoms": [],
+      "n_bonds": 42,
+      "n_fragments": 1,
+      "fragment_sizes": [
+        42
+      ],
+      "atom_map": {
+        "C1": {
+          "index": 1,
+          "element": "C"
+        },
+        "C2": {
+          "index": 2,
+          "element": "C"
+        },
+        "H_transfer": {
+          "index": 13,
+          "element": "H"
+        },
+        "H_C1": {
+          "index": 12,
+          "element": "H"
+        },
+        "Sn": {
+          "index": 23,
+          "element": "Sn"
+        },
+        "O1": {
+          "index": 0,
+          "element": "O"
+        },
+        "O2": {
+          "index": 3,
+          "element": "O"
+        },
+        "O_water": {
+          "index": 24,
+          "element": "O"
+        }
+      },
+      "mapping_errors": false,
+      "reactive_distances_A": {
+        "C1-C2": 1.5066,
+        "C1-H_transfer": 2.0937,
+        "C1-H_C1": 1.1007,
+        "C1-Sn": 2.9647,
+        "C1-O1": 1.2177,
+        "C1-O2": 2.3751,
+        "C1-O_water": 5.0887,
+        "C2-H_transfer": 1.1023,
+        "C2-H_C1": 2.2607,
+        "C2-Sn": 2.8767,
+        "C2-O1": 2.3762,
+        "C2-O2": 1.3922,
+        "C2-O_water": 4.5008,
+        "H_transfer-H_C1": 2.6712,
+        "H_transfer-Sn": 3.2182,
+        "H_transfer-O1": 2.9237,
+        "H_transfer-O2": 2.0692,
+        "H_transfer-O_water": 4.5935,
+        "H_C1-Sn": 4.0454,
+        "H_C1-O1": 2.0037,
+        "H_C1-O2": 3.3719,
+        "H_C1-O_water": 6.1792,
+        "Sn-O1": 2.3636,
+        "Sn-O2": 2.0292,
+        "Sn-O_water": 2.3042,
+        "O1-O2": 2.6546,
+        "O1-O_water": 4.6575,
+        "O2-O_water": 3.3358
+      },
+      "Sn_environment": [
+        {
+          "Sn_index": 23,
+          "shell_cutoff_A": 2.8,
+          "coordination": 7,
+          "n_O": 6,
+          "neighbours": [
+            {
+              "index": 27,
+              "element": "O",
+              "name": null,
+              "distance_A": 1.9804
+            },
+            {
+              "index": 32,
+              "element": "O",
+              "name": null,
+              "distance_A": 1.9929
+            },
+            {
+              "index": 37,
+              "element": "O",
+              "name": null,
+              "distance_A": 2.0005
+            },
+            {
+              "index": 3,
+              "element": "O",
+              "name": "O2",
+              "distance_A": 2.0292
+            },
+            {
+              "index": 24,
+              "element": "O",
+              "name": "O_water",
+              "distance_A": 2.3042
+            },
+            {
+              "index": 0,
+              "element": "O",
+              "name": "O1",
+              "distance_A": 2.3636
+            },
+            {
+              "index": 26,
+              "element": "H",
+              "name": null,
+              "distance_A": 2.7364
+            }
+          ],
+          "nearest_O_A": 1.9804
+        }
+      ],
+      "cap_groups": [
+        {
+          "cap_atom": 28,
+          "neighbours": [
+            27,
+            29,
+            30,
+            31
+          ],
+          "neighbour_counts": {
+            "O": 1,
+            "H": 3
+          },
+          "bridging_O": [
+            27
+          ],
+          "anchor_O_distance_A": 1.9804
+        },
+        {
+          "cap_atom": 33,
+          "neighbours": [
+            32,
+            34,
+            35,
+            36
+          ],
+          "neighbour_counts": {
+            "O": 1,
+            "H": 3
+          },
+          "bridging_O": [
+            32
+          ],
+          "anchor_O_distance_A": 1.9929
+        },
+        {
+          "cap_atom": 38,
+          "neighbours": [
+            37,
+            39,
+            40,
+            41
+          ],
+          "neighbour_counts": {
+            "O": 1,
+            "H": 3
+          },
+          "bridging_O": [
+            37
+          ],
+          "anchor_O_distance_A": 2.0005
+        }
+      ],
+      "hydride_state": {
+        "state": "reactant-like",
+        "d_C2_H_A": 1.102330539040295,
+        "d_C1_H_A": 2.0936898129315598,
+        "delta_H_A": -0.9913592738912647,
+        "bond_cutoff_A": 1.284,
+        "shared_cutoff_A": 1.6,
+        "criterion": "covalent C-H* bond (d < bond_scale x (r_C + r_H)) on the mapped atoms"
+      },
+      "core_distances_A": {
+        "C2-H*": 1.1023,
+        "C1-H*": 2.0937,
+        "C1-O1": 1.2177,
+        "C2-O2": 1.3922,
+        "C1-C2": 1.5066,
+        "Sn-O1": 2.3636,
+        "Sn-O2": 2.0292,
+        "Sn-O_water": 2.3042,
+        "C1-H_C1": 1.1007
+      },
+      "cvs": {
+        "d_C1_H": 2.09369,
+        "d_C2_H": 1.10233,
+        "delta_H": -0.99136,
+        "CV1": 0.98405,
+        "CV2": 0.94254
+      },
+      "reference_basins": {
+        "note": "diagnostic only; CV definitions must match the reference work; NOT comparable: CV parameters of ['CV1', 'CV2'] are unconfirmed, so distances to the reference basins are not interpretable",
+        "source": "As config.json (Ali 2025 thesis Sec. 4.2). DIAGNOSTIC ONLY; not interpretable while CV parameters are unconfirmed.",
+        "basins": {
+          "reactant": {
+            "target": {
+              "CV1": 0.9,
+              "CV2": 0.9
+            },
+            "distance": 0.09420573900745909,
+            "within_tolerance": null
+          },
+          "product": {
+            "target": {
+              "CV1": 1.8,
+              "CV2": 0.1
+            },
+            "distance": 1.1728805621825433,
+            "within_tolerance": null
+          }
+        },
+        "comparable": false
+      }
+    },
+    "n_errors": 0,
+    "n_warnings": 0
+  },
+  "tian_polar_product_side_min": {
+    "label": "tian_polar_product_side_min",
+    "status": "PASS",
+    "errors": [],
+    "warnings": [],
+    "info": {
+      "file": "glucose/structures/ts_product_side_mace-polar_polar-1-s.xyz",
+      "n_atoms": 42,
+      "formula": "C6H22O10Si3Sn",
+      "element_counts": {
+        "C": 6,
+        "H": 22,
+        "O": 10,
+        "Si": 3,
+        "Sn": 1
+      },
+      "has_Sn": true,
+      "pbc": [
+        false,
+        false,
+        false
+      ],
+      "cell_lengths_A": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cell_volume_A3": 0.0,
+      "role": "product",
+      "charge": 0,
+      "spin_multiplicity": 1,
+      "n_electrons": 230,
+      "min_distance_A": 0.9652950378298951,
+      "min_distance_pair": [
+        7,
+        17
+      ],
+      "isolated_atoms": [],
+      "n_bonds": 42,
+      "n_fragments": 1,
+      "fragment_sizes": [
+        42
+      ],
+      "atom_map": {
+        "C1": {
+          "index": 1,
+          "element": "C"
+        },
+        "C2": {
+          "index": 2,
+          "element": "C"
+        },
+        "H_transfer": {
+          "index": 13,
+          "element": "H"
+        },
+        "H_C1": {
+          "index": 12,
+          "element": "H"
+        },
+        "Sn": {
+          "index": 23,
+          "element": "Sn"
+        },
+        "O1": {
+          "index": 0,
+          "element": "O"
+        },
+        "O2": {
+          "index": 3,
+          "element": "O"
+        },
+        "O_water": {
+          "index": 24,
+          "element": "O"
+        }
+      },
+      "mapping_errors": false,
+      "reactive_distances_A": {
+        "C1-C2": 1.5039,
+        "C1-H_transfer": 1.1022,
+        "C1-H_C1": 1.0978,
+        "C1-Sn": 2.8762,
+        "C1-O1": 1.3866,
+        "C1-O2": 2.3719,
+        "C1-O_water": 4.7962,
+        "C2-H_transfer": 2.1029,
+        "C2-H_C1": 2.1139,
+        "C2-Sn": 2.9764,
+        "C2-O1": 2.4063,
+        "C2-O2": 1.2219,
+        "C2-O_water": 4.222,
+        "H_transfer-H_C1": 1.7645,
+        "H_transfer-Sn": 3.3695,
+        "H_transfer-O1": 2.0738,
+        "H_transfer-O2": 3.0287,
+        "H_transfer-O_water": 5.193,
+        "H_C1-Sn": 3.8008,
+        "H_C1-O1": 2.0492,
+        "H_C1-O2": 3.1049,
+        "H_C1-O_water": 5.7572,
+        "Sn-O1": 1.9897,
+        "Sn-O2": 2.3922,
+        "Sn-O_water": 2.3443,
+        "O1-O2": 2.6736,
+        "O1-O_water": 4.2541,
+        "O2-O_water": 3.1504
+      },
+      "Sn_environment": [
+        {
+          "Sn_index": 23,
+          "shell_cutoff_A": 2.8,
+          "coordination": 7,
+          "n_O": 6,
+          "neighbours": [
+            {
+              "index": 27,
+              "element": "O",
+              "name": null,
+              "distance_A": 1.965
+            },
+            {
+              "index": 0,
+              "element": "O",
+              "name": "O1",
+              "distance_A": 1.9897
+            },
+            {
+              "index": 37,
+              "element": "O",
+              "name": null,
+              "distance_A": 1.9906
+            },
+            {
+              "index": 32,
+              "element": "O",
+              "name": null,
+              "distance_A": 1.9983
+            },
+            {
+              "index": 24,
+              "element": "O",
+              "name": "O_water",
+              "distance_A": 2.3443
+            },
+            {
+              "index": 3,
+              "element": "O",
+              "name": "O2",
+              "distance_A": 2.3922
+            },
+            {
+              "index": 26,
+              "element": "H",
+              "name": null,
+              "distance_A": 2.7627
+            }
+          ],
+          "nearest_O_A": 1.965
+        }
+      ],
+      "cap_groups": [
+        {
+          "cap_atom": 28,
+          "neighbours": [
+            27,
+            29,
+            30,
+            31
+          ],
+          "neighbour_counts": {
+            "O": 1,
+            "H": 3
+          },
+          "bridging_O": [
+            27
+          ],
+          "anchor_O_distance_A": 1.965
+        },
+        {
+          "cap_atom": 33,
+          "neighbours": [
+            32,
+            34,
+            35,
+            36
+          ],
+          "neighbour_counts": {
+            "O": 1,
+            "H": 3
+          },
+          "bridging_O": [
+            32
+          ],
+          "anchor_O_distance_A": 1.9983
+        },
+        {
+          "cap_atom": 38,
+          "neighbours": [
+            37,
+            39,
+            40,
+            41
+          ],
+          "neighbour_counts": {
+            "O": 1,
+            "H": 3
+          },
+          "bridging_O": [
+            37
+          ],
+          "anchor_O_distance_A": 1.9906
+        }
+      ],
+      "hydride_state": {
+        "state": "product-like",
+        "d_C2_H_A": 2.1029284552581693,
+        "d_C1_H_A": 1.1021866601300903,
+        "delta_H_A": 1.000741795128079,
+        "bond_cutoff_A": 1.284,
+        "shared_cutoff_A": 1.6,
+        "criterion": "covalent C-H* bond (d < bond_scale x (r_C + r_H)) on the mapped atoms"
+      },
+      "core_distances_A": {
+        "C2-H*": 2.1029,
+        "C1-H*": 1.1022,
+        "C1-O1": 1.3866,
+        "C2-O2": 1.2219,
+        "C1-C2": 1.5039,
+        "Sn-O1": 1.9897,
+        "Sn-O2": 2.3922,
+        "Sn-O_water": 2.3443,
+        "C1-H_C1": 1.0978
+      },
+      "cvs": {
+        "d_C1_H": 1.10219,
+        "d_C2_H": 2.10293,
+        "delta_H": 1.00074,
+        "CV1": 1.73082,
+        "CV2": 0.22957
+      },
+      "reference_basins": {
+        "note": "diagnostic only; CV definitions must match the reference work; NOT comparable: CV parameters of ['CV1', 'CV2'] are unconfirmed, so distances to the reference basins are not interpretable",
+        "source": "As config.json (Ali 2025 thesis Sec. 4.2). DIAGNOSTIC ONLY; not interpretable while CV parameters are unconfirmed.",
+        "basins": {
+          "reactant": {
+            "target": {
+              "CV1": 0.9,
+              "CV2": 0.9
+            },
+            "distance": 1.0675860563459294,
+            "within_tolerance": null
+          },
+          "product": {
+            "target": {
+              "CV1": 1.8,
+              "CV2": 0.1
+            },
+            "distance": 0.14688205965236653,
+            "within_tolerance": null
+          }
+        },
+        "comparable": false
+      }
+    },
+    "n_errors": 0,
+    "n_warnings": 0
+  }
+}

@@ -1,0 +1,492 @@
+{
+  "what": "Tian's MACE-POLAR-1-S results on the RECONSTRUCTED 42-atom vacuum cluster, recomputed from saved raw energies (no calculation run)",
+  "method": {
+    "model": "mace-polar",
+    "pretty": "MACE-POLAR-1",
+    "variant": "polar-1-s",
+    "model_path": null,
+    "model_class": "PolarMACE",
+    "head": "Default",
+    "r_max_A": 6.0,
+    "z_range": [
+      1,
+      83
+    ],
+    "n_elements": 83,
+    "device": "cpu",
+    "dtype": "float64",
+    "charge": 0,
+    "spin_multiplicity": 1,
+    "mace_torch": "0.3.16",
+    "torch": "2.12.0",
+    "ase": "3.28.0",
+    "graph_longrange": "0.4.0"
+  },
+  "charge": 0,
+  "spin_multiplicity": 1,
+  "charge_spin_status": "inferred",
+  "environment": "vacuum; electronic potential energies; no ZPE/thermal terms",
+  "workflow_note": "Tian's path is a 15-point relaxed scan + Sella (internal coordinates, fmax 1e-3 eV/\u00c5), NOT a CI-NEB",
+  "file_integrity": {
+    "dataset_files": {
+      "reactant.xyz": {
+        "sha256_lf": "8fb704a84dc5b4652474ec864f3e32ae52bca4045e90f2dc4807bad78c693708",
+        "matches": true
+      },
+      "product.xyz": {
+        "sha256_lf": "b5dc1c3fa81bcaf6d975ad8f980ca63fa6a135a8bdff586d91e588e938bab7f0",
+        "matches": true
+      },
+      "atom_map_tian.json": {
+        "sha256_lf": "ded60694c71e2e4a41919312ba305e27a22fad9bf06ee250e0cd0e093a005aaa",
+        "matches": true
+      }
+    },
+    "tian_provenance_files": {
+      "atom_map.json": {
+        "sha256_lf": "ded60694c71e2e4a41919312ba305e27a22fad9bf06ee250e0cd0e093a005aaa",
+        "matches": true
+      },
+      "product_guess.xyz": {
+        "sha256_lf": "9b82963443aad5b0b91a237dc7b5ae31bf5aee0907e31bf01bc7f73459d7092c",
+        "matches": true
+      },
+      "product_mace-polar_polar-1-s.xyz": {
+        "sha256_lf": "b5dc1c3fa81bcaf6d975ad8f980ca63fa6a135a8bdff586d91e588e938bab7f0",
+        "matches": true
+      },
+      "reactant_guess.xyz": {
+        "sha256_lf": "a2d5627e4d08651b47d352e863486af0b4cc3ad55feb16200cb259cc0f1b8c48",
+        "matches": true
+      },
+      "reactant_mace-polar_polar-1-s.xyz": {
+        "sha256_lf": "8fb704a84dc5b4652474ec864f3e32ae52bca4045e90f2dc4807bad78c693708",
+        "matches": true
+      },
+      "relax_mace-polar_polar-1-s.json": {
+        "sha256_lf": "82be75fada7c6cbd2e5535e4cd54e99847f6db4b608e0d51dd18c35bda906619",
+        "matches": true
+      },
+      "scan_mace-polar_polar-1-s.csv": {
+        "sha256_lf": "15df38132a1c28b55e024c6db884fe0d5cf423982ad0b1191e606013dea7ad7d",
+        "matches": true
+      },
+      "scan_mace-polar_polar-1-s.xyz": {
+        "sha256_lf": "5a29597740910c9742c2b358d529ea77e7f4b47d2393eea580fcc22de0206ed5",
+        "matches": true
+      },
+      "ts_mace-polar_polar-1-s.json": {
+        "sha256_lf": "7963761625b1b79b78b731b730d05ab232761ed4580e0afe027f38eefe3a1170",
+        "matches": true
+      },
+      "ts_mace-polar_polar-1-s.xyz": {
+        "sha256_lf": "2901a64fe5490e14dc235273984b9e2527f64b3fa6b8be405294375de99ec04c",
+        "matches": true
+      },
+      "ts_product_side_mace-polar_polar-1-s.xyz": {
+        "sha256_lf": "cee9b289e9abc59ae54957e57a90c578bb66bdfa2290016cb54bb828f888f6c8",
+        "matches": true
+      },
+      "ts_reactant_side_mace-polar_polar-1-s.xyz": {
+        "sha256_lf": "d7b2c3c7ceca9b58bdb0966e75784b41288f44b9abda2b34a28cf23b5dc9b11b",
+        "matches": true
+      }
+    },
+    "all_match": true
+  },
+  "energy_cross_check": {
+    "reactant": {
+      "json_eV": -56520.653897531585,
+      "xyz_eV": -56520.653897531585,
+      "abs_diff_eV": 0.0
+    },
+    "product": {
+      "json_eV": -56520.96505096508,
+      "xyz_eV": -56520.96505096508,
+      "abs_diff_eV": 0.0
+    },
+    "ts": {
+      "json_eV": -56519.48302971562,
+      "xyz_eV": -56519.48302971562,
+      "abs_diff_eV": 0.0
+    },
+    "reactant_side_min": {
+      "json_eV": -56520.793173229555,
+      "xyz_eV": -56520.793173229555,
+      "abs_diff_eV": 0.0
+    },
+    "product_side_min": {
+      "json_eV": -56520.991804614474,
+      "xyz_eV": -56520.991804614474,
+      "abs_diff_eV": 0.0
+    },
+    "all_consistent": true
+  },
+  "energies_eV": {
+    "reactant": -56520.653897531585,
+    "product": -56520.96505096508,
+    "ts": -56519.48302971562,
+    "reactant_side_min": -56520.793173229555,
+    "product_side_min": -56520.991804614474
+  },
+  "energetics": {
+    "units_note": "electronic potential energies of one method, one environment; no ZPE/thermal terms; not free energies",
+    "ts": {
+      "energy_eV": -56519.48302971562,
+      "status": "NOT INDEPENDENTLY CERTIFIED: Tian's saved records show a converged Sella stationary point (fmax 6.9e-04 eV/\u00c5), 1 significant imaginary mode (-923.1 cm^-1, overlap 0.75 with the hydride coordinate) and +/- mode side minima that are reactant-/product-like; the Hessian has not been recomputed by this pipeline and the eigenvector was not saved",
+      "certified": false,
+      "source": "glucose/structures/ts_mace-polar_polar-1-s.xyz"
+    },
+    "reference_states": {
+      "relaxed_endpoint": {
+        "name": "relaxed_endpoint",
+        "available": true,
+        "description": "E(TS) - E(reactant) with the reactant/product being this method's relaxed input endpoints",
+        "reactant_eV": -56520.653897531585,
+        "product_eV": -56520.96505096508,
+        "source": {
+          "reactant": "glucose/structures/reactant_mace-polar_polar-1-s.xyz",
+          "product": "glucose/structures/product_mace-polar_polar-1-s.xyz",
+          "energies": "glucose\\structures\\relax_mace-polar_polar-1-s.json"
+        },
+        "unavailable_reason": null
+      },
+      "connected_side_minimum": {
+        "name": "connected_side_minimum",
+        "available": true,
+        "description": "E(TS) - E(minimum reached from the TS by negative/positive imaginary-mode displacement + relaxation); NOT an IRC endpoint",
+        "reactant_eV": -56520.793173229555,
+        "product_eV": -56520.991804614474,
+        "source": {
+          "reactant": "glucose\\structures\\ts_reactant_side_mace-polar_polar-1-s.xyz",
+          "product": "glucose\\structures\\ts_product_side_mace-polar_polar-1-s.xyz",
+          "energies": "glucose\\structures\\ts_mace-polar_polar-1-s.json",
+          "method": "Tian: TS +/- 0.1 \u00c5 along the imaginary mode, BFGS 0.02 eV/\u00c5 (NOT an IRC)"
+        },
+        "unavailable_reason": null
+      }
+    },
+    "barrier_forward": {
+      "relaxed_endpoint": {
+        "eV": 1.1708678159629926,
+        "kJ_mol": 112.97157009180837,
+        "kcal_mol": 27.000853471669757
+      },
+      "connected_side_minimum": {
+        "eV": 1.3101435139324167,
+        "kJ_mol": 126.40963206663307,
+        "kcal_mol": 30.212627389927164
+      }
+    },
+    "barrier_reverse": {
+      "relaxed_endpoint": {
+        "eV": 1.482021249459649,
+        "kJ_mol": 142.9933124630116,
+        "kcal_mol": 34.17622216018421
+      },
+      "connected_side_minimum": {
+        "eV": 1.5087748988516978,
+        "kJ_mol": 145.57464721002546,
+        "kcal_mol": 34.793175976164726
+      }
+    },
+    "reaction_energy": {
+      "relaxed_endpoint": {
+        "eV": -0.31115343349665636,
+        "kJ_mol": -30.02174237120322,
+        "kcal_mol": -7.175368688514452
+      },
+      "connected_side_minimum": {
+        "eV": -0.19863138491928112,
+        "kJ_mol": -19.1650151433924,
+        "kcal_mol": -4.580548586237558
+      }
+    },
+    "quantity_label": "E(UNCERTIFIED stationary point) - E(reference); not a certified barrier",
+    "policy": "No single unlabeled barrier is reported; every value names its reference state.",
+    "reference_state_spread_kJ_mol": {
+      "barrier_forward": 13.438061974824691,
+      "barrier_reverse": 2.5813347470138694,
+      "reaction_energy": 10.856727227810822
+    },
+    "reference_state_dependent": true,
+    "material_threshold_kJ_mol": 4.184
+  },
+  "scan_maximum": {
+    "status": "relaxed 1-D scan maximum along delta_H: NOT a transition state (constrained geometry, fmax 0.03 eV/\u00c5 under constraint)",
+    "point": 7,
+    "delta_A": 0.00407741548948648,
+    "E_scan_max_minus_E_relaxed_reactant": {
+      "eV": 1.227793267222296,
+      "kJ_mol": 118.46404116264313,
+      "kcal_mol": 28.313585572856585
+    },
+    "E_scan_max_minus_E_saddle": {
+      "eV": 0.05692545125930337,
+      "kJ_mol": 5.492471070834758,
+      "kcal_mol": 1.3127321011868258
+    }
+  },
+  "saddle_evidence_saved": {
+    "sella_converged": true,
+    "fmax_eV_A": 0.0006883970365839288,
+    "fmax_criterion_eV_A": 0.001,
+    "n_significant_imaginary": 1,
+    "nu_imag_cm": -923.0900236445386,
+    "lowest_10_cm": [
+      -923.0900236445386,
+      -0.5707900129722682,
+      -0.23742073879116388,
+      -0.21712704425561644,
+      -0.002114678021692134,
+      0.003569050186001654,
+      0.011033353828835798,
+      14.007842291315368,
+      20.02086267046145,
+      25.490705277594827
+    ],
+    "reaction_mode_overlap": 0.7504818856192812,
+    "H_transfer_participation": 0.8539441015248036,
+    "eigenvector_saved": false,
+    "side_minima_states": [
+      "reactant-like",
+      "product-like"
+    ],
+    "side_minima_connect_reactant_and_product_like": true,
+    "source": "glucose\\structures\\ts_mace-polar_polar-1-s.json"
+  },
+  "geometry": {
+    "reactant": {
+      "hydride_state": {
+        "state": "reactant-like",
+        "d_C2_H_A": 1.1048010178374903,
+        "d_C1_H_A": 2.111575859139403,
+        "delta_H_A": -1.0067748413019126,
+        "bond_cutoff_A": 1.284,
+        "shared_cutoff_A": 1.6,
+        "criterion": "covalent C-H* bond (d < bond_scale x (r_C + r_H)) on the mapped atoms"
+      },
+      "core_distances_A": {
+        "C2-H*": 1.1048,
+        "C1-H*": 2.1116,
+        "C1-O1": 1.2177,
+        "C2-O2": 1.3874,
+        "C1-C2": 1.509,
+        "Sn-O1": 2.3395,
+        "Sn-O2": 2.0427,
+        "Sn-O_water": 2.3115,
+        "C1-H_C1": 1.0983
+      }
+    },
+    "product": {
+      "hydride_state": {
+        "state": "product-like",
+        "d_C2_H_A": 2.1152163358946723,
+        "d_C1_H_A": 1.1002683669155475,
+        "delta_H_A": 1.0149479689791248,
+        "bond_cutoff_A": 1.284,
+        "shared_cutoff_A": 1.6,
+        "criterion": "covalent C-H* bond (d < bond_scale x (r_C + r_H)) on the mapped atoms"
+      },
+      "core_distances_A": {
+        "C2-H*": 2.1152,
+        "C1-H*": 1.1003,
+        "C1-O1": 1.3853,
+        "C2-O2": 1.2198,
+        "C1-C2": 1.504,
+        "Sn-O1": 1.9917,
+        "Sn-O2": 2.4729,
+        "Sn-O_water": 2.3775,
+        "C1-H_C1": 1.0988
+      }
+    },
+    "ts": {
+      "hydride_state": {
+        "state": "shared",
+        "d_C2_H_A": 1.3144112605417055,
+        "d_C1_H_A": 1.3480039642634971,
+        "delta_H_A": -0.03359270372179157,
+        "bond_cutoff_A": 1.284,
+        "shared_cutoff_A": 1.6,
+        "criterion": "covalent C-H* bond (d < bond_scale x (r_C + r_H)) on the mapped atoms"
+      },
+      "core_distances_A": {
+        "C2-H*": 1.3144,
+        "C1-H*": 1.348,
+        "C1-O1": 1.2965,
+        "C2-O2": 1.3157,
+        "C1-C2": 1.4106,
+        "Sn-O1": 2.107,
+        "Sn-O2": 2.1282,
+        "Sn-O_water": 2.3198,
+        "C1-H_C1": 1.0926
+      }
+    },
+    "reactant_side_min": {
+      "hydride_state": {
+        "state": "reactant-like",
+        "d_C2_H_A": 1.102330539040295,
+        "d_C1_H_A": 2.0936898129315598,
+        "delta_H_A": -0.9913592738912647,
+        "bond_cutoff_A": 1.284,
+        "shared_cutoff_A": 1.6,
+        "criterion": "covalent C-H* bond (d < bond_scale x (r_C + r_H)) on the mapped atoms"
+      },
+      "core_distances_A": {
+        "C2-H*": 1.1023,
+        "C1-H*": 2.0937,
+        "C1-O1": 1.2177,
+        "C2-O2": 1.3922,
+        "C1-C2": 1.5066,
+        "Sn-O1": 2.3636,
+        "Sn-O2": 2.0292,
+        "Sn-O_water": 2.3042,
+        "C1-H_C1": 1.1007
+      }
+    },
+    "product_side_min": {
+      "hydride_state": {
+        "state": "product-like",
+        "d_C2_H_A": 2.1029284552581693,
+        "d_C1_H_A": 1.1021866601300903,
+        "delta_H_A": 1.000741795128079,
+        "bond_cutoff_A": 1.284,
+        "shared_cutoff_A": 1.6,
+        "criterion": "covalent C-H* bond (d < bond_scale x (r_C + r_H)) on the mapped atoms"
+      },
+      "core_distances_A": {
+        "C2-H*": 2.1029,
+        "C1-H*": 1.1022,
+        "C1-O1": 1.3866,
+        "C2-O2": 1.2219,
+        "C1-C2": 1.5039,
+        "Sn-O1": 1.9897,
+        "Sn-O2": 2.3922,
+        "Sn-O_water": 2.3443,
+        "C1-H_C1": 1.0978
+      }
+    }
+  },
+  "conformer_diagnostics": {
+    "reactant_side": {
+      "label": "reactant-side minimum vs relaxed input reactant",
+      "rmsd_whole_A": 1.2448633459871856,
+      "rmsd_core_A": 0.08342100467194889,
+      "rmsd_noncore_A": 1.283323459791963,
+      "core_atoms": [
+        0,
+        1,
+        2,
+        3,
+        12,
+        13,
+        23,
+        24
+      ],
+      "n_dihedrals_checked": 9,
+      "changed_dihedrals": [
+        {
+          "atoms": [
+            1,
+            2,
+            4,
+            5
+          ],
+          "label": "C1-C2-C4-O5",
+          "ref_deg": 141.4,
+          "other_deg": 71.1,
+          "change_deg": -70.3
+        },
+        {
+          "atoms": [
+            2,
+            4,
+            5,
+            15
+          ],
+          "label": "C2-C4-O5-H15",
+          "ref_deg": -13.2,
+          "other_deg": 39.8,
+          "change_deg": 53.0
+        }
+      ],
+      "n_changed_dihedrals": 2,
+      "dihedral_threshold_deg": 30.0,
+      "core_similar": true,
+      "core_similar_threshold_A": 0.25,
+      "energy_offset_kJ_mol": -13.438061974824691,
+      "material": true,
+      "material_threshold_kJ_mol": 4.184,
+      "interpretation": "reactive core essentially unchanged (core RMSD 0.083 \u00c5); 2 torsion(s) changed by >= 30 deg (largest C1-C2-C4-O5 -70 deg); MATERIAL conformational energy offset -13.44 kJ/mol (>= 4.18): barriers depend on which structure is the reference",
+      "note": "descriptive only: a lower structure found this way is a lower LOCAL minimum, not evidence of the global minimum"
+    },
+    "product_side": {
+      "label": "product-side minimum vs relaxed input product",
+      "rmsd_whole_A": 0.9955019955383572,
+      "rmsd_core_A": 0.241979061185337,
+      "rmsd_noncore_A": 1.0370874432401325,
+      "core_atoms": [
+        0,
+        1,
+        2,
+        3,
+        12,
+        13,
+        23,
+        24
+      ],
+      "n_dihedrals_checked": 9,
+      "changed_dihedrals": [],
+      "n_changed_dihedrals": 0,
+      "dihedral_threshold_deg": 30.0,
+      "core_similar": true,
+      "core_similar_threshold_A": 0.25,
+      "energy_offset_kJ_mol": -2.5813347470138672,
+      "material": false,
+      "material_threshold_kJ_mol": 4.184,
+      "interpretation": "reactive core essentially unchanged (core RMSD 0.242 \u00c5); energy offset -2.58 kJ/mol (below the materiality threshold)",
+      "note": "descriptive only: a lower structure found this way is a lower LOCAL minimum, not evidence of the global minimum"
+    }
+  },
+  "agreement": {
+    "vs_tian_json": {
+      "barrier_forward_relaxed_endpoint_kJ_mol": [
+        112.97157009180837,
+        112.97118122318935
+      ],
+      "reaction_energy_relaxed_endpoint_kJ_mol": [
+        -30.02174237120322,
+        -30.021639030924888
+      ],
+      "note": "Tian converts with 96.485 kJ/mol per eV; this summary uses CODATA 96.48533212 (difference < 0.001 kJ/mol here)"
+    },
+    "vs_handoff_table": {
+      "table": {
+        "barrier_kJ_mol": 126.4,
+        "dE_kJ_mol": -19.2,
+        "nu_imag_cm": -923.0,
+        "ts_Sn_O_A": [
+          2.11,
+          2.13
+        ],
+        "force_calls": 771,
+        "wall_min": 9.0,
+        "_source": "supervisor handoff table (screenshot), transcribed by hand"
+      },
+      "table_barrier_matches_reference_state": [
+        "connected_side_minimum"
+      ],
+      "table_dE_matches_reference_state": [
+        "connected_side_minimum"
+      ],
+      "ts_Sn_O1_Sn_O2_from_coordinates_A": [
+        2.107,
+        2.1282
+      ],
+      "force_calls_saved": 771,
+      "wall_s_saved": 534.9,
+      "wall_note": "wall_s covers scan/Sella/Hessian/side relaxations only; endpoint relaxations add 335 s"
+    }
+  },
+  "conversion_eV_to_kJ_mol": 96.48533212
+}
