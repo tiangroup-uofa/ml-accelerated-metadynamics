@@ -462,3 +462,62 @@ main img { max-width: 100%; height: auto; }
 @media (max-width: 420px) {
   .numgrid { grid-template-columns: 1fr; }
 }
+
+/* ==================================================================
+   Current work (Sn-β): figure-led layout
+   Colours match site/build_sn_beta_figures.py: --accent = relaxed_endpoint,
+   --ref-side = connected_side_minimum.
+   ================================================================== */
+:root { --ref-side: #7a5c99; }
+
+.hero-figure { margin: 0.6rem 0 1.2rem; }
+/* Quarto wraps figure images in <p>; lift the 68ch text measure for these figures only */
+.wide-figure p, .wide-figure figure { max-width: none; }
+.wide-figure img { width: 100%; height: auto; }
+.hero-figure img { width: 100%; height: auto; border: 0; }
+.hero-figure figcaption { margin-top: 0.35rem; }
+
+/* number cards keyed to the two reference conventions */
+.numcard.ref-ep { border-left: 3px solid var(--accent); }
+.numcard.ref-cs { border-left: 3px solid var(--ref-side); }
+.numcard.ref-cs .est { color: var(--ref-side); }
+.numcard.saved  { border-left: 3px solid #9aa5b1; }
+.numcard.saved .est { color: var(--ink-soft); }
+.numcard .est code { font-size: 0.95em; color: inherit; background: none; padding: 0; }
+
+/* pipeline stages with explicit status */
+.pipeline.staged .step { flex: 1 1 170px; }   /* wraps as 4 + 4 in the content column */
+.pipeline .step.done    { border-top-color: var(--ok); }
+.pipeline .step.saved   { border-top-color: #9aa5b1; }
+.pipeline .step.pending { border-top: 3px dashed var(--wip); background: var(--tint-wip); }
+.pipeline .step .st {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.76rem;
+  line-height: 1.35;
+  color: var(--ink-soft);
+}
+.pipeline .step.done .st    { color: var(--ok); }
+.pipeline .step.pending .st { color: var(--wip); }
+.stage-legend { font-size: 0.85rem; color: var(--ink-soft); margin: -0.9rem 0 1.6rem; }
+.stage-legend span { display: inline-block; margin-right: 1.1rem; white-space: nowrap; }
+.stage-legend i {
+  display: inline-block; width: 1.4rem; height: 0; vertical-align: middle;
+  margin-right: 0.35rem; border-top: 3px solid;
+}
+.stage-legend i.done    { border-color: var(--ok); }
+.stage-legend i.saved   { border-color: #9aa5b1; }
+.stage-legend i.pending { border-top-style: dashed; border-color: var(--wip); }
+
+/* compact observation list beside a figure */
+.observations ul { list-style: none; padding-left: 0; margin: 0.6rem 0 1rem; }
+.observations li { padding: 0.2rem 0 0.2rem 1.2rem; position: relative; max-width: 70ch; }
+.observations li::before {
+  content: ""; position: absolute; left: 0.1rem; top: 0.72rem;
+  width: 0.45rem; height: 0.45rem; border-radius: 50%; background: #e09f3e;   /* H* colour */
+}
+
+@media (max-width: 640px) {
+  .stage-legend span { white-space: normal; display: block; }
+  .pipeline.staged .step { flex: 0 0 auto; }   /* stacked: no 170px basis as height */
+}
