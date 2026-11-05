@@ -20,8 +20,10 @@ Sources (read only, never written):
     file and checks it against the file's labelled energetics.
 
 These are RECONSTRUCTED structures (hand-built model, not literature/CPMD
-coordinates) and the saddle is NOT independently re-certified; the figures say
-so. No value is typed in by hand. Requires numpy, matplotlib and ASE.
+coordinates); the figures say so. The energy-level figure is the MACE-POLAR
+reference-state EXAMPLE: Tian's saved energies, which our pipeline has since
+reproduced (Hessian + +/-mode connectivity re-run; sweep/sn_beta_hydride/audit/
+omol_benchmark/). No value is typed in by hand. Requires numpy, matplotlib and ASE.
 """
 from __future__ import annotations
 
@@ -350,7 +352,7 @@ def energy_profile(summ, out):
 
     # level labels
     lab = {"R": ("R", "relaxed input\nreactant"), "R'": ("R′", "reactant-side\nconnected minimum"),
-           "TS": ("TS", "Sella saddle\n(not re-certified)"),
+           "TS": ("TS", "Sella saddle (MACE-POLAR)"),
            "P": ("P", "relaxed input\nproduct"), "P'": ("P′", "product-side\nconnected minimum")}
     for k, (short, long_) in lab.items():
         col = INK if k == "TS" else (ACCENT if k in ("R", "P") else C_SIDE)
@@ -381,11 +383,12 @@ def energy_profile(summ, out):
                               label="connected_side_minimum  (R′ → TS → P′)")],
               loc="upper right", bbox_to_anchor=(1.0, 1.02), frameon=False, fontsize=11,
               title="reference convention", title_fontsize=11, alignment="left")
-    ax.set_title("Same saddle, two reactant references", loc="left", fontsize=14.5,
+    ax.set_title("MACE-POLAR example: one saddle, two reactant references", loc="left", fontsize=14.5,
                  fontfamily="serif", fontweight="semibold", color=INK, pad=10)
     fig.text(0.01, 0.005, "MACE-POLAR-1-S, vacuum electronic energies (no ZPE / thermal terms); "
-             "reconstructed cluster.\nNeither reactant structure is shown to be the global "
-             "minimum. Barrier and ΔE values in kJ/mol.",
+             "reconstructed cluster; Tian's saved energies, reproduced by our re-run.\n"
+             "Neither reactant structure is shown to be the global minimum. Barrier and "
+             "ΔE values in kJ/mol. Not a free-energy profile.",
              fontsize=9.6, color=INK_SOFT, ha="left", va="bottom")
     fig.tight_layout(rect=(0, 0.06, 1, 1))
     fig.savefig(out, facecolor="white")

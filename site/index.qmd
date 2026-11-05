@@ -7,7 +7,7 @@ toc: false
 ::: {.hero-status}
 <span>[Demonstrated]{.tag .demo} Diels–Alder benchmark complete</span>
 <span>[Negative result]{.tag .neg} iterative correction and reference handoff</span>
-<span>[Work in progress]{.tag .wip} Sn-β hydride-transfer benchmark in preparation</span>
+<span>[Work in progress]{.tag .wip} Sn-β hydride-transfer benchmark: OMOL and POLAR saddles certified, DFT comparison pending</span>
 :::
 
 ## The project in six answers {#sec-answers}
@@ -58,10 +58,11 @@ which. [Pillar 4](p4-iterative.qmd)
 
 ::: {}
 [What are we testing next?]{.q}
-Whether the newer MACE-OMOL and MACE-POLAR foundation models give a useful starting
-surface for a catalytic reaction — the Sn-β-catalysed glucose C2→C1 hydride transfer.
-The pipeline is built and tested; the authoritative structures are not yet in hand, so
-there are **no results** yet. [Current work](current-work.qmd)
+Whether the newer MACE-OMOL and MACE-POLAR foundation models give a useful surface for a
+catalytic reaction — the Sn-β-catalysed glucose C2→C1 hydride transfer. On a reconstructed
+cluster both find a certified hydride-transfer saddle, but they disagree on the barrier by
+about 36–41 kJ/mol. Which is closer to DFT is **not yet known**: the Gaussian reference
+calculations have not arrived. [Current work](current-work.qmd)
 :::
 
 :::
@@ -162,8 +163,8 @@ handoffs reached the reference TS.]{.hit}
 
 [Can MACE-OMOL / MACE-POLAR give a useful starting surface for a catalytic reaction?]{.q}
 
-[[Work in progress]{.tag .wip} Pipeline built and tested; waiting on authoritative
-endpoint structures. No results yet.]{.hit}
+[[Work in progress]{.tag .wip} OMOL and POLAR saddles certified on a reconstructed cluster;
+barriers differ by about 36–41 kJ/mol; accuracy against DFT pending.]{.hit}
 :::
 
 :::

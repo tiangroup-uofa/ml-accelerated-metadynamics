@@ -45,7 +45,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-8a73ed13ea957822dcf47ac340cca186.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-908d35bb53390a20ee9612226264221b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -228,7 +228,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="hero-status">
-<p><span><span class="tag demo">Demonstrated</span> Diels–Alder benchmark complete</span> <span><span class="tag neg">Negative result</span> iterative correction and reference handoff</span> <span><span class="tag wip">Work in progress</span> Sn-β hydride-transfer benchmark in preparation</span></p>
+<p><span><span class="tag demo">Demonstrated</span> Diels–Alder benchmark complete</span> <span><span class="tag neg">Negative result</span> iterative correction and reference handoff</span> <span><span class="tag wip">Work in progress</span> Sn-β hydride-transfer benchmark: OMOL and POLAR saddles certified, DFT comparison pending</span></p>
 </div>
 <section id="sec-answers" class="level2">
 <h2 class="anchored" data-anchor-id="sec-answers">The project in six answers</h2>
@@ -249,7 +249,7 @@ ul.task-list li input[type="checkbox"] {
 <p><span class="q">What failed or remains unresolved?</span> Repeating the correction with more targeted reference data did not keep improving it: the scan barrier degraded from 9.87 to 13.91 kcal/mol over 42 extra reference calculations. Handing corrected-model saddles to the reference optimizer reached the reference transition state in only 3 of 6 cases, and no tested descriptor predicted which. <a href="./p4-iterative.html">Pillar 4</a></p>
 </div>
 <div>
-<p><span class="q">What are we testing next?</span> Whether the newer MACE-OMOL and MACE-POLAR foundation models give a useful starting surface for a catalytic reaction — the Sn-β-catalysed glucose C2→C1 hydride transfer. The pipeline is built and tested; the authoritative structures are not yet in hand, so there are <strong>no results</strong> yet. <a href="./current-work.html">Current work</a></p>
+<p><span class="q">What are we testing next?</span> Whether the newer MACE-OMOL and MACE-POLAR foundation models give a useful surface for a catalytic reaction — the Sn-β-catalysed glucose C2→C1 hydride transfer. On a reconstructed cluster both find a certified hydride-transfer saddle, but they disagree on the barrier by about 36–41 kJ/mol. Which is closer to DFT is <strong>not yet known</strong>: the Gaussian reference calculations have not arrived. <a href="./current-work.html">Current work</a></p>
 </div>
 </div>
 </section>
@@ -318,7 +318,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="sn-β-glucose-hydride-transfer" class="level3">
 <h3 class="anchored" data-anchor-id="sn-β-glucose-hydride-transfer"><a href="./current-work.html">Sn-β glucose hydride transfer</a></h3>
 <p><span class="q">Can MACE-OMOL / MACE-POLAR give a useful starting surface for a catalytic reaction?</span></p>
-<p><span class="hit"><span class="tag wip">Work in progress</span> Pipeline built and tested; waiting on authoritative endpoint structures. No results yet.</span></p>
+<p><span class="hit"><span class="tag wip">Work in progress</span> OMOL and POLAR saddles certified on a reconstructed cluster; barriers differ by about 36–41 kJ/mol; accuracy against DFT pending.</span></p>
 </section>
 </div>
 </div>
