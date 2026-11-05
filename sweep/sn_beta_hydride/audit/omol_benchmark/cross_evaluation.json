@@ -1,0 +1,196 @@
+{
+  "what": "OMOL-vs-POLAR same-geometry cross-evaluation (single points at saved structures)",
+  "not_relaxed": "single-point energy differences at fixed, saved geometries; NOT relaxed barriers and not comparable to the relaxed_endpoint / connected_side_minimum reference states",
+  "labels": [
+    "omol_at_omol_geometries",
+    "omol_at_polar_geometries",
+    "polar_at_omol_geometries",
+    "polar_at_polar_geometries"
+  ],
+  "energies_eV": {
+    "omol_at_omol_geometries": {
+      "R": -56520.79112728824,
+      "P": -56521.07322785425,
+      "TS": -56520.04152424625,
+      "R'": -56520.982317880276,
+      "P'": -56521.030237277184
+    },
+    "omol_at_polar_geometries": {
+      "R": -56520.62198948489,
+      "P": -56520.86629907325,
+      "TS": -56519.84762210042,
+      "R'": -56520.81833927792,
+      "P'": -56520.966051952535
+    },
+    "polar_at_omol_geometries": {
+      "R": -56520.52053759118,
+      "P": -56520.85281367498,
+      "TS": -56519.24104744842,
+      "R'": -56520.61459962835,
+      "P'": -56520.788615286605
+    },
+    "polar_at_polar_geometries": {
+      "R": -56520.65389752812,
+      "P": -56520.96505094062,
+      "TS": -56519.483029687304,
+      "R'": -56520.7931725014,
+      "P'": -56520.99181084635
+    }
+  },
+  "single_point_differences_kJ_mol": {
+    "omol_at_omol_geometries": {
+      "TS-R": 72.32569846489511,
+      "TS-R'": 90.7727862356238,
+      "P-R": -27.218566802523
+    },
+    "omol_at_polar_geometries": {
+      "TS-R": 74.7150942739002,
+      "TS-R'": 93.65996926575113,
+      "P-R": -23.57229177275287
+    },
+    "polar_at_omol_geometries": {
+      "TS-R": 123.45203136869347,
+      "TS-R'": 132.5276382648621,
+      "P-R": -32.05976830080285
+    },
+    "polar_at_polar_geometries": {
+      "TS-R": 112.97157248991958,
+      "TS-R'": 126.40956454253283,
+      "P-R": -30.021740345164304
+    }
+  },
+  "geometry_penalty": {
+    "omol_at_polar_geometries": {
+      "per_structure_kJ_mol": {
+        "R": 16.31931713028819,
+        "TS": 18.708712939293296,
+        "P": 19.96559216005832,
+        "R'": 15.821529909165951,
+        "P'": 6.192942365975361
+      },
+      "min_kJ_mol": 6.192942365975361,
+      "max_kJ_mol": 19.96559216005832,
+      "meaning": "E_omol(other method's structure) - E_omol(own structure)"
+    },
+    "polar_at_omol_geometries": {
+      "per_structure_kJ_mol": {
+        "R": 12.867277807070042,
+        "TS": 23.347736685843934,
+        "P": 10.829249851431495,
+        "R'": 17.229662963514656,
+        "P'": 19.60539106764958
+      },
+      "min_kJ_mol": 10.829249851431495,
+      "max_kJ_mol": 23.347736685843934,
+      "meaning": "E_polar(other method's structure) - E_polar(own structure)"
+    }
+  },
+  "omol_below_polar_kJ_mol": {
+    "on_polar_geometries": {
+      "TS-R": 38.256478216019374,
+      "TS-R'": 32.749595276781704
+    },
+    "on_omol_geometries": {
+      "TS-R": 51.12633290379836,
+      "TS-R'": 41.75485202923831
+    },
+    "min": 32.749595276781704,
+    "max": 51.12633290379836,
+    "meaning": "POLAR - OMOL for the same single-point difference on the same geometry set"
+  },
+  "structures": {
+    "omol": {
+      "R": {
+        "path": "audit/omol_benchmark/omol_1024_full_protocol/endpoints/reactant_opt.xyz",
+        "sha256": "d0106672477a1d2c40d6d48bc5f8f6228f73fb913d25dada85d7127bd9dec26f"
+      },
+      "P": {
+        "path": "audit/omol_benchmark/omol_1024_full_protocol/endpoints/product_opt.xyz",
+        "sha256": "aacb63cf6df380e39c7553f831fb40ddbd00f3b80dd0868bb6b73da332837598"
+      },
+      "TS": {
+        "path": "audit/omol_benchmark/omol_1024_full_protocol/ts/ts_sella.xyz",
+        "sha256": "8f5484e6bd8d2e2eb387e2d0825f51047ca87c9aa2180c65f31b211bb088d417"
+      },
+      "R'": {
+        "path": "audit/omol_benchmark/omol_1024_full_protocol/vib/connectivity/conn_plus_relaxed.xyz",
+        "sha256": "33286b941245df7694bea58c83df537fc5030eafaa0adaf3f3ddc202c08c604c"
+      },
+      "P'": {
+        "path": "audit/omol_benchmark/omol_1024_full_protocol/vib/connectivity/conn_minus_relaxed.xyz",
+        "sha256": "37bfac175e6fc1f8e1d1ee20a1ecb63e9bded49968e6b696edbe7127f850a5ca"
+      }
+    },
+    "polar": {
+      "R": {
+        "path": "audit/omol_benchmark/polar_ladder_ours/endpoints/reactant_opt.xyz",
+        "sha256": "88e13c324b485468090da9c5f9159da9d14d370ae4f83729ef2b85ec6d8ba7e6"
+      },
+      "P": {
+        "path": "audit/omol_benchmark/polar_ladder_ours/endpoints/product_opt.xyz",
+        "sha256": "8753bc1b428bd20c44c0730cf02903369b8f40dab3f4e9bd90060f036549f39d"
+      },
+      "TS": {
+        "path": "audit/omol_benchmark/polar_ladder_ours/ts/ts_sella.xyz",
+        "sha256": "7aa501094c152208affcc5298a2b897e13fd956c30f18665cfa74e28edc029a8"
+      },
+      "R'": {
+        "path": "audit/omol_benchmark/polar_ladder_ours/vib/connectivity/conn_plus_relaxed.xyz",
+        "sha256": "4fbc6d87d65eeba4e10b3af1dd4ac3149a9daa77c45e6e0002b6d1a96ea35f29"
+      },
+      "P'": {
+        "path": "audit/omol_benchmark/polar_ladder_ours/vib/connectivity/conn_minus_relaxed.xyz",
+        "sha256": "f86e7d2413c31c4fc81e1d7cbc57b67d063d4227d6964799cc9d9f7194ac2575"
+      }
+    }
+  },
+  "own_geometry_check": "each model reproduces its stored protocol energies at its own five structures to 1e-6 eV",
+  "calculators": {
+    "omol": {
+      "model": "mace-omol",
+      "pretty": "MACE-OMOL-0",
+      "variant": "extra_large",
+      "model_path": null,
+      "model_class": "ScaleShiftMACE",
+      "head": "omol",
+      "r_max_A": 6.0,
+      "z_range": [
+        1,
+        83
+      ],
+      "n_elements": 83,
+      "device": "cpu",
+      "dtype": "float64",
+      "charge": 0,
+      "spin_multiplicity": 1,
+      "mace_torch": "0.3.16",
+      "torch": "2.7.1",
+      "ase": "3.26.0",
+      "graph_longrange": "0.4.0"
+    },
+    "polar": {
+      "model": "mace-polar",
+      "pretty": "MACE-POLAR-1",
+      "variant": "polar-1-s",
+      "model_path": null,
+      "model_class": "PolarMACE",
+      "head": "Default",
+      "r_max_A": 6.0,
+      "z_range": [
+        1,
+        83
+      ],
+      "n_elements": 83,
+      "device": "cpu",
+      "dtype": "float64",
+      "charge": 0,
+      "spin_multiplicity": 1,
+      "mace_torch": "0.3.16",
+      "torch": "2.7.1",
+      "ase": "3.26.0",
+      "graph_longrange": "0.4.0"
+    }
+  },
+  "charge_spin": "from config_tian_tt_test.json via ChargeSpinCalculator (0 / singlet, inferred)",
+  "command": "python cross_evaluate.py"
+}

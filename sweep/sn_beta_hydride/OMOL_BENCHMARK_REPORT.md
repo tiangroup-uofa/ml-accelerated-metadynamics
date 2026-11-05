@@ -106,7 +106,7 @@ Interpretation (supported by the data):
   **Tian's POLAR saddle** converges to the identical OMOL saddle (ΔE 0.0 kJ/mol, RMSD 0.001 Å).
 * OMOL lowers the forward barrier by **40.6 / 35.6 kJ/mol** (relaxed_endpoint / connected). This is a PES difference, not a
   relaxation artefact: OMOL single points **at POLAR's geometries** give TS−R 74.7 and TS−R′ 93.7 kJ/mol
-  (labelled `omol_at_polar_geometries`, not relaxed). POLAR geometries sit 16–20 kJ/mol above OMOL's own minima.
+  (labelled `omol_at_polar_geometries`, not relaxed). POLAR's structures sit 6–20 kJ/mol above OMOL's own minima (per structure: R 16.3, TS 18.7, P 20.0, R′ 15.8, P′ 6.2).
 * "Does OMOL worsen endpoint energetics?" **Cannot be answered** — there is no DFT reference yet, and the paper's ~82 kJ/mol is
   a free energy from a different system and is not used as truth. The two models differ most on the connected ΔE
   (−4.6 vs −19.2).
@@ -125,14 +125,14 @@ Pairing check (the like-for-like test): OMOL's relaxed R stays in the input conf
 OMOL R′ matches POLAR R′ (core 0.09 Å, no torsion ≥ 30°). So **72.3 ↔ 113.0 (relaxed_endpoint)** and **90.8 ↔ 126.4
 (connected_side_minimum)** are like-for-like comparisons.
 
-Cross-evaluation (energies at the *other* method's saved geometries; `…_at_*_geometries` states, not relaxed barriers):
+Cross-evaluation (energies at the *other* method's saved geometries; `…_at_*_geometries` states, not relaxed barriers). Reproducible with `python cross_evaluate.py`, which writes `audit/omol_benchmark/cross_evaluation.json` (20 single points on the committed structures; each model first reproduces its own stored protocol energies to 1e-6 eV):
 
 | | at POLAR geometries | at own geometries | at OMOL geometries |
 |---|---|---|---|
 | OMOL TS−R / TS−R′ | 74.7 / 93.7 | 72.3 / 90.8 | — |
 | POLAR TS−R / TS−R′ | — | 113.0 / 126.4 | 123.5 / 132.5 |
 
-Geometry mismatch costs 11–23 kJ/mol each way (POLAR geometries in OMOL: +16–20; OMOL geometries in POLAR: +11–23), but the
+Geometry mismatch costs 6–23 kJ/mol (POLAR's structures in OMOL: +6–20; OMOL's structures in POLAR: +11–23), but the
 ~40–50 kJ/mol barrier gap persists at identical geometries: it is a **PES difference between the models**, not a relaxation artefact.
 
 ## 3. Model-size / training-subset sensitivity (Phase 2)
@@ -144,7 +144,7 @@ Hessian → ±mode connectivity (config `config_omol4m.json`, own output dir).
 
 | | 1024 | 4M | shift |
 |---|---|---|---|
-| forward barrier, relaxed_endpoint | 72.33 | 73.18 | +0.85 |
+| forward barrier, relaxed_endpoint | 72.33 | 73.18 | +0.86 |
 | forward barrier, connected_side_minimum | 90.77 | 90.16 | −0.61 |
 | ΔE, relaxed_endpoint | −27.22 | −21.20 | **+6.02** |
 | ΔE, connected_side_minimum | −4.62 | −6.27 | −1.65 |
@@ -227,7 +227,7 @@ the parser rejects them (tested). They are **not** Gaussian reference data.
 | OMOL and POLAR describe the same hydride-transfer saddle | same imaginary-mode character; TS RMSD 0.40/0.095 Å; Sella from POLAR's saddle ⇒ identical OMOL saddle | VERIFIED |
 | OMOL barriers 72.3 (relaxed_endpoint) / 90.8 (connected) kJ/mol; ΔE −27.2 / −4.6 | one run; energies re-evaluated to 6e-11 eV | PRELIMINARY |
 | OMOL barrier is 36–41 kJ/mol below POLAR | like-for-like pairing + cross-evaluation at identical geometries | VERIFIED as a model difference; which is closer to DFT: BLOCKED ON DFT DATA |
-| OMOL barrier insensitive to training subset (1024 vs 4M) | shifts +0.85/−0.61 kJ/mol; ΔE shift 6.0 unexplained | PRELIMINARY |
+| OMOL barrier insensitive to training subset (1024 vs 4M) | shifts +0.86/−0.61 kJ/mol; ΔE shift 6.0 unexplained | PRELIMINARY |
 | OMOL model-size dependence | no smaller OMOL checkpoint exists | NOT RUN (not possible) |
 | Reference conformer shifts the reported barrier by ≥ 13 kJ/mol | R−R′ = 13.4 (POLAR), 18.4 (OMOL), one torsion | VERIFIED (reference-state dependence); alternative pathways NOT RUN |
 | xTB cannot be used for this comparison | reactant loses the bound water (Sn–O_water 3.12 Å); final rule re-applied | STRUCTURALLY INVALID |
@@ -259,8 +259,9 @@ $PY -m pytest tests -q                 # 142 passed
 ```
 (`logs_local/*.sh` are git-ignored helper scripts; their contents are the stage commands listed in §3 and §2b.) Raw outputs live in the
 ignored `outputs/` tree; the curated tracked copy is `audit/omol_benchmark/` (its saved JSON paths are rewritten to `<repo>`, so
-`reassess_status.py` must be run on `outputs/`, not on the audit copy). Ad-hoc cross-evaluation scripts were run from the session
-scratchpad; their numbers are quoted in §2b only.
+`reassess_status.py` must be run on `outputs/`, not on the audit copy). The §2b cross-evaluation is reproduced by
+`python cross_evaluate.py` (reads only the committed `audit/omol_benchmark/` structures; ~10 s on CPU) and stored in
+`audit/omol_benchmark/cross_evaluation.json`.
 
 ## 10. Next actions
 

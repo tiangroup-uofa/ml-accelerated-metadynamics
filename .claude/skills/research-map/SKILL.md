@@ -40,8 +40,13 @@ JavaScript, and no build step beyond that one script. **Never hand-edit
 
 Node `kind`: `core` (one), `pillar` (four), `study` (a detailed study page), `result`
 (a major finding, usually deep-linked to a pillar anchor), `future` (an open question,
-drawn dashed, no `href`), `wip` (work in progress with its own page but **no results
-yet**, drawn amber and dashed, linked; attached to `core` with a `pillar` edge).
+drawn dashed, no `href`), `wip` (amber, dashed, linked, with its own page; attached to `core` with a `pillar` edge).
+Amber means **the scientific conclusion or reference validation is still unresolved**. Results
+may already exist, and the node's page must say plainly which are demonstrated (e.g. certified
+saddles on a model's own surface) and what is pending (e.g. accuracy against a DFT reference). The Sn-β
+node is the example: OMOL/POLAR benchmark results exist, but DFT accuracy is pending. Do not turn
+a `wip` node into `result`/`study` styling until the reference validation that its page names as
+pending is done.
 
 Edge `rel`: `pillar` (core → pillar), `contains` (pillar → node), `motivates` (red
 dashed — one result made the next experiment necessary), `validates` (green dashed — an

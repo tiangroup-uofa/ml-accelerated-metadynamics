@@ -6,8 +6,8 @@ check_sn_beta_claims.py — verify the public Sn-β Current work page against it
     python3 site/check_sn_beta_claims.py --links    # also check internal links, assets, anchors
 
 Every published number is DERIVED here from the merged benchmark data
-(sweep/sn_beta_hydride/audit/omol_benchmark/*.json, the input structures, and the tables of
-OMOL_BENCHMARK_REPORT.md for the single-point cross-check) and must then appear in
+(sweep/sn_beta_hydride/audit/omol_benchmark/*.json incl. cross_evaluation.json, which
+sweep/sn_beta_hydride/cross_evaluate.py generates, and the input structures) and must then appear in
 site/current-work.qmd AND in docs/current-work.html. Bar widths, gauge positions and SVG marker
 coordinates are recomputed from the same values. Pre-benchmark wording that must not survive
 anywhere on the site is listed in STALE. Exit status 1 on any failure. Needs numpy-free Python
@@ -140,24 +140,26 @@ assert abs(seed["final"]["energy_eV"] - om_ref["final"]["energy_eV"]) < 1e-6    
 need("seed RMSD 0.001", "RMSD 0.001")
 assert "0.001" in rep
 
-# ---- same-geometry cross-check, parsed from the report's own table
-def row(label):
-    m = re.search(rf"\|\s*{re.escape(label)}\s*\|(.*)\|", rep)
-    assert m, label
-    return [c.strip() for c in m.group(1).split("|")]
-
-o_row, p_row = row("OMOL TS−R / TS−R′"), row("POLAR TS−R / TS−R′")
-o_at_p = [float(x) for x in o_row[0].split("/")]; o_own = [float(x) for x in o_row[1].split("/")]
-p_own = [float(x) for x in p_row[1].split("/")]; p_at_o = [float(x) for x in p_row[2].split("/")]
-assert abs(p_own[0] - P["barrier_fwd"][RE]) < 0.06 and abs(p_own[1] - P["barrier_fwd"][CS]) < 0.06
-assert abs(o_own[0] - O["barrier_fwd"][RE]) < 0.06 and abs(o_own[1] - O["barrier_fwd"][CS]) < 0.06
+# ---- same-geometry cross-check: read from the COMMITTED, script-generated artifact
+#      (bars are sized from the DISPLAYED one-decimal value, as on the page)
+#      (sweep/sn_beta_hydride/cross_evaluate.py -> audit/omol_benchmark/cross_evaluation.json)
+xe = J(AUD / "cross_evaluation.json")
+xd = xe["single_point_differences_kJ_mol"]
+o_at_p = [xd["omol_at_polar_geometries"]["TS-R"], xd["omol_at_polar_geometries"]["TS-R'"]]
+o_own = [xd["omol_at_omol_geometries"]["TS-R"], xd["omol_at_omol_geometries"]["TS-R'"]]
+p_own = [xd["polar_at_polar_geometries"]["TS-R"], xd["polar_at_polar_geometries"]["TS-R'"]]
+p_at_o = [xd["polar_at_omol_geometries"]["TS-R"], xd["polar_at_omol_geometries"]["TS-R'"]]
+# own-geometry single points must equal the relaxed barriers of the scorecard (same structures, same settings)
+assert abs(p_own[0] - P["barrier_fwd"][RE]) < 1e-3 and abs(p_own[1] - P["barrier_fwd"][CS]) < 1e-3
+assert abs(o_own[0] - O["barrier_fwd"][RE]) < 1e-3 and abs(o_own[1] - O["barrier_fwd"][CS]) < 1e-3
 gaps = []
 for i, lab in enumerate(("TS−R", "TS−R′")):
     for who, pv, ov in (("POLAR structures", p_own[i], o_at_p[i]), ("OMOL structures", p_at_o[i], o_own[i])):
-        need(f"geo POLAR {lab} {who}", f"<span class=\"v\">{pv:.1f}</span><span class=\"bar polar\" style=\"--w:{width(pv)}%\"")
-        need(f"geo OMOL {lab} {who}", f"<span class=\"v\">{ov:.1f}</span><span class=\"bar omol\" style=\"--w:{width(ov)}%\"")
+        need(f"geo POLAR {lab} {who}", f"<span class=\"v\">{pv:.1f}</span><span class=\"bar polar\" style=\"--w:{width(round(pv, 1))}%\"")
+        need(f"geo OMOL {lab} {who}", f"<span class=\"v\">{ov:.1f}</span><span class=\"bar omol\" style=\"--w:{width(round(ov, 1))}%\"")
         g = round(pv - ov); gaps.append(g); need(f"geo gap {lab} {who}", f"<strong>{g}</strong> kJ/mol")
 need("gap range", f"{min(gaps)} to {max(gaps)} kJ/mol")
+need("cross-eval source", "audit/omol_benchmark/cross_evaluation.json")
 
 # ---- 4M checkpoint
 e4 = m4_vt["energetics"]
