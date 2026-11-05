@@ -102,7 +102,7 @@ use GFN1-xTB, which is a different level of theory.
 
 - **MACE-OFF23 (small)** for every Diels–Alder and water result; float64 for saddle
   searches and Hessians, float32 for MD.
-- **MACE-OMOL-0** and **MACE-POLAR-1** for the Sn-β work in progress, through a wrapper
+- **MACE-OMOL-0** and **MACE-POLAR-1** for the Sn-β benchmark ([current work](current-work.qmd)), through a wrapper
   that always sets total charge and spin multiplicity explicitly.
 
 **Correction layer.** Every correction is applied through a `CorrectedCalculator` that
@@ -142,7 +142,7 @@ And four rules:
 | corrections, Phase C, iterative loop | `sweep/corrections/` (`results/`, `phaseC/`, `phase2/`) |
 | handoff benchmark and diagnostics | `sweep/corrections/aug21_handoff/`, `aug21_diagnostics/` |
 | MACE-OFF23 water validation | `sweep/mace_validation/`, `sweep/mace_md/` |
-| Sn-β infrastructure (no results) | `sweep/sn_beta_hydride/` |
+| Sn-β OMOL / POLAR / xTB benchmark | `sweep/sn_beta_hydride/` (`OMOL_BENCHMARK_REPORT.md`, `audit/omol_benchmark/`) |
 | barrier-ladder figure | `site/build_barrier_ladder.py` — reads the result files above, writes `site/assets/barrier_ladder.png` |
 | research map | `site/research-map.json` → `site/build_research_map.py` → `site/research-map.svg` |
 

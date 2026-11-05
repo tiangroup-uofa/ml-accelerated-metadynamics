@@ -6,7 +6,7 @@ project:
 
 website:
   title: "ML-Accelerated Metadynamics"
-  description: "Can pretrained machine-learned potentials stand in for a quantum-chemical reference in reactive enhanced sampling? A Diels–Alder benchmark, targeted post-training correction, and a Sn-β hydride-transfer benchmark in preparation."
+  description: "Can pretrained machine-learned potentials stand in for a quantum-chemical reference in reactive enhanced sampling? A Diels–Alder benchmark, targeted post-training correction, and a Sn-β hydride-transfer benchmark of MACE-OMOL and MACE-POLAR (saddles certified; accuracy against DFT pending)."
   site-url: https://tiangroup-uofa.github.io/ml-accelerated-metadynamics/
   repo-url: https://github.com/tiangroup-uofa/ml-accelerated-metadynamics
   reader-mode: true

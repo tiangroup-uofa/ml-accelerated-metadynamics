@@ -19,7 +19,7 @@ their own without it.
   <span><i style="background:#fff;border:1.3px solid #2e6f95"></i>detailed study</span>
   <span><i style="background:#f4f7f9;border:1.3px solid #a9b7c2"></i>major result</span>
   <span><i style="background:#fff;border:1.3px dashed #b8c3cd"></i>open question</span>
-  <span><i style="background:#fdf8ec;border:1.3px dashed #a86b00"></i>work in progress (no results yet)</span>
+  <span><i style="background:#fdf8ec;border:1.3px dashed #a86b00"></i>work in progress (accuracy pending)</span>
 </p>
 ```
 
@@ -51,8 +51,8 @@ result.
    ([Study 09](09-handoff.qmd)). That → *motivates* a controlled **capacity ablation** as
    the next experiment.
 5. **Current work** ([Sn-β hydride transfer](current-work.qmd)) carries the pipeline to a
-   catalytic system with newer foundation models. It is shown in amber because it has
-   **no results yet**.
+   catalytic system with newer foundation models. It is shown in amber because it is still
+   work in progress: both saddles are certified, but accuracy against DFT is **pending**.
 
 ## Maintaining this map
 

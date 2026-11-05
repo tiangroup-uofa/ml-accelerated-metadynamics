@@ -1,0 +1,19 @@
+<script>
+/* Reveal-on-first-view for the Sn-β page. Progressive enhancement: elements already on screen
+   (or any browser without IntersectionObserver, or a reduced-motion preference) are never hidden,
+   so content is present without this script. Only transform/opacity are animated (see styles.css). */
+(function () {
+  if (!("IntersectionObserver" in window)) return;
+  if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var els = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
+  var vh = window.innerHeight || 800;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    });
+  }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
+  els.forEach(function (el) {
+    if (el.getBoundingClientRect().top > vh * 0.92) { el.classList.add("pre"); io.observe(el); }
+  });
+})();
+</script>

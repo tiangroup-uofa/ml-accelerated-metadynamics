@@ -23,9 +23,12 @@ kept in the repo; re-`touch ../docs/.nojekyll` if a clean render removes it.
 
 - `index.qmd` — overview: six-answer summary, pipeline, findings, key numbers.
 - `p1`–`p4-*.qmd` — the four findings pillars (the scientific narrative).
-- `current-work.qmd` — the Sn-β benchmark, labelled work in progress: an audit of a
-  reconstructed model and a collaborator's saved MACE-POLAR run (both reference
-  conventions), no benchmark result yet.
+- `current-work.qmd` — the Sn-β benchmark, labelled work in progress: MACE-OMOL and
+  MACE-POLAR saddles on a reconstructed cluster (both reference conventions), the
+  GFN2-xTB structural negative result, and the pending DFT comparison. Numbers come from
+  `sweep/sn_beta_hydride/audit/omol_benchmark/`; `check_sn_beta_claims.py` verifies them.
+  Reveal-on-view motion lives in `_sn_beta_reveal.html` (progressive enhancement; off for
+  reduced-motion users).
 - `methods.qmd` — estimator glossary, transition-state standard, evidence rules,
   provenance. **Read before adding any barrier to a page.**
 - `0X-*.qmd` — one page per study (URLs `01`–`08` are stable; `09` added for the
@@ -38,6 +41,8 @@ kept in the repo; re-`touch ../docs/.nojekyll` if a clean render removes it.
   four `assets/sn_beta_*.png` figures of the Current work page (hero, stacked
   hero for phones, two-reference energy profile, x/y/z structure views). Every
   plotted energy difference is checked against the summary's labelled energetics.
+- `check_sn_beta_claims.py` — checks every published Sn-β number against the audit data and
+  fails on stale pre-benchmark wording (run it after editing `current-work.qmd`).
 - `assets/` — figures copied from the study directories (update these when the
   underlying figures change, then re-render).
 
