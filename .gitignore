@@ -49,3 +49,12 @@ sweep/corrections/phase2_naive_seed/run.log
 # records, logs and final geometries; drop the raw bands.
 sweep/corrections/aug21_diagnostics/replicates/**/sella.traj
 !sweep/corrections/aug21_diagnostics/**/sella.log
+
+# test / tooling caches and local tool logs (never scientific content)
+.pytest_cache/
+**/.pytest_cache/
+.ipynb_checkpoints/
+firebase-debug.log
+
+# NOTE: Sn-beta run outputs (outputs/, logs_local/, *.traj) are ignored in
+# sweep/sn_beta_hydride/.gitignore; MACE/xtb model caches live in ~/.cache, outside the repo.
