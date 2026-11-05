@@ -1,0 +1,52 @@
+{
+  "_status": "DRY-RUN / NOT LAUNCHED. Every null is a decision for Tian or the group; do not fill by guessing. Nothing here has been run.",
+  "_purpose": "Blind attempt to reproduce the paper's two-well landscape with MACE as the force/energy engine. Not tuned to agree with the paper.",
+  "_caveat_solvent": "The paper's Fig-3-like surface is for a specific solvent environment. This vacuum cluster can at best be compared with the GAS-PHASE surface (thesis Fig 7.3, itself 'adapted from' the paper, not verified).",
+
+  "system_from": "config_tian_tt_test.json",
+  "start_structure": "reactant (MACE-relaxed with the SAME model as the run, NOT the raw reconstructed input)",
+  "models": ["mace-omol", "mace-polar"],
+  "charge_spin": "taken from config_tian_tt_test.json system block via ChargeSpinCalculator on every call (inferred: 0 / singlet)",
+  "dtype_device": {"dtype": "float64", "device": "cpu", "_note": "float32 not validated for OMOL/POLAR here; measured 0.55 s/force call (OMOL float64 CPU, 42 atoms)"},
+
+  "dynamics": {
+    "engine": "ASE Langevin (pattern: sweep/mace_md/compare_md.py)",
+    "timestep_fs": null,
+    "_timestep_note": "paper/thesis timestep unknown. Hydride/X-H motion usually needs <=1 fs; choose only after the NVE drift test below.",
+    "temperature_K": null,
+    "_temperature_note": "paper temperature unknown (thesis lists it under 'Unknown'). Our own earlier gas-phase studies used 300 K; that is NOT a statement about the paper.",
+    "friction_per_fs": null,
+    "_friction_note": "sweep/mace_md used 0.01/fs for unbiased MD; metadynamics thermostat choice is open"
+  },
+
+  "collective_variables": {
+    "source": "config_tian_tt_test.json 'cvs' (CV1, CV2 = rational coordination of C1 / C2 with {H_C1, H_transfer}); also delta_H for monitoring",
+    "r0_n_m_confirmed": false,
+    "_note": "r0=1.5, n=6, m=12 are PLACEHOLDERS (thesis eq. 4.1 gives the form; d0,p,q unknown). Obtain from Tian/Ali BEFORE interpreting the surface against the thesis basins. Do not adjust them to make the basins land at (0.9,0.9)/(1.8,0.1)."
+  },
+
+  "bias": {
+    "type": "metadynamics, hills in (CV1, CV2)",
+    "implementation": "BLOCKED: no bias/PLUMED layer exists in the Sn-beta path; py-plumed not installed. Options: conda-forge plumed + ASE Plumed calculator (preferred: sum_hills, reweighting), or a bias wrapper using reaction_coordinate.gradient (finite-difference gradients, 6N CV evaluations per step).",
+    "stride_steps": 100,
+    "sigma": [0.1, 0.1],
+    "height_Ha": 0.001,
+    "_stated_for": "Ali thesis Figs 7.1-7.2 CPMD excerpts, i.e. the CPMD dataset only; whether the paper used these is unknown",
+    "well_tempered": null,
+    "bias_factor": null,
+    "walls": null
+  },
+
+  "length": {"n_steps": null, "_note": "20,000 steps stated for Ali's CPMD run (timestep unknown); '~44,000' unresolved (README). At 0.55 s/step a single 20,000-step walker is ~3 h per model, but only after the timestep is chosen."},
+
+  "outputs": {
+    "trajectory": "ASE .traj (positions+velocities every N steps) + extxyz copy; COLVAR and HILLS text files",
+    "checkpoint_restart": "NOT IMPLEMENTED: must save positions, velocities, RNG state, hills list, step count; restart must reproduce the continuation bit-for-bit on the same machine (test)",
+    "output_dir": "outputs/metad_dryrun/<model>_<variant>/"
+  },
+
+  "in_run_monitors": {
+    "coordination_check": "coordination_check.check_coordination every K steps against the INPUT reactant (the single repo-wide convention); abort-and-record on STRUCTURALLY_INVALID (water loss / Sn-O loss)",
+    "hydride_state": "hydride.classify_hydride_state logged every K steps"
+  }
+}

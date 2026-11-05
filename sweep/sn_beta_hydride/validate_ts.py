@@ -58,9 +58,11 @@ import numpy as np  # noqa: E402
 from ase.io import read, write  # noqa: E402
 
 from calculators import add_calc_args, model_from_config, parse_calc_settings  # noqa: E402
-from config_io import fixed_atoms, index_of, load_config, output_root, section, write_json  # noqa: E402
-from connectivity import (connectivity_check, options as conn_options,  # noqa: E402
-                          side_minimum_reference, ts_certification)
+from coordination_check import check_coordination  # noqa: E402
+from config_io import (fixed_atoms, index_of, load_config, output_root, resolve_path,  # noqa: E402
+                       section, write_json)
+from connectivity import (connectivity_check, coordination_configured,  # noqa: E402
+                          options as conn_options, side_minimum_reference, ts_certification)
 from energetics import energetics, format_table, reference_state  # noqa: E402
 from validate_structure import (ValidationError, print_report, require_valid,  # noqa: E402
                                 validate_single)
@@ -148,6 +150,14 @@ def run(cfg, model=None, variant=None, device=None, dtype=None, ts=None, out=Non
     require_valid(rep, "TS geometry")
     print_report(rep)
     at = read(str(ts))
+    # refine_ts.py writes sella_converged (projected AND free-atom force test) into the saddle's own
+    # metadata. A structure with no such record (external --ts) cannot be CERTIFIED.
+    raw_sella = at.info.get("sella_converged")
+    sella_conv = None if raw_sella is None else bool(raw_sella)
+    inputs = None
+    if coordination_configured(cfg):
+        inputs = {role: read(str(resolve_path(cfg, cfg["structures"][role])))
+                  for role in ("reactant", "product") if role in (cfg.get("structures") or {})}
 
     handle = handle or model_from_config(cfg, model, variant, device, dtype)
     handle.check_elements(at)
@@ -221,12 +231,13 @@ def run(cfg, model=None, variant=None, device=None, dtype=None, ts=None, out=Non
         print(f"== +/- imaginary-mode connectivity ({copts['optimizer']}, fmax {copts['fmax']}, "
               f"step {copts['mode_displacement_A']} Å on the lead atom; NOT an IRC) ==", flush=True)
         conn = connectivity_check(strip_calc(at), res["mode_displacement"], handle.new_calc,
-                                  cfg, endpoints, out / "connectivity", ef["energy_eV"])
+                                  cfg, endpoints, out / "connectivity", ef["energy_eV"], inputs=inputs)
         conn.pop("_atoms")
         for k, s in conn["sides"].items():
+            cv = (s["coordination"] or {}).get("verdict", "not checked")
             print(f"  side {k}: {s['state']:13s} E={s['energy_eV']:.6f} eV converged="
                   f"{s['converged']}  C2-H*={s['hydride_state']['d_C2_H_A']:.3f} "
-                  f"C1-H*={s['hydride_state']['d_C1_H_A']:.3f}")
+                  f"C1-H*={s['hydride_state']['d_C1_H_A']:.3f}  coordination: {cv}")
         print(f"  {conn['verdict']}")
 
     label = ts_certification(stationary=stationary, fmax=ef["fmax_eV_A"],
@@ -234,7 +245,16 @@ def run(cfg, model=None, variant=None, device=None, dtype=None, ts=None, out=Non
                              n_imaginary=res["n_imaginary"],
                              overlap=res["reaction_mode_overlap"],
                              min_overlap=float(opts["min_reaction_overlap"]),
-                             geometry_valid=rep["status"] != "FAIL", connectivity=conn)
+                             geometry_valid=rep["status"] != "FAIL", connectivity=conn,
+                             sella_converged=sella_conv)
+
+    # INFORMATION ONLY (not a certification criterion; no Council ruling covers it): is the saddle
+    # itself still the intended Sn site, judged against the input reactant like everything else?
+    ts_coord = None
+    if inputs and "reactant" in inputs:
+        c = check_coordination(strip_calc(at), inputs["reactant"], cfg)
+        ts_coord = {"verdict": c["verdict"], "reasons": c["reasons"], "reference": "input reactant",
+                    "gating": False}
 
     states = []
     if endpoints:
@@ -267,6 +287,9 @@ def run(cfg, model=None, variant=None, device=None, dtype=None, ts=None, out=Non
         "verdict": v,
         "connectivity": conn, "connectivity_skipped": conn_skip,
         "ts_certification": label,
+        "sella_converged": sella_conv,
+        "ts_source": str(ts),
+        "ts_coordination_informational": ts_coord,
         "energetics": en,
         "files": {"hessian": str(out / "hessian.npy"), "frequencies": str(out / "frequencies.csv"),
                   "normal_modes": str(out / "normal_modes.npz"),

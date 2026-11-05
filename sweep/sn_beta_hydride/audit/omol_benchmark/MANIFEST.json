@@ -1,0 +1,11 @@
+{
+  "what": "curated small results of the OMOL/POLAR/xTB benchmark on the reconstructed Sn-beta cluster",
+  "not_included": "trajectories, Hessians, normal modes, logs (regenerable; see OMOL_BENCHMARK_REPORT.md)",
+  "paths": "absolute paths rewritten to <repo> and ~",
+  "checkpoint_sha256": {
+    "MACE-omol-0-extra-large-1024.model": "9b64b4fd5153ca578c694abc57806d8111050de6ff652e695c9b525bc4d36469",
+    "mace-omol-0-extra-large-4M.model": "1876b02448337595d9417f656f720e700140a1ac6d6d75308dab4aa85cf6d79a",
+    "MACEPOLAR1Smodel": "e4495612037b3b3312633182882a38a694ecac9ea0be2b9889ac0b2a84a99510"
+  },
+  "files": 35
+}

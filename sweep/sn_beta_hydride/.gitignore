@@ -1,6 +1,19 @@
 # TEST-ONLY smoke-test output (synthetic toy; never commit, never cite)
 smoke_output/
 
-# per-model run outputs: keep the structured results once real structures exist,
-# but the raw Hessian matrix is regenerable and can be large (3N x 3N)
-outputs/**/hessian.npy
+# ---- runtime artifacts: regenerable, large, and not for version control ----
+# Per-model run directories (outputs/<tag>/...): NEB/Sella trajectories (neb.traj is ~52 MB),
+# Hessian matrices, relaxation logs. The small structured results worth keeping are COPIED to
+# audit/<name>/ (tracked), exactly as audit/tian_tt_test/ does -- do not commit outputs/ itself.
+outputs/
+# stdout logs and helper scripts from local runs
+logs_local/
+# ASE trajectories anywhere under this study. SCOPED to sn_beta_hydride on purpose: the repo
+# deliberately tracks *.traj results elsewhere (sweep/corrections, analysis), and a repo-wide
+# ignore would silently block adding more of those.
+*.traj
+# scratch / temporary
+scratch/
+tmp/
+*.tmp
+.pytest_cache/

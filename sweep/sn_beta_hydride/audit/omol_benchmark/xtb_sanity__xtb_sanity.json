@@ -1,0 +1,182 @@
+{
+  "method": "gfn2-xtb",
+  "calculator": {
+    "model": "gfn2-xtb",
+    "pretty": "GFN2-xTB",
+    "variant": "gfn2",
+    "method": "GFN2-xTB",
+    "calculator_class": "XTB",
+    "xtb_options": {
+      "accuracy": 1.0,
+      "electronic_temperature": 300.0,
+      "max_iterations": 250
+    },
+    "z_range": [
+      1,
+      86
+    ],
+    "n_elements": 86,
+    "device": "cpu",
+    "dtype": "float64 (native)",
+    "charge": 0,
+    "spin_multiplicity": 1,
+    "charge_spin_mode": "initial_arrays",
+    "xtb_python": "22.1",
+    "ase": "3.29.0"
+  },
+  "fmax_eV_A": 0.02,
+  "max_steps": 600,
+  "purpose": "structural sanity only; no barrier is computed or reported",
+  "roles": {
+    "reactant": {
+      "E0_eV": -1962.9678738567527,
+      "fmax0_eV_A": 1.1676029625507371,
+      "E_relaxed_eV": -1964.0959732630638,
+      "fmax_final_eV_A": 0.01851373667550149,
+      "converged": true,
+      "steps": 429,
+      "final": {
+        "verdict": "STRUCTURALLY_INVALID",
+        "reasons": [
+          "shell atom(s) left the Sn shell: O24"
+        ],
+        "n_shell_reference": 6,
+        "n_shell_now": 5,
+        "lost_from_shell": [
+          24
+        ],
+        "gained_in_shell": [],
+        "heavy_bonds_broken": [],
+        "heavy_bonds_formed": [],
+        "hydrogen_near_sn": [],
+        "lengthened_gt_threshold_A": {
+          "0": 0.3657186265439716,
+          "24": 0.8084285947298007
+        },
+        "key_sn_o": {
+          "O1": {
+            "ref_A": 2.339488460920854,
+            "now_A": 2.7052070874648257,
+            "in_shell": true
+          },
+          "O2": {
+            "ref_A": 2.0426574856379536,
+            "now_A": 1.9773558572607204,
+            "in_shell": true
+          },
+          "O_water": {
+            "ref_A": 2.3114752690566798,
+            "now_A": 3.1199038637864804,
+            "in_shell": false
+          }
+        },
+        "water": {
+          "n_H": 2,
+          "H_indices": [
+            25,
+            26
+          ],
+          "intact": true,
+          "cutoff_A": 1.164
+        },
+        "hydride": {
+          "state": "reactant-like",
+          "d_C2_H_A": 1.0982257427751743,
+          "d_C1_H_A": 2.135053633020255,
+          "delta_H_A": -1.0368278902450807,
+          "bond_cutoff_A": 1.284,
+          "shared_cutoff_A": 1.6,
+          "criterion": "covalent C-H* bond (d < bond_scale x (r_C + r_H)) on the mapped atoms"
+        },
+        "thresholds": {
+          "shell_A": 2.8,
+          "weaken_A": 0.3,
+          "note": "analysis thresholds, applied identically to every method"
+        }
+      },
+      "first_invalid_during_relaxation": {
+        "step": 135,
+        "verdict": "STRUCTURALLY_INVALID",
+        "reasons": [
+          "shell atom(s) left the Sn shell: O24"
+        ],
+        "lost": [
+          24
+        ],
+        "gained": []
+      },
+      "max_displacement_from_input_A": 4.985066780051085
+    },
+    "product": {
+      "E0_eV": -1963.3685074036132,
+      "fmax0_eV_A": 0.718751467468445,
+      "E_relaxed_eV": -1963.823642903836,
+      "fmax_final_eV_A": 0.017639311391894508,
+      "converged": true,
+      "steps": 216,
+      "final": {
+        "verdict": "PRESERVED",
+        "reasons": [],
+        "n_shell_reference": 6,
+        "n_shell_now": 6,
+        "lost_from_shell": [],
+        "gained_in_shell": [],
+        "heavy_bonds_broken": [],
+        "heavy_bonds_formed": [],
+        "hydrogen_near_sn": [],
+        "lengthened_gt_threshold_A": {},
+        "key_sn_o": {
+          "O1": {
+            "ref_A": 1.991666992314069,
+            "now_A": 2.0315024180633046,
+            "in_shell": true
+          },
+          "O2": {
+            "ref_A": 2.472945633845064,
+            "now_A": 2.603756217720555,
+            "in_shell": true
+          },
+          "O_water": {
+            "ref_A": 2.3775243602906886,
+            "now_A": 2.6377151022688645,
+            "in_shell": true
+          }
+        },
+        "water": {
+          "n_H": 2,
+          "H_indices": [
+            25,
+            26
+          ],
+          "intact": true,
+          "cutoff_A": 1.164
+        },
+        "hydride": {
+          "state": "product-like",
+          "d_C2_H_A": 2.1273754434592913,
+          "d_C1_H_A": 1.0997111426400308,
+          "delta_H_A": 1.0276643008192605,
+          "bond_cutoff_A": 1.284,
+          "shared_cutoff_A": 1.6,
+          "criterion": "covalent C-H* bond (d < bond_scale x (r_C + r_H)) on the mapped atoms"
+        },
+        "thresholds": {
+          "shell_A": 2.8,
+          "weaken_A": 0.3,
+          "note": "analysis thresholds, applied identically to every method"
+        }
+      },
+      "first_invalid_during_relaxation": null,
+      "max_displacement_from_input_A": 1.329456187375966
+    }
+  },
+  "status": "STRUCTURALLY INVALID FOR BARRIER COMPARISON",
+  "transient_or_unconverged_roles": [
+    "reactant"
+  ],
+  "invalid_roles": [
+    "reactant"
+  ],
+  "total_calculator_calls": 647,
+  "wall_seconds": 26.32384705543518
+}
