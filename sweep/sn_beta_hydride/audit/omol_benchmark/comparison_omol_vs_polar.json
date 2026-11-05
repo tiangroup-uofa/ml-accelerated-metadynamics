@@ -1,0 +1,366 @@
+{
+  "structures": {
+    "OMOL": {
+      "R": {
+        "coordination": "PRESERVED",
+        "reasons": [],
+        "hydride": "reactant-like",
+        "water_intact": true,
+        "n_shell_heavy": 6,
+        "dists_A": {
+          "C2-H*": 1.1046073502943525,
+          "C1-H*": 2.1024642577627644,
+          "Sn-O1": 2.2686948888045153,
+          "Sn-O2": 2.0242253625346973,
+          "Sn-O_water": 2.239287285733238
+        },
+        "lengthened_A": {}
+      },
+      "P": {
+        "coordination": "PRESERVED",
+        "reasons": [],
+        "hydride": "product-like",
+        "water_intact": true,
+        "n_shell_heavy": 6,
+        "dists_A": {
+          "C2-H*": 2.119290968221703,
+          "C1-H*": 1.0993458555804947,
+          "Sn-O1": 2.002653000566071,
+          "Sn-O2": 2.3487963128322,
+          "Sn-O_water": 2.273673393037426
+        },
+        "lengthened_A": {}
+      },
+      "TS": {
+        "coordination": "PRESERVED",
+        "reasons": [],
+        "hydride": "shared",
+        "water_intact": true,
+        "n_shell_heavy": 6,
+        "dists_A": {
+          "C2-H*": 1.3784798264409044,
+          "C1-H*": 1.3915469018650914,
+          "Sn-O1": 2.0881500707222016,
+          "Sn-O2": 2.1303892297852878,
+          "Sn-O_water": 2.2628924966588095
+        },
+        "lengthened_A": {}
+      },
+      "R'": {
+        "coordination": "PRESERVED",
+        "reasons": [],
+        "hydride": "reactant-like",
+        "water_intact": true,
+        "n_shell_heavy": 6,
+        "dists_A": {
+          "C2-H*": 1.1051201077728607,
+          "C1-H*": 2.0910026090225347,
+          "Sn-O1": 2.2671393336210275,
+          "Sn-O2": 2.0110209016178673,
+          "Sn-O_water": 2.2447452207712386
+        },
+        "lengthened_A": {}
+      },
+      "P'": {
+        "coordination": "PRESERVED",
+        "reasons": [],
+        "hydride": "product-like",
+        "water_intact": true,
+        "n_shell_heavy": 6,
+        "dists_A": {
+          "C2-H*": 2.0911841524676187,
+          "C1-H*": 1.1059138392593288,
+          "Sn-O1": 1.9897206758699468,
+          "Sn-O2": 2.303802072555647,
+          "Sn-O_water": 2.298375665580003
+        },
+        "lengthened_A": {}
+      }
+    },
+    "POLAR (Tian)": {
+      "R": {
+        "coordination": "PRESERVED",
+        "reasons": [],
+        "hydride": "reactant-like",
+        "water_intact": true,
+        "n_shell_heavy": 6,
+        "dists_A": {
+          "C2-H*": 1.1048010178374903,
+          "C1-H*": 2.111575859139403,
+          "Sn-O1": 2.339488460920854,
+          "Sn-O2": 2.0426574856379536,
+          "Sn-O_water": 2.3114752690566798
+        },
+        "lengthened_A": {}
+      },
+      "P": {
+        "coordination": "PRESERVED",
+        "reasons": [],
+        "hydride": "product-like",
+        "water_intact": true,
+        "n_shell_heavy": 6,
+        "dists_A": {
+          "C2-H*": 2.1152163358946723,
+          "C1-H*": 1.1002683669155475,
+          "Sn-O1": 1.991666992314069,
+          "Sn-O2": 2.472945633845064,
+          "Sn-O_water": 2.3775243602906886
+        },
+        "lengthened_A": {}
+      },
+      "TS": {
+        "coordination": "PRESERVED",
+        "reasons": [],
+        "hydride": "shared",
+        "water_intact": true,
+        "n_shell_heavy": 6,
+        "dists_A": {
+          "C2-H*": 1.3144112605417055,
+          "C1-H*": 1.3480039642634971,
+          "Sn-O1": 2.1070466981692078,
+          "Sn-O2": 2.128223026858049,
+          "Sn-O_water": 2.3197856326541904
+        },
+        "lengthened_A": {}
+      },
+      "R'": {
+        "coordination": "PRESERVED",
+        "reasons": [],
+        "hydride": "reactant-like",
+        "water_intact": true,
+        "n_shell_heavy": 6,
+        "dists_A": {
+          "C2-H*": 1.102330539040295,
+          "C1-H*": 2.0936898129315598,
+          "Sn-O1": 2.363649509191267,
+          "Sn-O2": 2.0292405605104404,
+          "Sn-O_water": 2.304150072018321
+        },
+        "lengthened_A": {}
+      },
+      "P'": {
+        "coordination": "PRESERVED",
+        "reasons": [],
+        "hydride": "product-like",
+        "water_intact": true,
+        "n_shell_heavy": 6,
+        "dists_A": {
+          "C2-H*": 2.1029284552581693,
+          "C1-H*": 1.1021866601300903,
+          "Sn-O1": 1.989675380118147,
+          "Sn-O2": 2.3921935594002384,
+          "Sn-O_water": 2.344348498426776
+        },
+        "lengthened_A": {}
+      }
+    }
+  },
+  "conformer_offsets": {
+    "OMOL R vs input R": {
+      "rmsd_whole_A": 0.4690685921403658,
+      "rmsd_core_A": 0.060374644906116444,
+      "n_changed_dihedrals": 0,
+      "largest_dihedral": null
+    },
+    "OMOL P vs input P": {
+      "rmsd_whole_A": 0.5175730299900754,
+      "rmsd_core_A": 0.26938826467599764,
+      "n_changed_dihedrals": 0,
+      "largest_dihedral": null
+    },
+    "POLAR R vs input R": {
+      "rmsd_whole_A": 1.1739383589178323e-15,
+      "rmsd_core_A": 8.269228662666719e-16,
+      "n_changed_dihedrals": 0,
+      "largest_dihedral": null
+    },
+    "POLAR P vs input P": {
+      "rmsd_whole_A": 7.262214352940141e-16,
+      "rmsd_core_A": 5.36049202688126e-16,
+      "n_changed_dihedrals": 0,
+      "largest_dihedral": null
+    },
+    "OMOL R vs POLAR R": {
+      "rmsd_whole_A": 0.4690685921403658,
+      "rmsd_core_A": 0.060374644906116444,
+      "n_changed_dihedrals": 0,
+      "largest_dihedral": null
+    },
+    "OMOL R vs POLAR R'": {
+      "rmsd_whole_A": 1.265010060106156,
+      "rmsd_core_A": 0.09184454531037928,
+      "n_changed_dihedrals": 2,
+      "largest_dihedral": {
+        "atoms": [
+          1,
+          2,
+          4,
+          5
+        ],
+        "label": "C1-C2-C4-O5",
+        "ref_deg": 71.1,
+        "other_deg": 139.2,
+        "change_deg": 68.1
+      }
+    },
+    "OMOL R' vs POLAR R'": {
+      "rmsd_whole_A": 0.6234006860222554,
+      "rmsd_core_A": 0.0888956156729477,
+      "n_changed_dihedrals": 0,
+      "largest_dihedral": null
+    },
+    "OMOL R' vs POLAR R": {
+      "rmsd_whole_A": 1.5509801961573924,
+      "rmsd_core_A": 0.06880825807047922,
+      "n_changed_dihedrals": 2,
+      "largest_dihedral": {
+        "atoms": [
+          1,
+          2,
+          4,
+          5
+        ],
+        "label": "C1-C2-C4-O5",
+        "ref_deg": 141.4,
+        "other_deg": 51.8,
+        "change_deg": -89.7
+      }
+    },
+    "OMOL R' vs OMOL R": {
+      "rmsd_whole_A": 1.5253455553509347,
+      "rmsd_core_A": 0.019398149696317674,
+      "n_changed_dihedrals": 2,
+      "largest_dihedral": {
+        "atoms": [
+          1,
+          2,
+          4,
+          5
+        ],
+        "label": "C1-C2-C4-O5",
+        "ref_deg": 139.2,
+        "other_deg": 51.8,
+        "change_deg": -87.4
+      }
+    },
+    "POLAR R' vs POLAR R": {
+      "rmsd_whole_A": 1.2448633459871858,
+      "rmsd_core_A": 0.08342100467194878,
+      "n_changed_dihedrals": 2,
+      "largest_dihedral": {
+        "atoms": [
+          1,
+          2,
+          4,
+          5
+        ],
+        "label": "C1-C2-C4-O5",
+        "ref_deg": 141.4,
+        "other_deg": 71.1,
+        "change_deg": -70.3
+      }
+    },
+    "OMOL P vs POLAR P": {
+      "rmsd_whole_A": 0.5175730299900754,
+      "rmsd_core_A": 0.26938826467599764,
+      "n_changed_dihedrals": 0,
+      "largest_dihedral": null
+    },
+    "OMOL P' vs POLAR P'": {
+      "rmsd_whole_A": 0.5812020941838401,
+      "rmsd_core_A": 0.15214642811290113,
+      "n_changed_dihedrals": 0,
+      "largest_dihedral": null
+    },
+    "OMOL P' vs OMOL P": {
+      "rmsd_whole_A": 1.214614607898817,
+      "rmsd_core_A": 0.21581900903008946,
+      "n_changed_dihedrals": 1,
+      "largest_dihedral": {
+        "atoms": [
+          1,
+          2,
+          4,
+          5
+        ],
+        "label": "C1-C2-C4-O5",
+        "ref_deg": 140.7,
+        "other_deg": 100.2,
+        "change_deg": -40.5
+      }
+    },
+    "POLAR P' vs POLAR P": {
+      "rmsd_whole_A": 0.9955019955383572,
+      "rmsd_core_A": 0.24197906118533685,
+      "n_changed_dihedrals": 0,
+      "largest_dihedral": null
+    },
+    "OMOL TS vs POLAR TS": {
+      "rmsd_whole_A": 0.4030055820745987,
+      "rmsd_core_A": 0.09519890005323864,
+      "n_changed_dihedrals": 0,
+      "largest_dihedral": null
+    }
+  },
+  "energetics_kJ_mol": {
+    "reference_states_are_labelled": true,
+    "OMOL": {
+      "barrier_fwd": {
+        "relaxed_endpoint": 72.32569846208702,
+        "connected_side_minimum": 90.77278623772986
+      },
+      "barrier_rev": {
+        "relaxed_endpoint": 99.5442652730343,
+        "connected_side_minimum": 95.39630516125074
+      },
+      "dE": {
+        "relaxed_endpoint": -27.21856681094728,
+        "connected_side_minimum": -4.623518923520882
+      },
+      "R_relaxed_minus_R_prime": 18.44708777627569,
+      "P_relaxed_minus_P_prime": -4.147960111925848
+    },
+    "POLAR (Tian's run)": {
+      "barrier_fwd": {
+        "relaxed_endpoint": 112.97157009180837,
+        "connected_side_minimum": 126.40963206663307
+      },
+      "barrier_rev": {
+        "relaxed_endpoint": 142.9933124630116,
+        "connected_side_minimum": 145.57464721002546
+      },
+      "dE": {
+        "relaxed_endpoint": -30.02174237120322,
+        "connected_side_minimum": -19.1650151433924
+      },
+      "R_relaxed_minus_R_prime": 13.438061975285693,
+      "P_relaxed_minus_P_prime": 2.5813347471024217
+    },
+    "OMOL_minus_POLAR": {
+      "barrier_fwd": {
+        "relaxed_endpoint": -40.645871629721356,
+        "connected_side_minimum": -35.636845828903205
+      }
+    }
+  },
+  "ts": {
+    "OMOL": {
+      "nu_imag_cm": -1299.0172502413943,
+      "n_imaginary": 1,
+      "overlap": 0.7182615972014457,
+      "H_participation": 0.9256012742692629,
+      "certification": "CERTIFIED: stationary first-order saddle; imaginary mode is the hydride transfer; +/- mode relaxation reaches reactant-like and product-like minima (not an IRC)",
+      "sella_converged": true,
+      "neb_converged": false,
+      "force_calls": 17442,
+      "wall_h": 3.193722222222222
+    },
+    "POLAR (Tian's run)": {
+      "nu_imag_cm": -923.0900236445386,
+      "overlap": 0.7504818856192812,
+      "H_participation": 0.8539441015248036,
+      "sella_fmax": 0.0006883970365839288,
+      "certification": "NOT INDEPENDENTLY CERTIFIED: Tian's saved records show a converged Sella stationary point (fmax 6.9e-04 eV/\u00c5), 1 significant imaginary mode (-923.1 cm^-1, overlap 0.75 with the hydride coordinate) and +/- mode side minima that are reactant-/product-like; the Hessian has not been recomputed by this pipeline and the eigenvector was not saved"
+    }
+  }
+}

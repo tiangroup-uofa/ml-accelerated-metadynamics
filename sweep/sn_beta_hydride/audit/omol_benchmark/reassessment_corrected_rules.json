@@ -1,0 +1,161 @@
+[
+  {
+    "statuses": {
+      "saddle": "CERTIFIED",
+      "neb_path": "UNCONVERGED_DIAGNOSTIC_ONLY",
+      "barriers": "PRELIMINARY",
+      "accuracy_vs_dft": "BLOCKED ON DFT DATA",
+      "reproduced": null
+    },
+    "run": "outputs/tian_tt_test/mace-omol_extra_large",
+    "reassessed_with": "corrected rules; saved raw outputs; NO model calls",
+    "ts_certification_old_label": "CERTIFIED: stationary first-order saddle; imaginary mode is the hydride transfer; +/- mode relaxation reaches reactant-like and product-like minima (not an IRC)",
+    "ts_certification_new_label": "CERTIFIED: stationary first-order saddle (converged Sella); imaginary mode is the hydride transfer; +/- mode relaxation reaches reactant-like and product-like minima (not an IRC)",
+    "sella_converged": true,
+    "sella_nsteps": 26,
+    "stationary_fmax_eV_A": 0.0007139037443987969,
+    "n_imaginary": 1,
+    "nu_imag_cm": -1299.0172502413943,
+    "hydride_overlap": 0.7182615972014457,
+    "connects": true,
+    "invalid_sides": [],
+    "side_coordination": {
+      "+": "PRESERVED",
+      "-": "PRESERVED"
+    },
+    "ts_provenance": {
+      "seed": "highest image of the CI-NEB band (a starting guess only)",
+      "path_status": "NEB_UNCONVERGED: DIAGNOSTIC ONLY; no converged reaction path is claimed",
+      "neb_converged": false,
+      "neb_fmax_final": 0.5941935369639598,
+      "neb_fmax_target": 0.05,
+      "neb_steps": 1500,
+      "sella_converged": true,
+      "mep_claimed": false,
+      "highest_image_is_ts": false,
+      "highest_image_energy_is_barrier": false,
+      "note": "ts_certification concerns the Sella saddle only; NEB status is reported here, never merged into it"
+    },
+    "energetics_kJ_mol": {
+      "barrier_forward": {
+        "relaxed_endpoint": 72.33,
+        "connected_side_minimum": 90.77
+      },
+      "barrier_reverse": {
+        "relaxed_endpoint": 99.54,
+        "connected_side_minimum": 95.4
+      },
+      "reaction_energy": {
+        "relaxed_endpoint": -27.22,
+        "connected_side_minimum": -4.62
+      }
+    },
+    "max_drift_vs_saved_kJ_mol": 0.0
+  },
+  {
+    "statuses": {
+      "saddle": "CERTIFIED",
+      "neb_path": "NO_NEB_RUN",
+      "barriers": "PRELIMINARY",
+      "accuracy_vs_dft": "BLOCKED ON DFT DATA",
+      "reproduced": null
+    },
+    "run": "outputs/tian_tt_test_omol4m/mace-omol_extra_large",
+    "reassessed_with": "corrected rules; saved raw outputs; NO model calls",
+    "ts_certification_old_label": "CERTIFIED: stationary first-order saddle; imaginary mode is the hydride transfer; +/- mode relaxation reaches reactant-like and product-like minima (not an IRC)",
+    "ts_certification_new_label": "CERTIFIED: stationary first-order saddle (converged Sella); imaginary mode is the hydride transfer; +/- mode relaxation reaches reactant-like and product-like minima (not an IRC)",
+    "sella_converged": true,
+    "sella_nsteps": 15,
+    "stationary_fmax_eV_A": 0.0007849338740603093,
+    "n_imaginary": 1,
+    "nu_imag_cm": -1039.1538265127913,
+    "hydride_overlap": 0.7232794289088909,
+    "connects": true,
+    "invalid_sides": [],
+    "side_coordination": {
+      "+": "PRESERVED",
+      "-": "PRESERVED"
+    },
+    "ts_provenance": {
+      "seed": "explicit starting geometry (no NEB in this record)",
+      "path_status": "NO_NEB_RUN",
+      "neb_converged": null,
+      "neb_fmax_final": null,
+      "neb_fmax_target": null,
+      "neb_steps": null,
+      "sella_converged": true,
+      "mep_claimed": false,
+      "highest_image_is_ts": false,
+      "highest_image_energy_is_barrier": false,
+      "note": "ts_certification concerns the Sella saddle only; NEB status is reported here, never merged into it"
+    },
+    "energetics_kJ_mol": {
+      "barrier_forward": {
+        "relaxed_endpoint": 73.18,
+        "connected_side_minimum": 90.16
+      },
+      "barrier_reverse": {
+        "relaxed_endpoint": 94.39,
+        "connected_side_minimum": 96.43
+      },
+      "reaction_energy": {
+        "relaxed_endpoint": -21.2,
+        "connected_side_minimum": -6.27
+      }
+    },
+    "max_drift_vs_saved_kJ_mol": 0.0
+  },
+  {
+    "statuses": {
+      "saddle": "CERTIFIED",
+      "neb_path": "NO_NEB_RUN",
+      "barriers": "PRELIMINARY",
+      "accuracy_vs_dft": "BLOCKED ON DFT DATA",
+      "reproduced": "REPRODUCED"
+    },
+    "run": "outputs/tian_tt_test/mace-polar_polar-1-s",
+    "reassessed_with": "corrected rules; saved raw outputs; NO model calls",
+    "ts_certification_old_label": "CERTIFIED: stationary first-order saddle; imaginary mode is the hydride transfer; +/- mode relaxation reaches reactant-like and product-like minima (not an IRC)",
+    "ts_certification_new_label": "CERTIFIED: stationary first-order saddle (converged Sella); imaginary mode is the hydride transfer; +/- mode relaxation reaches reactant-like and product-like minima (not an IRC)",
+    "sella_converged": true,
+    "sella_nsteps": 0,
+    "stationary_fmax_eV_A": 0.0006884077287500793,
+    "n_imaginary": 1,
+    "nu_imag_cm": -923.0825375369823,
+    "hydride_overlap": 0.750482035287886,
+    "connects": true,
+    "invalid_sides": [],
+    "side_coordination": {
+      "+": "PRESERVED",
+      "-": "PRESERVED"
+    },
+    "ts_provenance": {
+      "seed": "explicit starting geometry (no NEB in this record)",
+      "path_status": "NO_NEB_RUN",
+      "neb_converged": null,
+      "neb_fmax_final": null,
+      "neb_fmax_target": null,
+      "neb_steps": null,
+      "sella_converged": true,
+      "mep_claimed": false,
+      "highest_image_is_ts": false,
+      "highest_image_energy_is_barrier": false,
+      "note": "ts_certification concerns the Sella saddle only; NEB status is reported here, never merged into it"
+    },
+    "energetics_kJ_mol": {
+      "barrier_forward": {
+        "relaxed_endpoint": 112.97,
+        "connected_side_minimum": 126.41
+      },
+      "barrier_reverse": {
+        "relaxed_endpoint": 142.99,
+        "connected_side_minimum": 145.58
+      },
+      "reaction_energy": {
+        "relaxed_endpoint": -30.02,
+        "connected_side_minimum": -19.17
+      }
+    },
+    "max_drift_vs_saved_kJ_mol": 0.0
+  }
+]

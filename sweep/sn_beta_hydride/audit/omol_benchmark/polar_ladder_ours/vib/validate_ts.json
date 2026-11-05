@@ -1,0 +1,762 @@
+{
+  "TEST_ONLY": false,
+  "system": "Sn-beta / glucose C2->C1 hydride transfer -- RECONSTRUCTED vacuum cluster (Tian, tt-test)",
+  "config": "<repo>/sweep/sn_beta_hydride/config_tian_tt_test.json",
+  "timestamp": "2026-11-04T17:50:53",
+  "structure_class": "reconstructed",
+  "structure_provenance": {
+    "dataset": "tian_tt_test",
+    "structure_class": "reconstructed",
+    "not_literature_coordinates": true,
+    "constructed_by": "T. Tian (manual, agent-assisted SMILES conversion)",
+    "construction_method": "RDKit build + geometric Sn-site placement, relaxed with MACE-POLAR-1-S (glucose/structures/scripts/)",
+    "charge_spin_status": "inferred",
+    "provenance_file": "input/tian_tt_test/provenance.json",
+    "solvent": "none (vacuum cluster)"
+  },
+  "warning": "RECONSTRUCTED input structures (not literature coordinates)",
+  "calculator": {
+    "model": "mace-polar",
+    "pretty": "MACE-POLAR-1",
+    "variant": "polar-1-s",
+    "model_path": null,
+    "model_class": "PolarMACE",
+    "head": "Default",
+    "r_max_A": 6.0,
+    "z_range": [
+      1,
+      83
+    ],
+    "n_elements": 83,
+    "device": "cpu",
+    "dtype": "float64",
+    "charge": 0,
+    "spin_multiplicity": 1,
+    "mace_torch": "0.3.16",
+    "torch": "2.7.1",
+    "ase": "3.26.0",
+    "graph_longrange": "0.4.0"
+  },
+  "stage": "validate_ts",
+  "structure": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-polar_polar-1-s/ts/ts_sella.xyz",
+  "settings": {
+    "delta": 0.001,
+    "imag_cutoff_cm": 50.0,
+    "atoms": "free",
+    "min_reaction_overlap": 0.3,
+    "stationary_fmax": 0.01,
+    "mode_amplitude_A": 0.3,
+    "mode_frames": 11
+  },
+  "hessian_scope": "all atoms (no fixed atoms configured)",
+  "seconds": 190.61361408233643,
+  "energy_eV": -56519.483029687304,
+  "fmax_eV_A": 0.0006884077287500793,
+  "fmax_all_atoms_incl_fixed_eV_A": 0.0006884077287500793,
+  "cvs": {
+    "d_C1_H": 1.3480039642634971,
+    "d_C2_H": 1.3144112605417055,
+    "delta_H": -0.03359270372179157,
+    "CV1": 1.5250433762417357,
+    "CV2": 0.7872054708022148
+  },
+  "mode_reference_cv": "delta_H",
+  "n_atoms_in_hessian": 42,
+  "hessian_indices": "all",
+  "frequencies_cm": [
+    -923.0825375369823,
+    -0.5707438379974598,
+    -0.23744271547123164,
+    -0.2171078650043881,
+    -0.0026337508782965148,
+    0.0030598744553764793,
+    0.011088128715921262,
+    14.009790142823373,
+    20.021049036211146,
+    25.491231258743785,
+    29.50267741964598,
+    32.97848909976496,
+    37.88137582187586,
+    46.15012170636802,
+    60.551539310247925,
+    63.52310680221899,
+    76.1127231521328,
+    84.48333542776646,
+    90.40293387914171,
+    98.93216143404545,
+    107.63837618956615,
+    111.82124489450207,
+    135.91205282279563,
+    144.20016043836316,
+    153.65027233201835,
+    157.04394962495502,
+    177.12935169817075,
+    183.9177906029557,
+    193.7335501871471,
+    204.98979003567464,
+    218.96224393876625,
+    227.75826317601494,
+    240.52587002458574,
+    257.7455576107893,
+    265.02291939126786,
+    289.291020154269,
+    308.17958795764304,
+    317.84494682147806,
+    341.523092792884,
+    384.91421548283813,
+    402.29334034697524,
+    415.3946255052305,
+    427.4619744404034,
+    442.1561411350065,
+    461.6218922078626,
+    464.7697679811623,
+    465.18544274152674,
+    491.07827837836777,
+    499.7959662441615,
+    521.0322304440621,
+    556.2236071571276,
+    573.4043667034492,
+    595.9415888175089,
+    614.0632612762471,
+    714.7269557000114,
+    719.850249171751,
+    720.843801619256,
+    724.1528951691607,
+    727.5766402752159,
+    742.600061796067,
+    768.2976252252926,
+    782.4661987860225,
+    827.7662402007808,
+    839.8261713829411,
+    916.6479387267979,
+    923.059843607549,
+    952.5408592833082,
+    956.8069903118856,
+    962.2086355861655,
+    964.3178299680326,
+    965.3500895649223,
+    965.8869383538284,
+    966.719159220825,
+    973.087454010429,
+    975.9432494557806,
+    978.4128433998421,
+    978.6755295866652,
+    982.900798155133,
+    984.2987720149289,
+    1033.0995328304198,
+    1057.4861518528132,
+    1107.0762312918669,
+    1123.3682423354167,
+    1128.369961364736,
+    1144.6728484452703,
+    1158.0476082369212,
+    1204.3693764995048,
+    1241.8058196526194,
+    1266.6036030455318,
+    1271.9223338655793,
+    1275.5006570637793,
+    1319.1448746135468,
+    1337.8871605013471,
+    1357.8826038629754,
+    1375.8184396345864,
+    1394.7470544239845,
+    1408.1445928613507,
+    1420.084436541147,
+    1423.5501343525743,
+    1450.9986197560459,
+    1476.3740054516243,
+    1498.5346104589687,
+    1553.9546685779342,
+    1600.4889064165322,
+    2162.42192629771,
+    2185.131698092438,
+    2203.751774490578,
+    2211.2172381991454,
+    2212.0019874472805,
+    2223.2386320031296,
+    2249.643783935324,
+    2250.7605145882076,
+    2251.3700093719563,
+    2308.2120923981097,
+    3010.5460242265503,
+    3023.23775175221,
+    3028.820347284321,
+    3076.107732086084,
+    3116.280161530788,
+    3176.5946312482,
+    3733.0421528025154,
+    3748.178540896322,
+    3750.712752064888,
+    3761.1306415578597,
+    3776.032923850501,
+    3841.7891884373485
+  ],
+  "n_imaginary": 1,
+  "imag_freqs_cm": [
+    -923.0825375369823
+  ],
+  "small_imaginary_below_cutoff_cm": [
+    -0.5707438379974598,
+    -0.23744271547123164,
+    -0.2171078650043881,
+    -0.0026337508782965148
+  ],
+  "lowest_10_cm": [
+    -923.0825375369823,
+    -0.5707438379974598,
+    -0.23744271547123164,
+    -0.2171078650043881,
+    -0.0026337508782965148,
+    0.0030598744553764793,
+    0.011088128715921262,
+    14.009790142823373,
+    20.021049036211146,
+    25.491231258743785
+  ],
+  "imag_cutoff_cm": 50.0,
+  "nu_imag_cm": -923.0825375369823,
+  "reaction_mode_overlap": 0.750482035287886,
+  "mode_displacement": [
+    [
+      -0.05740300586442747,
+      0.029611145844511324,
+      -0.04905128346217836
+    ],
+    [
+      0.12772491794035754,
+      -0.07837521048112081,
+      -0.09057880001226717
+    ],
+    [
+      -0.052446025052043106,
+      0.17468681458456137,
+      0.05342389055350047
+    ],
+    [
+      0.06478128766337854,
+      -0.025087877868045724,
+      0.028711629439257428
+    ],
+    [
+      0.009272210815979717,
+      -0.005230937923218099,
+      -0.015535400913070237
+    ],
+    [
+      0.0031085881029368468,
+      -0.0027316101764765463,
+      -0.0007069397459307219
+    ],
+    [
+      0.0020311257624881164,
+      0.000799290961098758,
+      -0.006448154850444658
+    ],
+    [
+      -0.002995943206485824,
+      -0.0006082191323697816,
+      -0.0005347037334066857
+    ],
+    [
+      -0.00046372662863178587,
+      -0.002080601237315829,
+      -0.002478237129513553
+    ],
+    [
+      -0.0006731728183092912,
+      0.0008826705764193091,
+      0.0007886658358341075
+    ],
+    [
+      -0.00019307549145154593,
+      0.0005537260403909834,
+      0.001601056215921243
+    ],
+    [
+      -0.0007268935975509246,
+      -8.487421398951e-05,
+      -0.0009485362003161651
+    ],
+    [
+      -0.06053652090324592,
+      0.18154260608111855,
+      0.15256073552518362
+    ],
+    [
+      -0.48051476492064393,
+      -0.6420909761230603,
+      0.4590935315506344
+    ],
+    [
+      -0.02983385795879035,
+      -0.013157975957266052,
+      -0.009627885582201035
+    ],
+    [
+      0.03345596906540985,
+      0.052677146785516014,
+      0.021573697508657598
+    ],
+    [
+      0.002062299585292741,
+      0.0035003280956889364,
+      -0.0037893358903129154
+    ],
+    [
+      0.0033177410023436404,
+      -0.0020325624468167406,
+      0.004602587542769686
+    ],
+    [
+      -0.006289746069640642,
+      0.002365591390977496,
+      0.00553080162133119
+    ],
+    [
+      0.0014426117166275521,
+      -0.00831224218299392,
+      1.245508373127612e-05
+    ],
+    [
+      -0.001788829750997438,
+      -0.0008158296887747699,
+      0.0002868121164739718
+    ],
+    [
+      -0.0021362617426617632,
+      0.0013605262348230197,
+      0.000735835829589288
+    ],
+    [
+      0.00845066374916067,
+      -0.0036913010383402872,
+      0.0066060477037222735
+    ],
+    [
+      -0.006042587205020873,
+      -0.00755279795672924,
+      0.004291559050319987
+    ],
+    [
+      0.0016754342518485795,
+      0.001604560084230422,
+      7.13734791913806e-05
+    ],
+    [
+      -0.00351395636122591,
+      -0.00855595325617969,
+      0.007680721103283959
+    ],
+    [
+      -0.007098028273401939,
+      -0.008989333163547105,
+      0.0037543933684204968
+    ],
+    [
+      -0.00026989074667861966,
+      0.0024589526517708304,
+      -0.003107641301174381
+    ],
+    [
+      0.0008045935497720619,
+      -0.0005302009148837177,
+      0.0003341298819696397
+    ],
+    [
+      -0.003666170887237616,
+      0.0009959917915096726,
+      -0.0025229860642914624
+    ],
+    [
+      -0.0049162952148549335,
+      0.004743639754130106,
+      -0.0018966948696084653
+    ],
+    [
+      -0.006419407811495053,
+      0.0022781578988292314,
+      -0.00395891154249911
+    ],
+    [
+      0.0031554501752038477,
+      0.007115057173949965,
+      -0.0016772731038701368
+    ],
+    [
+      -0.0005603805100004974,
+      -4.61060939680643e-05,
+      0.0006186931757121306
+    ],
+    [
+      0.0008881086603944344,
+      0.003280773290709879,
+      -0.002858755891346045
+    ],
+    [
+      0.0036477058792268855,
+      -2.5133967616195652e-05,
+      -0.0036158510024690105
+    ],
+    [
+      0.003373851475838465,
+      -0.0004637939087048155,
+      -0.003904811071357446
+    ],
+    [
+      0.006902689136433533,
+      0.002263829088178834,
+      -0.0024960213979640573
+    ],
+    [
+      -0.0018845109395340615,
+      0.0002834098273133075,
+      0.0007066162000728315
+    ],
+    [
+      0.0038142346976011315,
+      0.004134661277652348,
+      -0.003177362983313254
+    ],
+    [
+      0.0004886393184196343,
+      0.0030579234663239635,
+      -0.002021745278595083
+    ],
+    [
+      0.0005415012470691295,
+      0.004436122460725539,
+      -0.0020678687135098845
+    ]
+  ],
+  "mode_atom_participation": [
+    {
+      "index": 13,
+      "element": "H",
+      "fraction": 0.8539421316370395
+    },
+    {
+      "index": 12,
+      "element": "H",
+      "fraction": 0.05989716620977834
+    },
+    {
+      "index": 2,
+      "element": "C",
+      "fraction": 0.03612018081533285
+    },
+    {
+      "index": 1,
+      "element": "C",
+      "fraction": 0.030660847292493347
+    },
+    {
+      "index": 0,
+      "element": "O",
+      "fraction": 0.006577953449783387
+    },
+    {
+      "index": 3,
+      "element": "O",
+      "fraction": 0.0056503745123046125
+    },
+    {
+      "index": 15,
+      "element": "H",
+      "fraction": 0.0043596080837635205
+    },
+    {
+      "index": 14,
+      "element": "H",
+      "fraction": 0.0011558875927812245
+    }
+  ],
+  "verdict": "FIRST-ORDER SADDLE CANDIDATE: exactly one significant imaginary mode (overlap with hydride-transfer coordinate 0.75; H_transfer participation 0.85)",
+  "connectivity": {
+    "method_note": "+/- imaginary-mode displacement + local relaxation: a connectivity sanity check, NOT an intrinsic reaction coordinate (IRC)",
+    "settings": {
+      "enabled": true,
+      "mode_displacement_A": 0.1,
+      "optimizer": "BFGS",
+      "fmax": 0.02,
+      "steps": 1500
+    },
+    "mode_step_max_atom_A": 0.1,
+    "sides": {
+      "+": {
+        "sign": "+",
+        "converged": true,
+        "steps": 154,
+        "energy_eV": -56520.79317246436,
+        "fmax_eV_A": 0.018934611069664837,
+        "seconds": 41.08,
+        "start_state": "reactant-like",
+        "hydride_state": {
+          "state": "reactant-like",
+          "d_C2_H_A": 1.1023303961085176,
+          "d_C1_H_A": 2.0936906749910955,
+          "delta_H_A": -0.9913602788825779,
+          "bond_cutoff_A": 1.284,
+          "shared_cutoff_A": 1.6,
+          "criterion": "covalent C-H* bond (d < bond_scale x (r_C + r_H)) on the mapped atoms"
+        },
+        "state": "reactant-like",
+        "core_distances_A": {
+          "C2-H*": 1.1023,
+          "C1-H*": 2.0937,
+          "C1-O1": 1.2177,
+          "C2-O2": 1.3922,
+          "C1-C2": 1.5066,
+          "Sn-O1": 2.3637,
+          "Sn-O2": 2.0292,
+          "Sn-O_water": 2.3042,
+          "C1-H_C1": 1.1007
+        },
+        "rmsd_from_ts_A": 0.6494798319646223,
+        "files": {
+          "start": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-polar_polar-1-s/vib/connectivity/conn_plus_start.xyz",
+          "relaxed": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-polar_polar-1-s/vib/connectivity/conn_plus_relaxed.xyz"
+        },
+        "energy_below_ts_kJ_mol": 126.40956096853279,
+        "vs_endpoints": {
+          "reactant": {
+            "rmsd_whole_A": 1.2448652003789233,
+            "rmsd_core_A": 0.08342156584850463
+          },
+          "product": {
+            "rmsd_whole_A": 1.3199567251276654,
+            "rmsd_core_A": 0.6497767342502623
+          }
+        },
+        "matched_endpoint": "reactant",
+        "conformer_vs_matched_endpoint": {
+          "label": "reactant-side minimum vs relaxed input reactant",
+          "rmsd_whole_A": 1.2448652003789233,
+          "rmsd_core_A": 0.08342156584850463,
+          "rmsd_noncore_A": 1.2833275747369879,
+          "core_atoms": [
+            0,
+            1,
+            2,
+            3,
+            12,
+            13,
+            23,
+            24
+          ],
+          "n_dihedrals_checked": 9,
+          "changed_dihedrals": [
+            {
+              "atoms": [
+                1,
+                2,
+                4,
+                5
+              ],
+              "label": "C1-C2-C4-O5",
+              "ref_deg": 141.4,
+              "other_deg": 71.1,
+              "change_deg": -70.3
+            },
+            {
+              "atoms": [
+                2,
+                4,
+                5,
+                15
+              ],
+              "label": "C2-C4-O5-H15",
+              "ref_deg": -13.2,
+              "other_deg": 39.8,
+              "change_deg": 53.0
+            }
+          ],
+          "n_changed_dihedrals": 2,
+          "dihedral_threshold_deg": 30.0,
+          "core_similar": true,
+          "core_similar_threshold_A": 0.25,
+          "energy_offset_kJ_mol": -13.437988478613208,
+          "material": true,
+          "material_threshold_kJ_mol": 4.184,
+          "interpretation": "reactive core essentially unchanged (core RMSD 0.083 \u00c5); 2 torsion(s) changed by >= 30 deg (largest C1-C2-C4-O5 -70 deg); MATERIAL conformational energy offset -13.44 kJ/mol (>= 4.18): barriers depend on which structure is the reference",
+          "note": "descriptive only: a lower structure found this way is a lower LOCAL minimum, not evidence of the global minimum"
+        }
+      },
+      "-": {
+        "sign": "-",
+        "converged": true,
+        "steps": 309,
+        "energy_eV": -56520.991810859545,
+        "fmax_eV_A": 0.018114329243070538,
+        "seconds": 83.38,
+        "start_state": "product-like",
+        "hydride_state": {
+          "state": "product-like",
+          "d_C2_H_A": 2.102743338921926,
+          "d_C1_H_A": 1.10196301845463,
+          "delta_H_A": 1.0007803204672958,
+          "bond_cutoff_A": 1.284,
+          "shared_cutoff_A": 1.6,
+          "criterion": "covalent C-H* bond (d < bond_scale x (r_C + r_H)) on the mapped atoms"
+        },
+        "state": "product-like",
+        "core_distances_A": {
+          "C2-H*": 2.1027,
+          "C1-H*": 1.102,
+          "C1-O1": 1.3867,
+          "C2-O2": 1.222,
+          "C1-C2": 1.5038,
+          "Sn-O1": 1.9896,
+          "Sn-O2": 2.392,
+          "Sn-O_water": 2.3444,
+          "C1-H_C1": 1.0976
+        },
+        "rmsd_from_ts_A": 0.49501564116688557,
+        "files": {
+          "start": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-polar_polar-1-s/vib/connectivity/conn_minus_start.xyz",
+          "relaxed": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-polar_polar-1-s/vib/connectivity/conn_minus_relaxed.xyz"
+        },
+        "energy_below_ts_kJ_mol": 145.5752525000334,
+        "vs_endpoints": {
+          "reactant": {
+            "rmsd_whole_A": 1.5742546339628414,
+            "rmsd_core_A": 0.6027943238876966
+          },
+          "product": {
+            "rmsd_whole_A": 0.9955086617580176,
+            "rmsd_core_A": 0.2416918018452422
+          }
+        },
+        "matched_endpoint": "product",
+        "conformer_vs_matched_endpoint": {
+          "label": "product-side minimum vs relaxed input product",
+          "rmsd_whole_A": 0.9955086617580176,
+          "rmsd_core_A": 0.2416918018452422,
+          "rmsd_noncore_A": 1.0371494769016305,
+          "core_atoms": [
+            0,
+            1,
+            2,
+            3,
+            12,
+            13,
+            23,
+            24
+          ],
+          "n_dihedrals_checked": 9,
+          "changed_dihedrals": [],
+          "n_changed_dihedrals": 0,
+          "dihedral_threshold_deg": 30.0,
+          "core_similar": true,
+          "core_similar_threshold_A": 0.25,
+          "energy_offset_kJ_mol": -2.581939664949505,
+          "material": false,
+          "material_threshold_kJ_mol": 4.184,
+          "interpretation": "reactive core essentially unchanged (core RMSD 0.242 \u00c5); energy offset -2.58 kJ/mol (below the materiality threshold)",
+          "note": "descriptive only: a lower structure found this way is a lower LOCAL minimum, not evidence of the global minimum"
+        }
+      }
+    },
+    "reactant_side": "+",
+    "product_side": "-",
+    "connects": true,
+    "both_converged": true,
+    "verdict": "CONNECTS: one side relaxes to a reactant-like and the other to a product-like minimum (+/- imaginary-mode displacement + local relaxation: a connectivity sanity check, NOT an intrinsic reaction coordinate (IRC))",
+    "ts_unchanged": true
+  },
+  "connectivity_skipped": null,
+  "ts_certification": "CERTIFIED: stationary first-order saddle; imaginary mode is the hydride transfer; +/- mode relaxation reaches reactant-like and product-like minima (not an IRC)",
+  "energetics": {
+    "units_note": "electronic potential energies of one method, one environment; no ZPE/thermal terms; not free energies",
+    "ts": {
+      "energy_eV": -56519.483029687304,
+      "status": "CERTIFIED: stationary first-order saddle; imaginary mode is the hydride transfer; +/- mode relaxation reaches reactant-like and product-like minima (not an IRC)",
+      "certified": true,
+      "source": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-polar_polar-1-s/ts/ts_sella.xyz"
+    },
+    "reference_states": {
+      "relaxed_endpoint": {
+        "name": "relaxed_endpoint",
+        "available": true,
+        "description": "E(TS) - E(reactant) with the reactant/product being this method's relaxed input endpoints",
+        "reactant_eV": -56520.65389752812,
+        "product_eV": -56520.96505094062,
+        "source": {
+          "reactant": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-polar_polar-1-s/endpoints/reactant_opt.xyz",
+          "product": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-polar_polar-1-s/endpoints/product_opt.xyz"
+        },
+        "unavailable_reason": null
+      },
+      "connected_side_minimum": {
+        "name": "connected_side_minimum",
+        "available": true,
+        "description": "E(TS) - E(minimum reached from the TS by negative/positive imaginary-mode displacement + relaxation); NOT an IRC endpoint",
+        "reactant_eV": -56520.79317246436,
+        "product_eV": -56520.991810859545,
+        "source": {
+          "reactant": {
+            "start": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-polar_polar-1-s/vib/connectivity/conn_plus_start.xyz",
+            "relaxed": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-polar_polar-1-s/vib/connectivity/conn_plus_relaxed.xyz"
+          },
+          "product": {
+            "start": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-polar_polar-1-s/vib/connectivity/conn_minus_start.xyz",
+            "relaxed": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-polar_polar-1-s/vib/connectivity/conn_minus_relaxed.xyz"
+          }
+        },
+        "unavailable_reason": null
+      }
+    },
+    "barrier_forward": {
+      "relaxed_endpoint": {
+        "eV": 1.1708678408176638,
+        "kJ_mol": 112.97157248991958,
+        "kcal_mol": 27.000854044832096
+      },
+      "connected_side_minimum": {
+        "eV": 1.3101427770525333,
+        "kJ_mol": 126.40956096853279,
+        "kcal_mol": 30.212610397073245
+      }
+    },
+    "barrier_reverse": {
+      "relaxed_endpoint": {
+        "eV": 1.4820212533159065,
+        "kJ_mol": 142.99331283508388,
+        "kcal_mol": 34.176222249111625
+      },
+      "connected_side_minimum": {
+        "eV": 1.5087811722405604,
+        "kJ_mol": 145.5752525000334,
+        "kcal_mol": 34.79332064394971
+      }
+    },
+    "reaction_energy": {
+      "relaxed_endpoint": {
+        "eV": -0.3111534124982427,
+        "kJ_mol": -30.021740345164304,
+        "kcal_mol": -7.1753682042795255
+      },
+      "connected_side_minimum": {
+        "eV": -0.19863839518802706,
+        "kJ_mol": -19.1656915315006,
+        "kcal_mol": -4.5807102468764676
+      }
+    },
+    "quantity_label": "E(certified first-order saddle) - E(reference)",
+    "policy": "No single unlabeled barrier is reported; every value names its reference state.",
+    "reference_state_spread_kJ_mol": {
+      "barrier_forward": 13.437988478613207,
+      "barrier_reverse": 2.581939664949516,
+      "reaction_energy": 10.856048813663705
+    },
+    "reference_state_dependent": true,
+    "material_threshold_kJ_mol": 4.184
+  },
+  "files": {
+    "hessian": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-polar_polar-1-s/vib/hessian.npy",
+    "frequencies": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-polar_polar-1-s/vib/frequencies.csv",
+    "normal_modes": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-polar_polar-1-s/vib/normal_modes.npz",
+    "imag_mode_vector": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-polar_polar-1-s/vib/imag_mode_vector.npy",
+    "imag_mode": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-polar_polar-1-s/vib/imag_mode.xyz",
+    "connectivity_dir": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-polar_polar-1-s/vib/connectivity"
+  }
+}

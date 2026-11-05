@@ -1,0 +1,253 @@
+{
+  "TEST_ONLY": false,
+  "system": "Sn-beta / glucose C2->C1 hydride transfer -- RECONSTRUCTED vacuum cluster (Tian, tt-test)",
+  "config": "<repo>/sweep/sn_beta_hydride/config_tian_tt_test.json",
+  "timestamp": "2026-11-04T17:20:51",
+  "structure_class": "reconstructed",
+  "structure_provenance": {
+    "dataset": "tian_tt_test",
+    "structure_class": "reconstructed",
+    "not_literature_coordinates": true,
+    "constructed_by": "T. Tian (manual, agent-assisted SMILES conversion)",
+    "construction_method": "RDKit build + geometric Sn-site placement, relaxed with MACE-POLAR-1-S (glucose/structures/scripts/)",
+    "charge_spin_status": "inferred",
+    "provenance_file": "input/tian_tt_test/provenance.json",
+    "solvent": "none (vacuum cluster)"
+  },
+  "warning": "RECONSTRUCTED input structures (not literature coordinates)",
+  "calculator": {
+    "model": "mace-omol",
+    "pretty": "MACE-OMOL-0",
+    "variant": "extra_large",
+    "model_path": null,
+    "model_class": "ScaleShiftMACE",
+    "head": "omol",
+    "r_max_A": 6.0,
+    "z_range": [
+      1,
+      83
+    ],
+    "n_elements": 83,
+    "device": "cpu",
+    "dtype": "float64",
+    "charge": 0,
+    "spin_multiplicity": 1,
+    "mace_torch": "0.3.16",
+    "torch": "2.7.1",
+    "ase": "3.26.0",
+    "graph_longrange": "0.4.0"
+  },
+  "stage": "run_protocol",
+  "inputs": {
+    "reactant": "<repo>/sweep/sn_beta_hydride/input/tian_tt_test/reactant.xyz",
+    "product": "<repo>/sweep/sn_beta_hydride/input/tian_tt_test/product.xyz"
+  },
+  "plan": {
+    "method": "mace-omol",
+    "variant": "extra_large",
+    "device": "cpu",
+    "dtype": "float64",
+    "options": {},
+    "charge_spin_handling": "info",
+    "settings": {
+      "optimize": {
+        "optimizer": "BFGS",
+        "fmax": 0.02,
+        "steps": 2000
+      },
+      "path": {
+        "n_images": 13,
+        "k": 0.5,
+        "climb": true,
+        "method": "improvedtangent",
+        "interpolation": "idpp",
+        "optimizer": "FIRE",
+        "fmax": 0.05,
+        "steps": 1500,
+        "align_product": true
+      },
+      "sella": {
+        "order": 1,
+        "internal": true,
+        "fmax": 0.001,
+        "steps": 1000
+      },
+      "hessian": {
+        "delta": 0.001,
+        "imag_cutoff_cm": 50.0,
+        "atoms": "free",
+        "min_reaction_overlap": 0.3,
+        "stationary_fmax": 0.01,
+        "mode_amplitude_A": 0.3,
+        "mode_frames": 11
+      },
+      "connectivity": {
+        "enabled": true,
+        "mode_displacement_A": 0.1,
+        "optimizer": "BFGS",
+        "fmax": 0.02,
+        "steps": 1500
+      }
+    },
+    "force_call_bounds": {
+      "endpoints_max": 4002,
+      "neb_max": 16511,
+      "sella_max": "~1001 x 1-4 (Sella nsteps undercounts calls)",
+      "hessian": 0,
+      "connectivity_max": 3002
+    },
+    "outputs": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-omol_extra_large"
+  },
+  "total_calculator_calls": 17442,
+  "wall_seconds": 11497.4,
+  "stages": {
+    "optimize_endpoints": {
+      "ok": true,
+      "reactant_converged": true,
+      "product_converged": true,
+      "reaction_energy_relaxed_endpoint": {
+        "note": "E(product_opt) - E(reactant_opt) with this model; not a free energy",
+        "reference_state": "relaxed_endpoint",
+        "eV": -0.2821005660953233,
+        "kJ_mol": -27.21856681094728,
+        "kcal_mol": -6.505393645268375
+      }
+    },
+    "run_path": {
+      "converged": false,
+      "steps": 1500,
+      "neb_fmax_final": 0.5941935369639598,
+      "warnings": [
+        "NEB not converged in 1500 steps (fmax 0.594 > 0.05)"
+      ],
+      "highest_image": {
+        "image": 6,
+        "certified": false,
+        "E_highest_image_minus_E_band_image0": {
+          "eV": 0.8980118554100045,
+          "kJ_mol": 86.6449721169317,
+          "kcal_mol": 20.70864549625147,
+          "reference_state": "relaxed_endpoint (band image 0)",
+          "note": "highest NEB image, NOT a barrier: no saddle refinement or Hessian yet; band NOT converged"
+        },
+        "file": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-omol_extra_large/path/ts_candidate.xyz",
+        "status": "highest-energy NEB image; NOT a verified transition state \u2014 refine with refine_ts.py, verify with validate_ts.py"
+      },
+      "note": "highest NEB image = Sella starting guess only; NOT a TS"
+    },
+    "refine_ts": {
+      "converged": true,
+      "sella_reported_converged": true,
+      "fmax_criterion_met": true,
+      "nsteps": 26,
+      "calls": 38,
+      "final_fmax_eV_A": 0.0007137020997226884,
+      "cvs_final": {
+        "d_C1_H": 1.391546901816841,
+        "d_C2_H": 1.3784798209434974,
+        "delta_H": -0.013067080873343517,
+        "CV1": 1.4830585949862647,
+        "CV2": 0.7196392731144807
+      }
+    },
+    "validate_ts": {
+      "n_imaginary": 1,
+      "imag_freqs_cm": [
+        -1299.0172502413943
+      ],
+      "reaction_mode_overlap": 0.7182615972014457,
+      "mode_verdict": "FIRST-ORDER SADDLE CANDIDATE: exactly one significant imaginary mode (overlap with hydride-transfer coordinate 0.72; H_transfer participation 0.93)",
+      "ts_certification": "CERTIFIED: stationary first-order saddle; imaginary mode is the hydride transfer; +/- mode relaxation reaches reactant-like and product-like minima (not an IRC)",
+      "connectivity_verdict": "CONNECTS: one side relaxes to a reactant-like and the other to a product-like minimum (+/- imaginary-mode displacement + local relaxation: a connectivity sanity check, NOT an intrinsic reaction coordinate (IRC))",
+      "connectivity_skipped": null
+    }
+  },
+  "energetics": {
+    "units_note": "electronic potential energies of one method, one environment; no ZPE/thermal terms; not free energies",
+    "ts": {
+      "energy_eV": -56520.04152424625,
+      "status": "CERTIFIED: stationary first-order saddle; imaginary mode is the hydride transfer; +/- mode relaxation reaches reactant-like and product-like minima (not an IRC)",
+      "certified": true,
+      "source": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-omol_extra_large/ts/ts_sella.xyz"
+    },
+    "reference_states": {
+      "relaxed_endpoint": {
+        "name": "relaxed_endpoint",
+        "available": true,
+        "description": "E(TS) - E(reactant) with the reactant/product being this method's relaxed input endpoints",
+        "reactant_eV": -56520.79112728821,
+        "product_eV": -56521.07322785431,
+        "source": {
+          "reactant": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-omol_extra_large/endpoints/reactant_opt.xyz",
+          "product": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-omol_extra_large/endpoints/product_opt.xyz"
+        },
+        "unavailable_reason": null
+      },
+      "connected_side_minimum": {
+        "name": "connected_side_minimum",
+        "available": true,
+        "description": "E(TS) - E(minimum reached from the TS by negative/positive imaginary-mode displacement + relaxation); NOT an IRC endpoint",
+        "reactant_eV": -56520.9823178803,
+        "product_eV": -56521.030237277184,
+        "source": {
+          "reactant": {
+            "start": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-omol_extra_large/vib/connectivity/conn_plus_start.xyz",
+            "relaxed": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-omol_extra_large/vib/connectivity/conn_plus_relaxed.xyz"
+          },
+          "product": {
+            "start": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-omol_extra_large/vib/connectivity/conn_minus_start.xyz",
+            "relaxed": "<repo>/sweep/sn_beta_hydride/outputs/tian_tt_test/mace-omol_extra_large/vib/connectivity/conn_minus_relaxed.xyz"
+          }
+        },
+        "unavailable_reason": null
+      }
+    },
+    "barrier_forward": {
+      "relaxed_endpoint": {
+        "eV": 0.7496030419642921,
+        "kJ_mol": 72.32569846208702,
+        "kcal_mol": 17.28625693016357
+      },
+      "connected_side_minimum": {
+        "eV": 0.9407936340503511,
+        "kJ_mol": 90.77278623772986,
+        "kcal_mol": 21.695216756112558
+      }
+    },
+    "barrier_reverse": {
+      "relaxed_endpoint": {
+        "eV": 1.0317036080596154,
+        "kJ_mol": 99.5442652730343,
+        "kcal_mol": 23.791650575431948
+      },
+      "connected_side_minimum": {
+        "eV": 0.9887130309361964,
+        "kJ_mol": 95.39630516125074,
+        "kcal_mol": 22.800264308129645
+      }
+    },
+    "reaction_energy": {
+      "relaxed_endpoint": {
+        "eV": -0.2821005660953233,
+        "kJ_mol": -27.21856681094728,
+        "kcal_mol": -6.505393645268375
+      },
+      "connected_side_minimum": {
+        "eV": -0.047919396885845345,
+        "kJ_mol": -4.623518923520882,
+        "kcal_mol": -1.105047552017087
+      }
+    },
+    "quantity_label": "E(certified first-order saddle) - E(reference)",
+    "policy": "No single unlabeled barrier is reported; every value names its reference state.",
+    "reference_state_spread_kJ_mol": {
+      "barrier_forward": 18.447087775642842,
+      "barrier_reverse": 4.147960111783561,
+      "reaction_energy": 22.595047887426396
+    },
+    "reference_state_dependent": true,
+    "material_threshold_kJ_mol": 4.184
+  },
+  "ts_certification": "CERTIFIED: stationary first-order saddle; imaginary mode is the hydride transfer; +/- mode relaxation reaches reactant-like and product-like minima (not an IRC)",
+  "status": "ok"
+}
