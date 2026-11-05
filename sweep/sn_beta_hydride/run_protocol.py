@@ -76,6 +76,35 @@ def plan(cfg, settings, natoms: int | None) -> dict:
     }
 
 
+def ts_provenance(neb: dict | None, sella: dict | None) -> dict:
+    """How the saddle was reached, kept SEPARATE from its certification label.
+
+    ``ts_certification`` is a statement about the Sella saddle (converged search, Hessian,
+    hydride mode, valid +/- minima). It deliberately says nothing about the NEB that supplied
+    the starting guess. This record carries that: an unconverged NEB is diagnostic only, never
+    a converged reaction path, and its highest image is never a TS or a barrier, even when the
+    saddle it seeded is certified (and even when other seeds reach the same saddle).
+    ``neb``: {"converged","neb_fmax_final","steps","fmax_target"} or None; ``sella``: {"converged"} or None."""
+    ran = neb is not None
+    ok = bool(ran and neb.get("converged"))
+    return {
+        "seed": ("highest image of the CI-NEB band (a starting guess only)" if ran
+                 else "explicit starting geometry (no NEB in this record)"),
+        "path_status": ("NEB_CONVERGED: approximate minimum-energy path (not an IRC)" if ok else
+                        "NEB_UNCONVERGED: DIAGNOSTIC ONLY; no converged reaction path is claimed" if ran
+                        else "NO_NEB_RUN"),
+        "neb_converged": (ok if ran else None),
+        "neb_fmax_final": (neb.get("neb_fmax_final") if ran else None),
+        "neb_fmax_target": (neb.get("fmax_target") if ran else None),
+        "neb_steps": (neb.get("steps") if ran else None),
+        "sella_converged": (sella.get("converged") if sella else None),
+        "mep_claimed": ok,
+        "highest_image_is_ts": False,
+        "highest_image_energy_is_barrier": False,
+        "note": "ts_certification concerns the Sella saddle only; NEB status is reported here, never merged into it",
+    }
+
+
 def run(cfg, model=None, variant=None, device=None, dtype=None, handle=None,
         stop_on_unconverged_neb=False) -> dict:
     import optimize_endpoints as OE
@@ -132,6 +161,10 @@ def run(cfg, model=None, variant=None, device=None, dtype=None, handle=None,
                 "connectivity_skipped": s4["connectivity_skipped"]}
             rec["energetics"] = s4["energetics"]
             rec["ts_certification"] = s4["ts_certification"]
+            rec["ts_provenance"] = ts_provenance(
+                {"converged": s2["converged"], "neb_fmax_final": s2["neb_fmax_final"], "steps": s2["steps"],
+                 "fmax_target": (s2.get("settings") or {}).get("fmax")},
+                {"converged": s3["converged"]})
             if not s3["converged"]:
                 status = "Sella did not converge (TS not certified)"
     rec["status"] = status
@@ -145,6 +178,8 @@ def run(cfg, model=None, variant=None, device=None, dtype=None, handle=None,
     write_json(out, summary)
     print(f"== protocol {handle.settings.tag}: {status}; "
           f"TS: {rec.get('ts_certification', 'n/a')}")
+    if "ts_provenance" in rec:
+        print(f"   path: {rec['ts_provenance']['path_status']}")
     print(f"   wrote {out}")
     return summary
 

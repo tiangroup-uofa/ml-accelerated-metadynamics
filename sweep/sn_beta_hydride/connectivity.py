@@ -34,6 +34,7 @@ from pathlib import Path
 import numpy as np
 
 from conformer_diagnostics import compare as conformer_compare
+from coordination_check import check_coordination
 from energetics import EV2KJ
 from geometry import kabsch_rmsd, max_force
 from hydride import classify_hydride_state, core_distances, core_indices
@@ -79,12 +80,74 @@ def _relax(atoms, calc, cfg, opts, stem: Path | None):
     return strip_calc(a), rec
 
 
+COORDINATION_KEYS = ("Sn", "O1", "O2", "O_water")
+_ROLE_OF_STATE = {"reactant-like": "reactant", "product-like": "product"}
+
+
+def coordination_configured(cfg: dict) -> bool:
+    """True when the atom map names the Sn site (Sn, O1, O2, O_water), i.e. the Sn-site
+    coordination rule can be applied. Toy/non-Sn systems return False."""
+    m = cfg.get("atom_map") or {}
+    return all(isinstance(m.get(k), int) and not isinstance(m.get(k), bool) for k in COORDINATION_KEYS)
+
+
+def side_coordination(relaxed, state: str, inputs: dict | None, cfg: dict):
+    """Coordination verdict of a relaxed +/- side against the INPUT structure of the same role
+    (the single convention used everywhere: see coordination_check). None when not applicable
+    (no inputs given, or the side is neither reactant- nor product-like)."""
+    role = _ROLE_OF_STATE.get(state)
+    if inputs is None or role is None or role not in inputs:
+        return None
+    return check_coordination(relaxed, inputs[role], cfg, expected_hydride_state=state)
+
+
+def assess_sides(sides: dict, coordination_checked: bool) -> dict:
+    """The single decision rule for a +/- pair of relaxed side minima (used by the pipeline AND by
+    offline reassessment of saved outputs, so the two cannot drift apart).
+
+    ``sides``: {"+": {...}, "-": {...}} with "state", "converged", "structurally_valid" and, when
+    invalid, "coordination"["reasons"]. A pair connects only if one side is reactant-like, the other
+    product-like, AND neither is structurally invalid relative to the input chemistry."""
+    by_state = {s["state"]: k for k, s in sides.items()}
+    reactant_sign = by_state.get("reactant-like")
+    product_sign = by_state.get("product-like")
+    connects_by_state = reactant_sign is not None and product_sign is not None and \
+        reactant_sign != product_sign
+    invalid_sides = [k for k, s in sides.items() if not s["structurally_valid"]]
+    connects = connects_by_state and not invalid_sides
+    both_converged = all(s["converged"] for s in sides.values())
+    if connects_by_state and invalid_sides:
+        why = "; ".join(f"side {k} ({sides[k]['state']}): " + ", ".join(sides[k]["coordination"]["reasons"])
+                        for k in invalid_sides)
+        verdict = ("DOES NOT CONNECT VALID MINIMA: hydride states are reactant-/product-like but a side minimum "
+                   f"is STRUCTURALLY INVALID relative to the input chemistry ({why})")
+    elif connects and both_converged:
+        verdict = ("CONNECTS: one side relaxes to a reactant-like and the other to a "
+                   "product-like minimum (" + NOT_IRC + ")")
+    elif connects:
+        verdict = "CONNECTS (states) but a side relaxation did NOT converge; energies unreliable"
+    else:
+        verdict = ("DOES NOT CONNECT reactant-like and product-like basins: side states "
+                   f"{sides['+']['state']} (+) / {sides['-']['state']} (-)")
+    return {"reactant_side": reactant_sign, "product_side": product_sign,
+            "connects_by_hydride_state": bool(connects_by_state), "invalid_sides": invalid_sides,
+            "connects": bool(connects), "both_converged": both_converged, "verdict": verdict,
+            "coordination_checked": bool(coordination_checked)}
+
+
 def connectivity_check(ts, mode, new_calc, cfg: dict, endpoints: dict | None = None,
-                       out: Path | None = None, ts_energy_eV: float | None = None) -> dict:
+                       out: Path | None = None, ts_energy_eV: float | None = None,
+                       inputs: dict | None = None) -> dict:
     """Run the +/- mode relaxation check.
 
     ``new_calc()`` returns a fresh calculator; ``endpoints`` optionally maps
-    "reactant"/"product" to {"atoms", "energy_eV", "source"} for comparison."""
+    "reactant"/"product" to {"atoms", "energy_eV", "source"} for comparison.
+
+    ``inputs`` maps "reactant"/"product" to the INPUT structures. When given, each relaxed
+    side is also judged by ``coordination_check`` (Sn shell, bound water, heavy-atom bonds,
+    hydride state). A side that is STRUCTURALLY_INVALID does not count as a connected
+    minimum: ``connects`` is False and it never becomes a ``connected_side_minimum``
+    reference. Without ``inputs`` the check is skipped and recorded as not performed."""
     from ase.io import write
 
     opts = options(cfg)
@@ -105,7 +168,10 @@ def connectivity_check(ts, mode, new_calc, cfg: dict, endpoints: dict | None = N
         if out:
             write(str(out / f"conn_{tag}_relaxed.xyz"), relaxed)
         st = classify_hydride_state(relaxed, cfg)
+        coord = side_coordination(relaxed, st["state"], inputs, cfg)
         side = {"sign": sign, **rec,
+                "coordination": coord,
+                "structurally_valid": coord is None or coord["verdict"] != "STRUCTURALLY_INVALID",
                 "start_state": classify_hydride_state(start, cfg)["state"],
                 "hydride_state": st, "state": st["state"],
                 "core_distances_A": core_distances(relaxed, cfg),
@@ -133,20 +199,10 @@ def connectivity_check(ts, mode, new_calc, cfg: dict, endpoints: dict | None = N
     if not np.allclose(ts.get_positions(), ts_pos0):
         raise RuntimeError("connectivity check modified the TS geometry")
 
-    by_state = {s["state"]: k for k, s in sides.items()}
-    reactant_sign = by_state.get("reactant-like")
-    product_sign = by_state.get("product-like")
-    connects = reactant_sign is not None and product_sign is not None and \
-        reactant_sign != product_sign
-    both_converged = all(s["converged"] for s in sides.values())
-    if connects and both_converged:
-        verdict = ("CONNECTS: one side relaxes to a reactant-like and the other to a "
-                   "product-like minimum (" + NOT_IRC + ")")
-    elif connects:
-        verdict = "CONNECTS (states) but a side relaxation did NOT converge; energies unreliable"
-    else:
-        verdict = ("DOES NOT CONNECT reactant-like and product-like basins: side states "
-                   f"{sides['+']['state']} (+) / {sides['-']['state']} (-)")
+    assessed = assess_sides(sides, coordination_checked=inputs is not None)
+    reactant_sign, product_sign = assessed["reactant_side"], assessed["product_side"]
+    connects, both_converged, verdict = assessed["connects"], assessed["both_converged"], assessed["verdict"]
+    connects_by_state, invalid_sides = assessed["connects_by_hydride_state"], assessed["invalid_sides"]
     atoms_out = {k: s.pop("_atoms") for k, s in sides.items()}
     result = {
         "method_note": NOT_IRC,
@@ -155,6 +211,10 @@ def connectivity_check(ts, mode, new_calc, cfg: dict, endpoints: dict | None = N
         "sides": sides,
         "reactant_side": reactant_sign, "product_side": product_sign,
         "connects": bool(connects), "both_converged": both_converged,
+        "connects_by_hydride_state": bool(connects_by_state),
+        "invalid_sides": invalid_sides,
+        "coordination_checked": assessed["coordination_checked"],
+        "coordination_reference": ("input structure of the same role" if inputs is not None else None),
         "verdict": verdict,
         "ts_unchanged": True,
     }
@@ -166,6 +226,9 @@ def side_minimum_reference(conn: dict | None):
     """(reactant_eV, product_eV, reason) of the connected side minima."""
     if conn is None:
         return None, None, "connectivity check not run"
+    if conn.get("invalid_sides"):
+        return None, None, ("a connected side minimum is structurally invalid (Sn coordination/water/"
+                            "hydride state changed relative to the input): " + conn["verdict"])
     if not conn["connects"]:
         return None, None, "saddle does not connect reactant-like and product-like basins"
     if not conn["both_converged"]:
@@ -176,13 +239,24 @@ def side_minimum_reference(conn: dict | None):
 
 def ts_certification(*, stationary: bool, fmax: float, stationary_fmax: float,
                      n_imaginary: int, overlap, min_overlap: float, geometry_valid: bool,
-                     connectivity: dict | None) -> str:
-    """One label for the evidence a saddle has. 'CERTIFIED' requires ALL of:
-    stationarity, exactly one significant imaginary mode, that mode aligned with
-    the hydride-transfer coordinate, a valid geometry, and +/- mode relaxation
-    reaching reactant-like and product-like basins (converged)."""
+                     connectivity: dict | None, sella_converged: bool | None) -> str:
+    """One label for the evidence a SADDLE has. 'CERTIFIED' requires ALL of:
+    a converged Sella search on record (its projected AND free-atom-force test, see
+    refine_ts), stationarity at the Hessian stage, exactly one significant imaginary
+    mode, that mode aligned with the hydride-transfer coordinate, a valid geometry, and
+    +/- mode relaxation reaching VALID reactant-like and product-like minima (converged,
+    Sn coordination/water/hydride state intact).
+
+    The label is about the saddle only. It says nothing about the path that supplied the
+    starting guess: a converged saddle reached from an UNCONVERGED NEB is still certified
+    as a saddle, and the NEB status is reported separately (run_protocol.ts_provenance).
+    ``sella_converged`` is required (no default): None means no record exists -> not certified."""
     if not geometry_valid:
         return "NOT CERTIFIED: geometry fails structure validation"
+    if sella_converged is not True:
+        why = ("no Sella-convergence record for this structure (external or unknown origin)"
+               if sella_converged is None else "the Sella saddle search did NOT converge")
+        return f"NOT CERTIFIED: {why}; a certified saddle needs a converged Sella search"
     if not stationary:
         return (f"NOT CERTIFIED: not a stationary point (fmax {fmax:.2e} > "
                 f"{stationary_fmax} eV/Å)")
@@ -198,5 +272,7 @@ def ts_certification(*, stationary: bool, fmax: float, stationary_fmax: float,
         return "NOT CERTIFIED: " + connectivity["verdict"]
     if not connectivity["both_converged"]:
         return "NOT CERTIFIED: +/- mode side relaxation did not converge"
-    return ("CERTIFIED: stationary first-order saddle; imaginary mode is the hydride transfer; "
-            "+/- mode relaxation reaches reactant-like and product-like minima (not an IRC)")
+    note = ("" if connectivity.get("coordination_checked", True)
+            else "; side-minimum Sn coordination NOT checked (no Sn-site atom map)")
+    return ("CERTIFIED: stationary first-order saddle (converged Sella); imaginary mode is the hydride transfer; "
+            "+/- mode relaxation reaches reactant-like and product-like minima (not an IRC)" + note)

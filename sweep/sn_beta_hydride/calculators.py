@@ -198,6 +198,8 @@ def parse_calc_settings(cfg: dict, model=None, variant=None, device=None,
     per_model = (c.get("models") or {}).get(model, {})
     variant = variant or per_model.get("variant") or spec.default_variant
     model_path = per_model.get("model_path")
+    if model_path is not None:                      # keep tracked configs portable: "~/.cache/..." or "$VAR/..."
+        model_path = os.path.expandvars(os.path.expanduser(str(model_path)))
     if model_path is None and variant not in spec.variants:
         raise ConfigError(f"{model}: unknown variant '{variant}'. Known: {spec.variants} "
                           "(or set calculator.models.<model>.model_path)")

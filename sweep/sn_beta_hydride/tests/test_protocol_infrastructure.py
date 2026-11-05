@@ -186,7 +186,8 @@ def test_connectivity_reports_failure_when_both_sides_fall_to_reactant(toy, tmp_
 def test_ts_certification_requires_all_evidence():
     good = {"connects": True, "both_converged": True, "verdict": "CONNECTS"}
     kw = dict(stationary=True, fmax=1e-4, stationary_fmax=0.01, n_imaginary=1, overlap=0.8,
-              min_overlap=0.3, geometry_valid=True, connectivity=good)
+              min_overlap=0.3, geometry_valid=True, connectivity=good,
+              sella_converged=True)   # new required evidence; every assertion below is unchanged
     assert ts_certification(**kw).startswith("CERTIFIED")
     assert "(not an IRC)" in ts_certification(**kw)
     for change, msg in ((dict(stationary=False, fmax=0.05), "not a stationary point"),
@@ -459,6 +460,10 @@ def test_protocol_end_to_end_on_toy(toy, tmp_path):
     assert "NOT a barrier" in neb["highest_image"]["E_highest_image_minus_E_band_image0"]["note"]
     assert s["stages"]["validate_ts"]["n_imaginary"] == 1
     assert s["ts_certification"].startswith("CERTIFIED"), s["ts_certification"]
+    prov = s["ts_provenance"]                       # NEB status travels beside, never inside, the saddle label
+    assert prov["neb_converged"] is neb["converged"] and prov["mep_claimed"] is neb["converged"]
+    assert prov["sella_converged"] is True and prov["highest_image_is_ts"] is False
+    assert prov["highest_image_energy_is_barrier"] is False and "NEB" not in s["ts_certification"]
     en = s["energetics"]
     assert set(en["barrier_forward"]) == {"relaxed_endpoint", "connected_side_minimum"}
     # bias -0.05 eV/Å * delta: barrier ~1 eV, product lower by ~2 * 0.05 * 0.86 eV
